@@ -24,45 +24,37 @@
 package VegansWay;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Item;
-import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.ShapedRecipe;
 
 /**
  *
  * @author Pronink
  */
-public class ItemModify
+public class CraftingRecipes
 {
 
-    private final String NEPETA = ChatColor.RESET + "Nepeta Cataria";
-    private final String COTTON = ChatColor.RESET + "Planta de algodón";
-
-    public void modifyItemGround(ItemSpawnEvent event)
+    void addAllCraftingRecipes()
     {
-	Item item = event.getEntity();
-	String fullName = item.getItemStack().getData().toString();
-	Bukkit.broadcastMessage(fullName);
-	if (fullName.equals("RED_ROSE(7)")) // PINK TULIP
-	{
-	    item.setItemStack(changeName(item.getItemStack(), NEPETA));
-	}
-	else if (fullName.equals("RED_ROSE(3)")) // AZURE BLUET
-	{
-	    item.setItemStack(changeName(item.getItemStack(), COTTON)); // COTTON
-	}
+	ShapedRecipe shapedRecipe;
+	// Planta de algodon -> Lana
+	ItemStack wool = new ItemStack(Material.WOOL);
+	ItemStack azureBluet = new ItemStack(Material.RED_ROSE, 1, (short)3);
+	shapedRecipe = new ShapedRecipe(wool);
+	shapedRecipe.shape("aa","aa");
+	shapedRecipe.setIngredient('a', azureBluet.getData());
+	Bukkit.getServer().addRecipe(shapedRecipe);
+	
+	// Semillas de calabaza -> Leche de calabaza
+	ItemStack waterbucket = new ItemStack(Material.WATER_BUCKET);
+	ItemStack pumpkinSeeds = new ItemStack(Material.PUMPKIN_SEEDS);
+	ItemStack milkBucket = new ItemStack(Material.MILK_BUCKET);
+	shapedRecipe = new ShapedRecipe(milkBucket);
+	shapedRecipe.shape("bp"); //Solo lo guarda en horizontal...
+	shapedRecipe.setIngredient('b', waterbucket.getData());
+	shapedRecipe.setIngredient('p', pumpkinSeeds.getData());
+	Bukkit.getServer().addRecipe(shapedRecipe);
     }
-
-    //ItemStack newItem = new ItemStack(Material.RED_ROSE, 1, (short) 7);
-
-
-    private ItemStack changeName(ItemStack itemStack, String name)
-    {
-	ItemMeta meta = itemStack.getItemMeta();
-	meta.setDisplayName(ChatColor.RESET + name);
-	itemStack.setItemMeta(meta);
-	return itemStack;
-    }
+    
 }

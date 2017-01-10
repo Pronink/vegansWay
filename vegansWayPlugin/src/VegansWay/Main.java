@@ -23,14 +23,15 @@
  */
 package VegansWay;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -43,14 +44,18 @@ public class Main extends JavaPlugin implements Listener
     int state = 0;
     CatTaming catTaming;
     ItemModify itemModify;
+    CraftingRecipes craftingRecipes;
 
     @Override
     public void onEnable()
     {
-	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	catTaming = new CatTaming();
 	itemModify = new ItemModify();
+	craftingRecipes = new CraftingRecipes();
+	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
+	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	startTimedEvents();
+	craftingRecipes.addAllCraftingRecipes();
     }
 
     private void startTimedEvents()
@@ -71,6 +76,7 @@ public class Main extends JavaPlugin implements Listener
 		}
 	    }
 	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
+	
     }
 
     @Override
@@ -86,10 +92,11 @@ public class Main extends JavaPlugin implements Listener
     }
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event)
+    public void onItemSpawn(ItemSpawnEvent event)
     {
-	itemModify.modifyDrop(event);
+	itemModify.modifyItemGround(event);
     }
+
 
     
 }
