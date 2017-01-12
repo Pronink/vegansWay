@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.material.MaterialData;
 
 /**
  *
@@ -42,7 +43,7 @@ public class CraftingRecipes
 	ShapelessRecipe shapelessRecipe; // Sin orden
 	
 	// Planta de algodon -> Lana
-	Material azureBluet = new ItemStack(Material.RED_ROSE, 1, (short)3).getType();
+	MaterialData azureBluet = new ItemStack(Material.RED_ROSE, 1, (short)3).getData();
 	ItemStack wool = new ItemStack(Material.WOOL);
 	shapedRecipe = new ShapedRecipe(wool);
 	shapedRecipe.shape("aa","aa");
@@ -50,8 +51,8 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapedRecipe);
 	
 	// Semillas de calabaza -> Leche de calabaza
-	Material bucket = new ItemStack(Material.BUCKET).getType();
-	Material pumpkinSeeds = new ItemStack(Material.PUMPKIN_SEEDS).getType();
+	MaterialData bucket = new ItemStack(Material.BUCKET).getData();
+	MaterialData pumpkinSeeds = new ItemStack(Material.PUMPKIN_SEEDS).getData();
 	ItemStack milkBucket = new ItemStack(Material.MILK_BUCKET);
 	shapelessRecipe = new ShapelessRecipe(milkBucket);
 	shapelessRecipe.addIngredient(bucket);
@@ -59,7 +60,7 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapelessRecipe);
 	
 	// Carbon -> Tinta negra
-	Material coal = new ItemStack(Material.COAL).getType();
+	MaterialData coal = new ItemStack(Material.COAL).getData();
 	ItemStack inksac = new ItemStack(Material.INK_SACK);
 	shapedRecipe = new ShapedRecipe(inksac);
 	shapedRecipe.shape("c");
@@ -67,14 +68,14 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapedRecipe);
 	
 	// Carbon vegetal -> Tinta negra
-	Material charcoal = new ItemStack(Material.COAL, 1, (short)1).getType();
+	MaterialData charcoal = new ItemStack(Material.COAL, 1, (short)1).getData();
 	shapedRecipe = new ShapedRecipe(inksac);
 	shapedRecipe.shape("c");
 	shapedRecipe.setIngredient('c', charcoal);
 	Bukkit.getServer().addRecipe(shapedRecipe);
 	
 	// Full papel -> Libro
-	Material paper = new ItemStack(Material.PAPER).getType();
+	MaterialData paper = new ItemStack(Material.PAPER).getData();
 	ItemStack book = new ItemStack(Material.BOOK);
 	shapedRecipe = new ShapedRecipe(book);
 	shapedRecipe.shape("ppp","ppp","ppp");
@@ -82,7 +83,7 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapedRecipe);
 	
 	// Palo + Papel -> Pluma
-	Material stick = new ItemStack(Material.STICK).getType();
+	MaterialData stick = new ItemStack(Material.STICK).getData();
 	ItemStack feather = new ItemStack(Material.FEATHER);
 	shapelessRecipe = new ShapelessRecipe(feather);
 	shapelessRecipe.addIngredient(stick);
@@ -90,7 +91,7 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapelessRecipe);
 	
 	// Lana/Algodon -> Armadura de cuero
-	Material mwool = wool.getType();
+	MaterialData mwool = wool.getData();
 	ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET);
 	ItemStack lechestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
 	ItemStack lleggings = new ItemStack(Material.LEATHER_LEGGINGS);
@@ -117,9 +118,9 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapedRecipe);
 	
 	// Tarta sin huevo
-	Material mmilkbucket = milkBucket.getType();
-	Material sugar = new ItemStack(Material.SUGAR).getType();
-	Material wheat = new ItemStack(Material.WHEAT).getType();
+	MaterialData mmilkbucket = milkBucket.getData();
+	MaterialData sugar = new ItemStack(Material.SUGAR).getData();
+	MaterialData wheat = new ItemStack(Material.WHEAT).getData();
 	ItemStack cake = new ItemStack(Material.CAKE);
 	shapedRecipe = new ShapedRecipe(cake);
 	shapedRecipe.shape("mmm","sss","www");
@@ -129,7 +130,7 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapedRecipe);
 	
 	// Pastel de calabaza sin huevo
-	Material pumpkin = new ItemStack(Material.PUMPKIN).getType();
+	MaterialData pumpkin = new ItemStack(Material.PUMPKIN).getData();
 	ItemStack pumpkinPie = new ItemStack(Material.PUMPKIN_PIE);
 	shapelessRecipe = new ShapelessRecipe(pumpkinPie);
 	shapelessRecipe.addIngredient(pumpkin);
