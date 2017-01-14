@@ -23,21 +23,40 @@
  */
 package VegansWay;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.CaveSpider;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Spider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 /**
  *
  * @author Pronink
  */
+// TODO: Que las arañas den más tela o disparen telas de araña
+// TODO: Camas crafteadas con heno
+// TODO: Alimentar a los perros con no-carne
+// TODO: Comprarme un macbook
 public class Main extends JavaPlugin implements Listener
 {
 
@@ -76,7 +95,7 @@ public class Main extends JavaPlugin implements Listener
 		}
 	    }
 	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
-	
+
     }
 
     @Override
@@ -97,6 +116,47 @@ public class Main extends JavaPlugin implements Listener
 	itemModify.modifyItemGround(event);
     }
 
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
+    {
+	if (event.getDamager() instanceof Spider || event.getDamager() instanceof CaveSpider)
+	{
+	    if ((int) (Math.random() * 4 + 1) == 1) // 1/4 parte de las veces entra
+	    {
+		Block block = event.getEntity().getLocation().getBlock();
+		Entity spider = event.getDamager();
+		block.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, block.getLocation(), 10, 0.2, 0.2, 0.2);
+		block.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, spider.getLocation(), 10, 0.2, 0.2, 0.2);
+		if (block.getType().equals(Material.AIR))
+		{
+		    block.setType(Material.WEB);
 
-    
+		}
+	    }
+	}
+
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event)
+    {
+	if (event.getEntity() instanceof Spider || event.getEntity() instanceof CaveSpider)
+	{
+	    Spider spider = (Spider)event.getEntity();
+	    int nStrings = (int) (Math.random() * 4); // De 0 a 3 drops de cuerdas extra
+	    event.getDrops().add(new ItemStack(Material.STRING, nStrings));
+	}
+
+    }
+
+    /*private void launchWeb(Spider spider)
+    {
+	Arrow arrow = spider.launchProjectile(Arrow.class);
+	Vector aVel = arrow.getVelocity();
+	arrow.remove();
+	aVel = aVel.multiply((double) Math.random());
+	FallingBlock fb = spider.getWorld().spawnFallingBlock(spider.getLocation(), new MaterialData(Material.WEB));
+	fb.setVelocity(aVel);
+	fb.setTicksLived(20 * 5); // Vive 5 segundos
+    }*/
 }
