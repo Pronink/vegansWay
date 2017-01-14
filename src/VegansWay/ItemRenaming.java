@@ -34,7 +34,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Pronink
  */
-public class ItemModify
+public class ItemRenaming
 {
 
     private final String NEPETA = ChatColor.RESET + "Nepeta Cataria";
