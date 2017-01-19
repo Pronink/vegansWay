@@ -36,8 +36,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Pronink
  */
-// TODO: Que las arañas den más tela o disparen telas de araña
-// TODO: Camas crafteadas con heno
 // TODO: Alimentar a los perros con no-carne
 // TODO: Comprarme un macbook
 public class Main extends JavaPlugin implements Listener

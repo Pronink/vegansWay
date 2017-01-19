@@ -44,7 +44,7 @@ public class ItemRenaming
     {
 	Item item = event.getEntity();
 	String fullName = item.getItemStack().getData().toString();
-	Bukkit.broadcastMessage(fullName);
+	Bukkit.broadcastMessage("ItemStack data: "+fullName+"    ItemStack material+data: "+item.getItemStack().getType());
 	if (fullName.equals("RED_ROSE(7)")) // PINK TULIP
 	{
 	    item.setItemStack(changeName(item.getItemStack(), NEPETA));

@@ -37,19 +37,19 @@ import org.bukkit.material.MaterialData;
 public class CraftingRecipes
 {
 
-    void addAllCraftingRecipes()
+    public void addAllCraftingRecipes()
     {
 	ShapedRecipe shapedRecipe; // Con orden
 	ShapelessRecipe shapelessRecipe; // Sin orden
-	
+
 	// Planta de algodon -> Lana
-	MaterialData azureBluet = new ItemStack(Material.RED_ROSE, 1, (short)3).getData();
+	MaterialData azureBluet = new ItemStack(Material.RED_ROSE, 1, (short) 3).getData();
 	ItemStack wool = new ItemStack(Material.WOOL);
 	shapedRecipe = new ShapedRecipe(wool);
-	shapedRecipe.shape("aa","aa");
+	shapedRecipe.shape("aa", "aa");
 	shapedRecipe.setIngredient('a', azureBluet);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	// Semillas de calabaza -> Leche de calabaza
 	MaterialData bucket = new ItemStack(Material.BUCKET).getData();
 	MaterialData pumpkinSeeds = new ItemStack(Material.PUMPKIN_SEEDS).getData();
@@ -58,7 +58,7 @@ public class CraftingRecipes
 	shapelessRecipe.addIngredient(bucket);
 	shapelessRecipe.addIngredient(pumpkinSeeds);
 	Bukkit.getServer().addRecipe(shapelessRecipe);
-	
+
 	// Carbon -> Tinta negra
 	MaterialData coal = new ItemStack(Material.COAL).getData();
 	ItemStack inksac = new ItemStack(Material.INK_SACK);
@@ -66,22 +66,22 @@ public class CraftingRecipes
 	shapedRecipe.shape("c");
 	shapedRecipe.setIngredient('c', coal);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	// Carbon vegetal -> Tinta negra
-	MaterialData charcoal = new ItemStack(Material.COAL, 1, (short)1).getData();
+	MaterialData charcoal = new ItemStack(Material.COAL, 1, (short) 1).getData();
 	shapedRecipe = new ShapedRecipe(inksac);
 	shapedRecipe.shape("c");
 	shapedRecipe.setIngredient('c', charcoal);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	// Full papel -> Libro
 	MaterialData paper = new ItemStack(Material.PAPER).getData();
 	ItemStack book = new ItemStack(Material.BOOK);
 	shapedRecipe = new ShapedRecipe(book);
-	shapedRecipe.shape("ppp","ppp","ppp");
+	shapedRecipe.shape("ppp", "ppp", "ppp");
 	shapedRecipe.setIngredient('p', paper);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	// Palo + Papel -> Pluma
 	MaterialData stick = new ItemStack(Material.STICK).getData();
 	ItemStack feather = new ItemStack(Material.FEATHER);
@@ -89,46 +89,46 @@ public class CraftingRecipes
 	shapelessRecipe.addIngredient(stick);
 	shapelessRecipe.addIngredient(paper);
 	Bukkit.getServer().addRecipe(shapelessRecipe);
-	
+
 	// Lana/Algodon -> Armadura de cuero
 	MaterialData mwool = wool.getData();
 	ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET);
 	ItemStack lechestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
 	ItemStack lleggings = new ItemStack(Material.LEATHER_LEGGINGS);
 	ItemStack lboots = new ItemStack(Material.LEATHER_BOOTS);
-	
+
 	shapedRecipe = new ShapedRecipe(lhelmet);
-	shapedRecipe.shape("www","w w");
+	shapedRecipe.shape("www", "w w");
 	shapedRecipe.setIngredient('w', mwool);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	shapedRecipe = new ShapedRecipe(lechestplate);
-	shapedRecipe.shape("w w","www","www");
+	shapedRecipe.shape("w w", "www", "www");
 	shapedRecipe.setIngredient('w', mwool);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	shapedRecipe = new ShapedRecipe(lleggings);
-	shapedRecipe.shape("www","w w","w w");
+	shapedRecipe.shape("www", "w w", "w w");
 	shapedRecipe.setIngredient('w', mwool);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	shapedRecipe = new ShapedRecipe(lboots);
-	shapedRecipe.shape("w w","w w");
+	shapedRecipe.shape("w w", "w w");
 	shapedRecipe.setIngredient('w', mwool);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	// Tarta sin huevo
 	MaterialData mmilkbucket = milkBucket.getData();
 	MaterialData sugar = new ItemStack(Material.SUGAR).getData();
 	MaterialData wheat = new ItemStack(Material.WHEAT).getData();
 	ItemStack cake = new ItemStack(Material.CAKE);
 	shapedRecipe = new ShapedRecipe(cake);
-	shapedRecipe.shape("mmm","sss","www");
+	shapedRecipe.shape("mmm", "sss", "www");
 	shapedRecipe.setIngredient('m', mmilkbucket);
 	shapedRecipe.setIngredient('s', sugar);
 	shapedRecipe.setIngredient('w', wheat);
 	Bukkit.getServer().addRecipe(shapedRecipe);
-	
+
 	// Pastel de calabaza sin huevo
 	MaterialData pumpkin = new ItemStack(Material.PUMPKIN).getData();
 	ItemStack pumpkinPie = new ItemStack(Material.PUMPKIN_PIE);
@@ -137,14 +137,28 @@ public class CraftingRecipes
 	shapelessRecipe.addIngredient(sugar);
 	shapelessRecipe.addIngredient(sugar);
 	Bukkit.getServer().addRecipe(shapelessRecipe);
-	
+
 	// Palos -> Item Frame
 	ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);
 	shapedRecipe = new ShapedRecipe(itemFrame);
-	shapedRecipe.shape("sss","sps","sss");
+	shapedRecipe.shape("sss", "sps", "sss");
 	shapedRecipe.setIngredient('s', stick);
 	shapedRecipe.setIngredient('p', paper);
 	Bukkit.getServer().addRecipe(shapedRecipe);
+
+	// Madera y heno -> Cama
+	ItemStack bed = new ItemStack(Material.BED);
+	MaterialData hay = new ItemStack(Material.HAY_BLOCK).getData();
+	MaterialData wood;
+	for (int i = 0; i < 6; i++) // Para agregar todos los tipos de madera
+	{
+	    wood = new ItemStack(Material.WOOD, 1, (short) i).getData();
+	    shapedRecipe = new ShapedRecipe(bed);
+	    shapedRecipe.shape("hhh", "www");
+	    shapedRecipe.setIngredient('h', hay);
+	    shapedRecipe.setIngredient('w', wood);
+	    Bukkit.getServer().addRecipe(shapedRecipe);
+	}
     }
     
 }
