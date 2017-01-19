@@ -64,17 +64,8 @@ public class CatTaming
 			myOcelot.setTarget(chicken);
 			if (myOcelot.getLocation().distance(player.getLocation()) < 1) // Si el gato esta cerca tuya se inicia la conversion en gato
 			{
-			    if (!player.getGameMode().equals(GameMode.CREATIVE))
-			    {
-				if (itemStack.getAmount() == 1)
-				{
-				    player.getInventory().setItemInMainHand(null);
-				}
-				else
-				{
-				    itemStack.setAmount(itemStack.getAmount() - 1);
-				}
-			    }
+			    quitOneItemFromHand(player);
+
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 1, false, true), true);
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, 2, false, false), true);
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2, false, false), true);
@@ -152,7 +143,7 @@ public class CatTaming
 	}
 	myOcelot.setTarget(null);
 	myOcelot.setOwner(owner);
-	World myWorld = owner.getWorld();
+	World myWorld = myOcelot.getWorld();
 	myWorld.playSound(myOcelot.getLocation(), Sound.ENTITY_CAT_AMBIENT, 1, 1);
 	Thread thread = new Thread(new Runnable()
 	{
@@ -168,9 +159,7 @@ public class CatTaming
 		    catch (InterruptedException ex)
 		    {
 		    }
-		    Location heartLocation = myOcelot.getLocation();
-		    heartLocation.setY(heartLocation.getY() + 1);
-		    myWorld.spawnParticle(Particle.HEART, heartLocation, 1, 0, 0, 0);
+		    myWorld.spawnParticle(Particle.HEART, myOcelot.getLocation().add(0, 1, 0), 1, 0, 0, 0);
 		}
 	    }
 	});
@@ -239,6 +228,22 @@ public class CatTaming
 	    {
 		Ocelot myOcelot = (Ocelot) entity;
 		myOcelot.setTarget(null);
+	    }
+	}
+    }
+
+    private void quitOneItemFromHand(Player player)
+    {
+	ItemStack itemStack = player.getInventory().getItemInMainHand();
+	if (!player.getGameMode().equals(GameMode.CREATIVE))
+	{
+	    if (itemStack.getAmount() == 1)
+	    {
+		player.getInventory().setItemInMainHand(null);
+	    }
+	    else
+	    {
+		itemStack.setAmount(itemStack.getAmount() - 1);
 	    }
 	}
     }

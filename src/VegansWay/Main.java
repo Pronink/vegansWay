@@ -29,6 +29,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,8 +37,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Pronink
  */
-// TODO: Alimentar a los perros con no-carne
-// TODO: Comprarme un macbook
+
+// TODO: Hacer que los perros y gatos se enamoren cuando los alimentas
 public class Main extends JavaPlugin implements Listener
 {
 
@@ -46,6 +47,7 @@ public class Main extends JavaPlugin implements Listener
     ItemRenaming itemRenaming;
     CraftingRecipes craftingRecipes;
     SpidersEnhanced spidersEnhanced;
+    FeedingPets feedingPets;
 
     @Override
     public void onEnable()
@@ -54,6 +56,7 @@ public class Main extends JavaPlugin implements Listener
 	itemRenaming = new ItemRenaming();
 	craftingRecipes = new CraftingRecipes();
 	spidersEnhanced = new SpidersEnhanced();
+	feedingPets = new FeedingPets();
 	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
 	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	startTimedEvents();
@@ -110,4 +113,12 @@ public class Main extends JavaPlugin implements Listener
     {
 	spidersEnhanced.addSpiderDrops(event);
     }
+
+    @EventHandler
+    public void onRightClick(PlayerInteractAtEntityEvent event)
+    {
+	feedingPets.testPetFeeding(event);
+    }
+
+    
 }
