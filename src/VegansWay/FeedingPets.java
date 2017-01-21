@@ -25,14 +25,11 @@ package VegansWay;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -41,7 +38,7 @@ import org.bukkit.inventory.ItemStack;
 public class FeedingPets
 {
 
-    private boolean nowFeeding = false; // Necessary because events executes two times
+    private boolean nowFeeding = false; // Necesario porque el evento se ejecuta dos veces
 
     public void testPetFeeding(PlayerInteractAtEntityEvent event)
     {
@@ -55,20 +52,18 @@ public class FeedingPets
 		    Wolf dog = (Wolf) event.getRightClicked();
 		    if (dog.isTamed())
 		    {
-			if (dog.getHealth() <= 17D)
+			double health = dog.getHealth();
+			if (health <= 17.0)
 			{
-			    dog.setHealth(dog.getHealth() + 3D);
-			    quitOneItemFromHand(event.getPlayer());
+			    dog.setHealth(dog.getHealth() + 3.0);
 			}
-			else
+			else if (health > 17.0 && health <= 20.0)
 			{
-			    if (dog.getHealth() > 17D)
-			    {
-				dog.setHealth(20D);
-				quitOneItemFromHand(event.getPlayer());
-			    }
-			    dog.getWorld().spawnParticle(Particle.HEART, dog.getLocation().add(0, 1, 0), 2, 0.5, 0.5, 0.5);
+			    dog.setHealth(20D);
+			    dog.getWorld().spawnParticle(Particle.HEART, dog.getLocation().add(0, 1, 0), 4, 0.4, 0.4, 0.4);
+			    // No se como hacer que se amen y procreen
 			}
+			Util.quitOneItemFromHand(event.getPlayer());
 		    }
 		}
 		else if (event.getRightClicked() instanceof Ocelot)
@@ -76,30 +71,28 @@ public class FeedingPets
 		    Ocelot cat = (Ocelot) event.getRightClicked();
 		    if (cat.isTamed())
 		    {
-			if (cat.getHealth() <= 8D)
+			double health = cat.getHealth();
+			if (health <= 7.0)
 			{
-			    cat.setHealth(cat.getHealth() + 2D);
-			    quitOneItemFromHand(event.getPlayer());
+			    cat.setHealth(cat.getHealth() + 3.0);
 			}
-			else
+			else if (health > 7.0 && health <= 10.0)
 			{
-			    if (cat.getHealth() > 8D)
-			    {
-				cat.setHealth(10D);
-				quitOneItemFromHand(event.getPlayer());
-			    }
-			    cat.getWorld().spawnParticle(Particle.HEART, cat.getLocation().add(0, 1, 0), 2, 0.5, 0.5, 0.5);
+			    cat.setHealth(10D);
+			    cat.getWorld().spawnParticle(Particle.HEART, cat.getLocation().add(0, 1, 0), 4, 0.4, 0.4, 0.4);
 			}
+			Util.quitOneItemFromHand(event.getPlayer());
 		    }
 		}
 	    }
 	}
     }
-    
+
     private void setTrueThenFalse()
     {
 	nowFeeding = true; // Set true
-	Thread thread = new Thread(new Runnable() {
+	Thread thread = new Thread(new Runnable()
+	{
 	    @Override
 	    public void run()
 	    {
@@ -150,19 +143,4 @@ public class FeedingPets
 	}
     }
 
-    private void quitOneItemFromHand(Player player)
-    {
-	ItemStack itemStack = player.getInventory().getItemInMainHand();
-	if (!player.getGameMode().equals(GameMode.CREATIVE))
-	{
-	    if (itemStack.getAmount() == 1)
-	    {
-		player.getInventory().setItemInMainHand(null);
-	    }
-	    else
-	    {
-		itemStack.setAmount(itemStack.getAmount() - 1);
-	    }
-	}
-    }
 }

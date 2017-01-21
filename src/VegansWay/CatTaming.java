@@ -25,7 +25,6 @@ package VegansWay;
 
 import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -64,7 +63,7 @@ public class CatTaming
 			myOcelot.setTarget(chicken);
 			if (myOcelot.getLocation().distance(player.getLocation()) < 1) // Si el gato esta cerca tuya se inicia la conversion en gato
 			{
-			    quitOneItemFromHand(player);
+			    Util.quitOneItemFromHand(player);
 
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 1, false, true), true);
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, 2, false, false), true);
@@ -228,22 +227,6 @@ public class CatTaming
 	    {
 		Ocelot myOcelot = (Ocelot) entity;
 		myOcelot.setTarget(null);
-	    }
-	}
-    }
-
-    private void quitOneItemFromHand(Player player)
-    {
-	ItemStack itemStack = player.getInventory().getItemInMainHand();
-	if (!player.getGameMode().equals(GameMode.CREATIVE))
-	{
-	    if (itemStack.getAmount() == 1)
-	    {
-		player.getInventory().setItemInMainHand(null);
-	    }
-	    else
-	    {
-		itemStack.setAmount(itemStack.getAmount() - 1);
 	    }
 	}
     }
