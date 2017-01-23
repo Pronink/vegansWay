@@ -52,6 +52,10 @@ public class Main extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
+	// INICIAR CONFIGURACIÓN
+	saveDefaultConfig(); // Nunca sobreescribe si ya existe algo
+	Config.load(getConfig());
+	// INICIAR MÓDULOS
 	catTaming = new CatTaming();
 	itemRenaming = new ItemRenaming();
 	craftingRecipes = new CraftingRecipes();

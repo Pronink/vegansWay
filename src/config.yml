@@ -1,0 +1,5 @@
+# You can change the name of these modified items. By default all names are in spanish.
+# Catnip is the plant that cats love. It overrides Pink Tulip Item.
+Catnip_Name: Nepeta Cataria
+# The new wool source: Cotton plant. It overrides Pink Azure Bluet Item.
+CottonPlant_Name: Planta de algodón
