@@ -24,6 +24,7 @@
 package VegansWay;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -47,5 +48,21 @@ public class Util
 		itemStack.setAmount(itemStack.getAmount() - 1);
 	    }
 	}
+    }
+    
+    public static Location getMiddlePoint(Location l1, Location l2)
+    {
+	int x1 = l1.getBlockX();
+	int x2 = l2.getBlockX();
+	int y1 = l1.getBlockY();
+	int y2 = l2.getBlockY();
+	int z1 = l1.getBlockZ();
+	int z2 = l2.getBlockZ();
+	
+	int x3 = (x1 + x2) / 2;
+	int y3 = (y1 + y2) / 2;
+	int z3 = (z1 + z2) / 2;
+	
+	return new Location(l1.getWorld(), x3, y3, z3);
     }
 }
