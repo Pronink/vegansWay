@@ -114,7 +114,7 @@ public class Main extends JavaPlugin implements Listener
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
 	spidersEnhanced.testSpiderWebAttack(event);
-	LovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
+	feedingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
     }
 
     @EventHandler

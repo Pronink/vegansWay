@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -149,6 +150,11 @@ public class FeedingPets
 	    default:
 		return false;
 	}
+    }
+
+    public void testNewDogOrCatBaby(Entity e1, Entity e2)
+    {
+	lovingPets.testNewDogOrCatBaby(e1, e2);
     }
 
 }

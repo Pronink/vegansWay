@@ -64,8 +64,8 @@ public class LovingPets
 	public int lovingTime;
 	public int breakTime;
     }
-    private static ArrayList<LovingDog> dogList;
-    private static ArrayList<LovingCat> catList;
+    private ArrayList<LovingDog> dogList;
+    private ArrayList<LovingCat> catList;
 
     public LovingPets()
     {
@@ -155,7 +155,7 @@ public class LovingPets
 	// TODO: Añadir lo mismo con el ocelot
     }
 
-    public static void testNewDogOrCatBaby(Entity e1, Entity e2)
+    public void testNewDogOrCatBaby(Entity e1, Entity e2)
     {
 	if (e1 instanceof Wolf && e2 instanceof Wolf)
 	{
