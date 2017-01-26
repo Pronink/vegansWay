@@ -27,8 +27,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.RegexState;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Wolf;
 
@@ -42,116 +45,92 @@ public class LovingPets
     private class LovingDog
     {
 
-	private Wolf entityDog;
-	private boolean lovingNow;
-	private boolean breakTime;
+	public Wolf entityDog;
+	public int lovingTime;
+	public int breakTime;
 
 	public LovingDog(Wolf entityDog)
 	{
 	    this.entityDog = entityDog;
-	}
-
-	public Wolf getEntityDog()
-	{
-	    return entityDog;
-	}
-
-	public void setEntityDog(Wolf entityDog)
-	{
-	    this.entityDog = entityDog;
-	}
-
-	public boolean isLovingNow()
-	{
-	    return lovingNow;
-	}
-
-	public void setLovingNow(boolean lovingNow)
-	{
-	    this.lovingNow = lovingNow;
-	}
-
-	public boolean isBreakTime()
-	{
-	    return breakTime;
-	}
-
-	public void setBreakTime(boolean breakTime)
-	{
-	    this.breakTime = breakTime;
-	}
-
-	public boolean isSitting()
-	{
-	    return entityDog.isSitting();
-	}
-
-	public UUID getUniqueId()
-	{
-	    return entityDog.getUniqueId();
+	    this.lovingTime = 10;
+	    this.breakTime = 0;
 	}
     }
 
     private class LovingCat
     {
 
-	private Ocelot entityCat;
-	private boolean lovingNow;
-	private boolean breakTime;
-
-	public LovingCat(Ocelot entityCat)
-	{
-	    this.entityCat = entityCat;
-	}
-
-	public Ocelot getEntityCat()
-	{
-	    return entityCat;
-	}
-
-	public void setEntityCat(Ocelot entityCat)
-	{
-	    this.entityCat = entityCat;
-	}
-
-	public boolean isLovingNow()
-	{
-	    return lovingNow;
-	}
-
-	public void setLovingNow(boolean lovingNow)
-	{
-	    this.lovingNow = lovingNow;
-	}
-
-	public boolean isBreakTime()
-	{
-	    return breakTime;
-	}
-
-	public void setBreakTime(boolean breakTime)
-	{
-	    this.breakTime = breakTime;
-	}
-
-	public boolean isSitting()
-	{
-	    return entityCat.isSitting();
-	}
-
-	public UUID getUniqueId()
-	{
-	    return entityCat.getUniqueId();
-	}
+	public Ocelot entityDog;
+	public int lovingTime;
+	public int breakTime;
     }
-
-    private ArrayList<LovingDog> dogList;
-    private ArrayList<LovingCat> catList;
+    private static ArrayList<LovingDog> dogList;
+    private static ArrayList<LovingCat> catList;
 
     public LovingPets()
     {
 	this.dogList = new ArrayList<>();
 	this.catList = new ArrayList<>();
+	startListThread();
+    }
+
+    private void startListThread()
+    {
+	Thread thread = new Thread(new Runnable()
+	{
+	    @Override
+	    public void run()
+	    {
+		while (true)
+		{
+		    for (LovingDog ld : dogList)
+		    {
+			if (ld.lovingTime > 0)
+			{
+			    ld.lovingTime--;
+			    ld.entityDog.getWorld().spawnParticle(Particle.HEART, ld.entityDog.getLocation().add(0, 1, 0), 1, 0, 0, 0);
+			}
+			if (ld.breakTime > 0)
+			{
+			    ld.breakTime--;
+			}
+			if (ld.lovingTime > 0 && ld.breakTime == 0) // Si el perro puede amar...
+			{
+			    for (LovingDog ld2 : dogList) // ... busca mas perros en la lista
+			    {
+				if (ld.entityDog.getUniqueId().compareTo(ld2.entityDog.getUniqueId()) != 0) // Si no son el mismo perro
+				{
+				    if (ld2.lovingTime > 0 && ld2.breakTime == 0) // Si el segundo perro puede amar
+				    {
+					if (ld.entityDog.getLocation().distance(ld2.entityDog.getLocation()) < 5) // Si estan a menos de 5 metros
+					{
+					    ld.lovingTime = 0;
+					    ld2.lovingTime = 0;
+					    ld.breakTime = 10;
+					    ld2.breakTime = 10;
+					    ld.entityDog.setTarget(ld2.entityDog); // Ahora solo tengo que esperar a que los perros se peguen y ...
+					    //ld2.entityDog.setTarget(ld.entityDog); // ... lancen el evento que los hagan tener una cria. Luego los target desaparecen
+					    Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Hay 2 perros que se aman " + ChatColor.RED + "<3");
+					}
+				    }
+				}
+			    }
+			}
+		    }
+		    // TODO: Hacer lo mismo con la lista de Ocelotes
+		    try
+		    {
+			Thread.sleep(1000);
+		    }
+		    catch (InterruptedException ex)
+		    {
+			Logger.getLogger(LovingPets.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+		}
+	    }
+	});
+	thread.start();
+
     }
 
     public void addPet(Entity entity)
@@ -164,79 +143,45 @@ public class LovingPets
 		UUID uuidDog = myDog.getUniqueId();
 		for (LovingDog ld : dogList)
 		{
-		    if (uuidDog.compareTo(ld.getUniqueId()) == 0)
+		    if (uuidDog.compareTo(ld.entityDog.getUniqueId()) == 0)
 		    {
-			return; // Si lo encuentro en la lista, significa que ya esta amando
+			ld.lovingTime = 10; // Si lo encuentro en la lista, reinicio el contador de amar a 10
+			return;
 		    }
-		}
-		tryDogLoving(myDog);
+		} // Si no lo encuentro en la lista, lo agrego
+		dogList.add(new LovingDog(myDog));
 	    }
 	}
-	else if (entity instanceof Ocelot)
+	// TODO: Añadir lo mismo con el ocelot
+    }
+
+    public static void testNewDogOrCatBaby(Entity e1, Entity e2)
+    {
+	if (e1 instanceof Wolf && e2 instanceof Wolf)
 	{
-	    Ocelot myCat = (Ocelot) entity;
-	    if (myCat.isTamed())
+	    Wolf dog1 = (Wolf) e1;
+	    Wolf dog2 = (Wolf) e2;
+	    if (dog1.isTamed() && dog2.isTamed())
 	    {
-		UUID uuidCat = myCat.getUniqueId();
-		for (LovingCat lc : catList)
-		{
-		    if (uuidCat.compareTo(lc.getUniqueId()) == 0)
-		    {
-			return; // Si lo encuentro en la lista, significa que ya esta amando
-		    }
-		}
-		tryCatLoving(myCat);
+		Wolf dogBaby = (Wolf) dog1.getWorld().spawnEntity(Util.getMiddlePoint(dog1.getLocation(), dog2.getLocation()), EntityType.WOLF);
+		dogBaby.setBaby();
+		dogBaby.setTamed(true);
+		dogBaby.setOwner(dog1.getOwner());
+		// Ahora como por alguna razón no puedo quitarle los targets a los antiguos perros, pues creo 2 nuevos y mato a los viejos
+		Wolf dogNew1 = (Wolf) dog1.getWorld().spawnEntity(dog1.getLocation(), EntityType.WOLF);
+		Wolf dogNew2 = (Wolf) dog2.getWorld().spawnEntity(dog2.getLocation(), EntityType.WOLF);
+		dogNew1.setTamed(true);
+		dogNew1.setOwner(dog1.getOwner());
+		dogNew1.setHealth(20);
+		dogNew1.setVelocity(dog1.getVelocity());
+		dogNew2.setTamed(true);
+		dogNew2.setOwner(dog2.getOwner());
+		dogNew2.setHealth(20);
+		dogNew2.setVelocity(dog2.getVelocity());
+		
+		dog1.remove();
+		dog2.remove();
 	    }
 	}
     }
-
-    /* Los métodos try[Dog/Cat]Loving agregan una entidad a su lista durante 10 segundos y compara a miembros de
-    su lista cada segundo. Solo entran los miembros que ya no existan dentro de la lista */
-    private void tryDogLoving(Wolf myDog)
-    {
-	Thread thread = new Thread(new Runnable()
-	{
-	    @Override
-	    public void run()
-	    {
-		try
-		{
-		    int SEARCHING = 0, LOVING = 1, FINAL = 2;
-		    int state = SEARCHING;
-		    while (state != FINAL)
-		    {
-			if (state == SEARCHING)
-			{
-			    // WIP
-			    // TODO: Buscar perros cerca y si existe pasar al estado LOVING
-			}
-			if (state == LOVING)
-			{
-			    // TODO: Si estan suficientemente cerca, generar un perrito y pasar el estado a FINAL
-			}
-			Thread.sleep(1000);
-		    }
-		}
-		catch (InterruptedException ex)
-		{
-		    Logger.getLogger(LovingPets.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	    }
-	});
-	thread.start();
-    }
-
-    private void tryCatLoving(Ocelot myCat)
-    {
-	Thread thread = new Thread(new Runnable()
-	{
-	    @Override
-	    public void run()
-	    {
-		// TODO: Copiar de tryDogLoving pero con el gato
-	    }
-	});
-	thread.start();
-    }
-
 }

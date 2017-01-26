@@ -39,7 +39,14 @@ public class FeedingPets
 {
 
     private boolean nowFeeding = false; // Necesario porque el evento se ejecuta dos veces
+    private LovingPets lovingPets;
+    
+    public FeedingPets()
+    {
+	lovingPets = new LovingPets();
+    }
 
+    
     public void testPetFeeding(PlayerInteractAtEntityEvent event)
     {
 	if (!nowFeeding)
@@ -62,6 +69,7 @@ public class FeedingPets
 			    dog.setHealth(20D);
 			    dog.getWorld().spawnParticle(Particle.HEART, dog.getLocation().add(0, 1, 0), 4, 0.4, 0.4, 0.4);
 			    // No se como hacer que se amen y procreen
+			    lovingPets.addPet(dog);
 			}
 			Util.quitOneItemFromHand(event.getPlayer());
 		    }

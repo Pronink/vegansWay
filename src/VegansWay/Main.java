@@ -24,6 +24,9 @@
 package VegansWay;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -82,6 +85,7 @@ public class Main extends JavaPlugin implements Listener
 		if (state % 6 == 0) // CADA 3 SEGUNDOS
 		{
 		    catTaming.removeInvulnerableChickens();
+		    //Wolf dogBaby = (Wolf)Bukkit.getWorlds().get(0).spawnEntity(new Location(Bukkit.getWorlds().get(0), 80, 80, 80), EntityType.WOLF);
 		}
 	    }
 	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
@@ -110,6 +114,7 @@ public class Main extends JavaPlugin implements Listener
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
 	spidersEnhanced.testSpiderWebAttack(event);
+	LovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
     }
 
     @EventHandler
