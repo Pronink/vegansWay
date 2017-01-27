@@ -59,10 +59,16 @@ public class LovingPets
 
     private class LovingCat
     {
-
-	public Ocelot entityDog;
+	public Ocelot entityCat;
 	public int lovingTime;
 	public int breakTime;
+	
+	public LovingCat(Ocelot entityCat)
+	{
+	    this.entityCat = entityCat;
+	    this.lovingTime = 10;
+	    this.breakTime = 0;
+	}
     }
     private ArrayList<LovingDog> dogList;
     private ArrayList<LovingCat> catList;
@@ -98,19 +104,22 @@ public class LovingPets
 			{
 			    for (LovingDog ld2 : dogList) // ... busca mas perros en la lista
 			    {
-				if (ld.entityDog.getUniqueId().compareTo(ld2.entityDog.getUniqueId()) != 0) // Si no son el mismo perro
+				if (ld2.lovingTime > 0 && ld2.breakTime == 0) // Si el segundo perro puede amar...
 				{
-				    if (ld2.lovingTime > 0 && ld2.breakTime == 0) // Si el segundo perro puede amar
+				    if (ld.entityDog.getUniqueId().compareTo(ld2.entityDog.getUniqueId()) != 0) // Si no son el mismo perro
 				    {
-					if (ld.entityDog.getLocation().distance(ld2.entityDog.getLocation()) < 5) // Si estan a menos de 5 metros
+					if (ld.entityDog.getLocation().distance(ld2.entityDog.getLocation()) < 10) // Si estan a menos de 10 metros
 					{
-					    ld.lovingTime = 0;
-					    ld2.lovingTime = 0;
-					    ld.breakTime = 10;
-					    ld2.breakTime = 10;
-					    ld.entityDog.setTarget(ld2.entityDog); // Ahora solo tengo que esperar a que los perros se peguen y ...
-					    //ld2.entityDog.setTarget(ld.entityDog); // ... lancen el evento que los hagan tener una cria. Luego los target desaparecen
-					    Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Hay 2 perros que se aman " + ChatColor.RED + "<3");
+					    if (!ld.entityDog.isSitting() || !ld2.entityDog.isSitting()) // Si alguno de los dos esta de pie
+					    {
+						ld.lovingTime = 0;
+						ld2.lovingTime = 0;
+						ld.breakTime = 60;
+						ld2.breakTime = 60;
+						ld.entityDog.setTarget(ld2.entityDog); // Ahora solo tengo que esperar a que los perros se peguen y ...
+						ld2.entityDog.setTarget(ld.entityDog); // ... lancen el evento que los hagan tener una cria. Luego los target desaparecen
+						Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Hay 2 perros que se aman " + ChatColor.RED + "<3");
+					    }
 					}
 				    }
 				}
@@ -161,7 +170,7 @@ public class LovingPets
 	{
 	    Wolf dog1 = (Wolf) e1;
 	    Wolf dog2 = (Wolf) e2;
-	    if (dog1.isTamed() && dog2.isTamed())
+	    if (dog1.isTamed() && dog2.isTamed()) // Aqui creo que deberia de hacer una busqueda en la lista. Porque si no en cuanto dos perros se peguen, crian
 	    {
 		Wolf dogBaby = (Wolf) dog1.getWorld().spawnEntity(Util.getMiddlePoint(dog1.getLocation(), dog2.getLocation()), EntityType.WOLF);
 		dogBaby.setBaby();
@@ -178,10 +187,11 @@ public class LovingPets
 		dogNew2.setOwner(dog2.getOwner());
 		dogNew2.setHealth(20);
 		dogNew2.setVelocity(dog2.getVelocity());
-		
+
 		dog1.remove();
 		dog2.remove();
 	    }
 	}
+	// TODO: Añadir lo mismo con el ocelot
     }
 }
