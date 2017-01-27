@@ -1,3 +1,5 @@
 /dist/
 /build/
-/nbproject/private/
+/nbproject
+/build.xml
+/manifest.mf
