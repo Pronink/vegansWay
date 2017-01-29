@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -42,9 +41,9 @@ public class FeedingPets
     private boolean nowFeeding = false; // Necesario porque el evento se ejecuta dos veces
     private LovingPets lovingPets;
     
-    public FeedingPets()
+    public FeedingPets(LovingPets lovingPets)
     {
-	lovingPets = new LovingPets();
+	this.lovingPets = lovingPets;
     }
 
     
@@ -69,7 +68,6 @@ public class FeedingPets
 			{
 			    dog.setHealth(20D);
 			    dog.getWorld().spawnParticle(Particle.HEART, dog.getLocation().add(0, 1, 0), 4, 0.4, 0.4, 0.4);
-			    // No se como hacer que se amen y procreen
 			    lovingPets.addPet(dog);
 			}
 			Util.quitOneItemFromHand(event.getPlayer());
@@ -91,6 +89,7 @@ public class FeedingPets
 			    cat.getWorld().spawnParticle(Particle.HEART, cat.getLocation().add(0, 1, 0), 4, 0.4, 0.4, 0.4);
 			}
 			Util.quitOneItemFromHand(event.getPlayer());
+			// TODO: lovingPets.addPet(cat);
 		    }
 		}
 	    }
@@ -150,11 +149,6 @@ public class FeedingPets
 	    default:
 		return false;
 	}
-    }
-
-    public void testNewDogOrCatBaby(Entity e1, Entity e2)
-    {
-	lovingPets.testNewDogOrCatBaby(e1, e2);
     }
 
 }

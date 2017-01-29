@@ -23,7 +23,6 @@
  */
 package VegansWay;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.event.entity.ItemSpawnEvent;

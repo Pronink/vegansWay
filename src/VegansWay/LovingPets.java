@@ -25,10 +25,6 @@ package VegansWay;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -59,10 +55,11 @@ public class LovingPets
 
     private class LovingCat
     {
+
 	public Ocelot entityCat;
 	public int lovingTime;
 	public int breakTime;
-	
+
 	public LovingCat(Ocelot entityCat)
 	{
 	    this.entityCat = entityCat;
@@ -77,78 +74,59 @@ public class LovingPets
     {
 	this.dogList = new ArrayList<>();
 	this.catList = new ArrayList<>();
-	startListThread();
     }
 
-    private void startListThread()
+    public void testLovingPets()
     {
-	Thread thread = new Thread(new Runnable()
+	for (LovingDog ld : dogList)
 	{
-	    @Override
-	    public void run()
+	    if (ld.lovingTime > 0)
 	    {
-		while (true)
+		ld.lovingTime--;
+	    }
+	    if (ld.breakTime > 0)
+	    {
+		ld.breakTime--;
+	    }
+	    if (ld.lovingTime > 0 && ld.breakTime == 0)
+	    {
+		ld.entityDog.getWorld().spawnParticle(Particle.HEART, ld.entityDog.getLocation().add(0, 1, 0), 1, 0, 0, 0);
+	    }
+	    if (ld.lovingTime > 0 && ld.breakTime > 0)
+	    {
+		ld.entityDog.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, ld.entityDog.getLocation().add(0, 1, 0), 1, 0, 0, 0);
+	    }
+	    if (ld.lovingTime > 0 && ld.breakTime == 0) // Si el perro puede amar...
+	    {
+		for (LovingDog ld2 : dogList) // ... busca mas perros en la lista
 		{
-		    for (LovingDog ld : dogList)
+		    if (ld2.lovingTime > 0 && ld2.breakTime == 0) // Si el segundo perro puede amar...
 		    {
-			if (ld.lovingTime > 0)
+			if (ld.entityDog.getUniqueId().compareTo(ld2.entityDog.getUniqueId()) != 0) // Si no son el mismo perro
 			{
-			    ld.lovingTime--;
-			    ld.entityDog.getWorld().spawnParticle(Particle.HEART, ld.entityDog.getLocation().add(0, 1, 0), 1, 0, 0, 0);
-			}
-			if (ld.breakTime > 0)
-			{
-			    ld.breakTime--;
-			}
-			if (ld.lovingTime > 0 && ld.breakTime == 0) // Si el perro puede amar...
-			{
-			    for (LovingDog ld2 : dogList) // ... busca mas perros en la lista
+			    if (ld.entityDog.getLocation().distance(ld2.entityDog.getLocation()) < 10) // Si estan a menos de 10 metros
 			    {
-				if (ld2.lovingTime > 0 && ld2.breakTime == 0) // Si el segundo perro puede amar...
+				if (!ld.entityDog.isSitting() || !ld2.entityDog.isSitting()) // Si alguno de los dos esta de pie
 				{
-				    if (ld.entityDog.getUniqueId().compareTo(ld2.entityDog.getUniqueId()) != 0) // Si no son el mismo perro
-				    {
-					if (ld.entityDog.getLocation().distance(ld2.entityDog.getLocation()) < 10) // Si estan a menos de 10 metros
-					{
-					    if (!ld.entityDog.isSitting() || !ld2.entityDog.isSitting()) // Si alguno de los dos esta de pie
-					    {
-						ld.lovingTime = 0;
-						ld2.lovingTime = 0;
-						ld.breakTime = 60;
-						ld2.breakTime = 60;
-						ld.entityDog.setTarget(ld2.entityDog); // Ahora solo tengo que esperar a que los perros se peguen y ...
-						ld2.entityDog.setTarget(ld.entityDog); // ... lancen el evento que los hagan tener una cria. Luego los target desaparecen
-						Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Hay 2 perros que se aman " + ChatColor.RED + "<3");
-					    }
-					}
-				    }
+				    ld.entityDog.setTarget(ld2.entityDog); // Ahora solo tengo que esperar a que los perros se peguen y ...
+				    ld2.entityDog.setTarget(ld.entityDog); // ... lancen el evento que los hagan tener una cria. Luego los target desaparecen
+				    //Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Hay 2 perros que se aman " + ChatColor.RED + "<3");
 				}
 			    }
 			}
 		    }
-		    // TODO: Hacer lo mismo con la lista de Ocelotes
-		    
-		    try
-		    {
-			Thread.sleep(1000);
-		    }
-		    catch (InterruptedException ex)
-		    {
-			Logger.getLogger(LovingPets.class.getName()).log(Level.SEVERE, null, ex);
-		    }
 		}
 	    }
-	});
-	thread.start();
-
+	}
+	// TODO: Hacer lo mismo con la lista de Ocelotes
     }
 
-    public void addPet(Entity entity)
+    public void addPet(Entity entity) // Llamado desde FeedingPets
     {
 	if (entity instanceof Wolf)
 	{
 	    Wolf myDog = (Wolf) entity;
-	    if (myDog.isTamed())
+	    if (myDog.isTamed() && myDog.isAdult())
 	    {
 		UUID uuidDog = myDog.getUniqueId();
 		for (LovingDog ld : dogList)
@@ -165,32 +143,66 @@ public class LovingPets
 	// TODO: Añadir lo mismo con el ocelot
     }
 
-    public void testNewDogOrCatBaby(Entity e1, Entity e2)
+    public void testNewDogOrCatBaby(Entity e1, Entity e2) // Llamado desde el main cada vez que dos pets se pegan (target)
     {
 	if (e1 instanceof Wolf && e2 instanceof Wolf)
 	{
 	    Wolf dog1 = (Wolf) e1;
 	    Wolf dog2 = (Wolf) e2;
-	    if (dog1.isTamed() && dog2.isTamed()) // Aqui creo que deberia de hacer una busqueda en la lista. Porque si no en cuanto dos perros se peguen, crian
+	    if (dog1.isTamed() && dog2.isTamed() && dog1.isAdult() && dog2.isAdult())
 	    {
-		Wolf dogBaby = (Wolf) dog1.getWorld().spawnEntity(Util.getMiddlePoint(dog1.getLocation(), dog2.getLocation()), EntityType.WOLF);
-		dogBaby.setBaby();
-		dogBaby.setTamed(true);
-		dogBaby.setOwner(dog1.getOwner());
-		// Ahora como por alguna razón no puedo quitarle los targets a los antiguos perros, pues creo 2 nuevos y mato a los viejos
-		Wolf dogNew1 = (Wolf) dog1.getWorld().spawnEntity(dog1.getLocation(), EntityType.WOLF);
-		Wolf dogNew2 = (Wolf) dog2.getWorld().spawnEntity(dog2.getLocation(), EntityType.WOLF);
-		dogNew1.setTamed(true);
-		dogNew1.setOwner(dog1.getOwner());
-		dogNew1.setHealth(20);
-		dogNew1.setVelocity(dog1.getVelocity());
-		dogNew2.setTamed(true);
-		dogNew2.setOwner(dog2.getOwner());
-		dogNew2.setHealth(20);
-		dogNew2.setVelocity(dog2.getVelocity());
+		boolean dog1exists = false, dog2exists = false;
+		LovingDog lovingDog1 = null;
+		LovingDog lovingDog2 = null;
+		for (LovingDog ld : dogList) // Puede que tenga que cambiarlo al tradicional (POSIBLE BUG) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		{
+		    if (dog1.getUniqueId().compareTo(ld.entityDog.getUniqueId()) == 0)
+		    {
+			dog1exists = true;
+			lovingDog1 = ld;
+		    }
+		    if (dog2.getUniqueId().compareTo(ld.entityDog.getUniqueId()) == 0)
+		    {
+			dog2exists = true;
+			lovingDog2 = ld;
+		    }
+		}
+		if (dog1exists && dog2exists)
+		{
+		    if (lovingDog1.breakTime == 0 && lovingDog2.breakTime == 0)
+		    {
+			Wolf dogBaby = (Wolf) dog1.getWorld().spawnEntity(Util.getMiddlePoint(dog1.getLocation(), dog2.getLocation()), EntityType.WOLF);
+			dogBaby.setBaby();
+			dogBaby.setTamed(true);
+			dogBaby.setOwner(dog1.getOwner());
 
-		dog1.remove();
-		dog2.remove();
+			Wolf dogNew1 = (Wolf) dog1.getWorld().spawnEntity(dog1.getLocation(), EntityType.WOLF);
+			Wolf dogNew2 = (Wolf) dog2.getWorld().spawnEntity(dog2.getLocation(), EntityType.WOLF);
+			dogNew1.setTamed(true);
+			dogNew1.setOwner(dog1.getOwner());
+			dogNew1.setCustomName(dog1.getCustomName());
+			dogNew1.setCustomNameVisible(dog1.isCustomNameVisible());
+			dogNew1.setHealth(20);
+			dogNew1.setVelocity(dog1.getVelocity());
+			dogNew2.setTamed(true);
+			dogNew2.setOwner(dog2.getOwner());
+			dogNew2.setCustomName(dog2.getCustomName());
+			dogNew2.setCustomNameVisible(dog2.isCustomNameVisible());
+			dogNew2.setHealth(20);
+			dogNew2.setVelocity(dog2.getVelocity());
+
+			lovingDog1.entityDog = dogNew1;
+			lovingDog2.entityDog = dogNew2;
+			lovingDog1.lovingTime = 0;
+			lovingDog2.lovingTime = 0;
+			lovingDog1.breakTime = 60;
+			lovingDog2.breakTime = 60;
+
+			dog1.remove();
+			dog2.remove();
+		    }
+		}
+
 	    }
 	}
 	// TODO: Añadir lo mismo con el ocelot

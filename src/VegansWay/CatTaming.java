@@ -46,7 +46,7 @@ import org.bukkit.potion.PotionEffectType;
 public class CatTaming
 {
 
-    public void testOcelotFeeding()
+    public void testOcelotTaming()
     {
 	for (Player player : Bukkit.getOnlinePlayers())
 	{

@@ -24,9 +24,6 @@
 package VegansWay;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -50,6 +47,7 @@ public class Main extends JavaPlugin implements Listener
     ItemRenaming itemRenaming;
     CraftingRecipes craftingRecipes;
     SpidersEnhanced spidersEnhanced;
+    LovingPets lovingPets;
     FeedingPets feedingPets;
 
     @Override
@@ -63,7 +61,8 @@ public class Main extends JavaPlugin implements Listener
 	itemRenaming = new ItemRenaming();
 	craftingRecipes = new CraftingRecipes();
 	spidersEnhanced = new SpidersEnhanced();
-	feedingPets = new FeedingPets();
+	lovingPets = new LovingPets();
+	feedingPets = new FeedingPets(lovingPets);
 	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
 	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	startTimedEvents();
@@ -78,14 +77,14 @@ public class Main extends JavaPlugin implements Listener
 	    public void run() // Añadir aqui los eventos que se ejecutaran cada segundo
 	    {
 		state = ++state % 120; // EL CICLO DURA 60 SEGUNDOS
-		if (state % 1 == 0) // CADA 0.5 SEGUNDOS
+		if (state % 2 == 0) // CADA 1 SEGUNDOS
 		{
-		    catTaming.testOcelotFeeding();
+		    catTaming.testOcelotTaming();
+		    lovingPets.testLovingPets();
 		}
 		if (state % 6 == 0) // CADA 3 SEGUNDOS
 		{
 		    catTaming.removeInvulnerableChickens();
-		    //Wolf dogBaby = (Wolf)Bukkit.getWorlds().get(0).spawnEntity(new Location(Bukkit.getWorlds().get(0), 80, 80, 80), EntityType.WOLF);
 		}
 	    }
 	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
@@ -114,7 +113,7 @@ public class Main extends JavaPlugin implements Listener
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
 	spidersEnhanced.testSpiderWebAttack(event);
-	feedingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
+	lovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
     }
 
     @EventHandler
