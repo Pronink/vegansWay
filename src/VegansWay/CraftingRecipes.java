@@ -138,7 +138,7 @@ public class CraftingRecipes
 	shapelessRecipe.addIngredient(sugar);
 	Bukkit.getServer().addRecipe(shapelessRecipe);
 
-	// Palos -> Item Frame
+	// Palos y Papel -> Item Frame
 	ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);
 	shapedRecipe = new ShapedRecipe(itemFrame);
 	shapedRecipe.shape("sss", "sps", "sss");
