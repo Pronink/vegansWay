@@ -7,6 +7,7 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 TODO:
 - Make plugin more configurable
+- Colored clothes
 - Testing more bugs
 
 ##Main features:
