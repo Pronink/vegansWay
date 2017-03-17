@@ -7,7 +7,6 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 TODO:
 - Make plugin more configurable
-- Colored clothes
 - Testing more bugs
 
 ## Main features:
@@ -16,11 +15,11 @@ TODO:
 
 ![](http://i.imgur.com/A5DfVfR.png) ![](http://i.imgur.com/kOjOy5e.png) ![](http://i.imgur.com/1PgNS9M.png)
 
-![](http://i.imgur.com/Snqh8Mi.png) ![](http://i.imgur.com/dNUFBl2.png) ![](http://i.imgur.com/h7o8XZh.png)
+![](http://i.imgur.com/Qa9eojD.png) ![](http://i.imgur.com/ZNxZ17s.png) ![](http://i.imgur.com/lNOLOWX.png)
 
-![](http://i.imgur.com/7PwkClt.png) ![](http://i.imgur.com/Qa9eojD.png) ![](http://i.imgur.com/ZNxZ17s.png)
+![](http://i.imgur.com/MHbgf8G.png) ![](http://i.imgur.com/dYcbEdv.png) ![](http://i.imgur.com/3hfQ6Gi.png)
 
-![](http://i.imgur.com/lNOLOWX.png) ![](http://i.imgur.com/MHbgf8G.png) 
+![](http://i.imgur.com/7XhLZGl.png) ![](http://i.imgur.com/m4WKtM9.png) ![](http://i.imgur.com/2xI00jm.png)
 
 ### ❱❱❱ New ways to breed and grow pets
 You can heal dogs and cats with any type of food. 
