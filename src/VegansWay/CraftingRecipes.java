@@ -23,11 +23,17 @@
  */
 package VegansWay;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -91,32 +97,43 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapelessRecipe);
 
 	// Lana/Algodon -> Armadura de cuero
-	MaterialData mwool = wool.getData();
-	ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET);
-	ItemStack lechestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-	ItemStack lleggings = new ItemStack(Material.LEATHER_LEGGINGS);
-	ItemStack lboots = new ItemStack(Material.LEATHER_BOOTS);
+	Color[] colorList =
+	{
+	    Color.fromRGB(0xDDDDDD), Color.fromRGB(0xDB7D3E), Color.fromRGB(0xB350BC), Color.fromRGB(0x6B8AC9), Color.fromRGB(0xB1A627), Color.fromRGB(0x41AE38), Color.fromRGB(0xD08499), Color.fromRGB(0x404040), Color.fromRGB(0x9AA1A1), Color.fromRGB(0x2E6E89), Color.fromRGB(0x7E3DB5), Color.fromRGB(0x2E388D), Color.fromRGB(0x4F321F), Color.fromRGB(0x35461B), Color.fromRGB(0x963430), Color.fromRGB(0x191616)
+	};
+	for (int i = 0; i < 16; i++)
+	{
+	    // Crear lana dependiendo de i (i es el numero de color de la lana)
+	    ItemStack coloredWool = new ItemStack(Material.WOOL, 1, (byte) i);
+	    MaterialData mwool = coloredWool.getData();
 
-	shapedRecipe = new ShapedRecipe(lhelmet);
-	shapedRecipe.shape("www", "w w");
-	shapedRecipe.setIngredient('w', mwool);
-	Bukkit.getServer().addRecipe(shapedRecipe);
+	    // Crear armadura dependiendo de i (i corresponde a la lista creada arriba)
+	    ItemStack lhelmet = changeLeatherColor(new ItemStack(Material.LEATHER_HELMET), colorList[i]);
+	    ItemStack lchestplate = changeLeatherColor(new ItemStack(Material.LEATHER_CHESTPLATE), colorList[i]);
+	    ItemStack lleggings = changeLeatherColor(new ItemStack(Material.LEATHER_LEGGINGS), colorList[i]);
+	    ItemStack lboots = changeLeatherColor(new ItemStack(Material.LEATHER_BOOTS), colorList[i]);
 
-	shapedRecipe = new ShapedRecipe(lechestplate);
-	shapedRecipe.shape("w w", "www", "www");
-	shapedRecipe.setIngredient('w', mwool);
-	Bukkit.getServer().addRecipe(shapedRecipe);
+	    shapedRecipe = new ShapedRecipe(lhelmet);
+	    shapedRecipe.shape("www", "w w");
+	    shapedRecipe.setIngredient('w', mwool);
+	    Bukkit.getServer().addRecipe(shapedRecipe);
 
-	shapedRecipe = new ShapedRecipe(lleggings);
-	shapedRecipe.shape("www", "w w", "w w");
-	shapedRecipe.setIngredient('w', mwool);
-	Bukkit.getServer().addRecipe(shapedRecipe);
+	    shapedRecipe = new ShapedRecipe(lchestplate);
+	    shapedRecipe.shape("w w", "www", "www");
+	    shapedRecipe.setIngredient('w', mwool);
+	    Bukkit.getServer().addRecipe(shapedRecipe);
 
-	shapedRecipe = new ShapedRecipe(lboots);
-	shapedRecipe.shape("w w", "w w");
-	shapedRecipe.setIngredient('w', mwool);
-	Bukkit.getServer().addRecipe(shapedRecipe);
+	    shapedRecipe = new ShapedRecipe(lleggings);
+	    shapedRecipe.shape("www", "w w", "w w");
+	    shapedRecipe.setIngredient('w', mwool);
+	    Bukkit.getServer().addRecipe(shapedRecipe);
 
+	    shapedRecipe = new ShapedRecipe(lboots);
+	    shapedRecipe.shape("w w", "w w");
+	    shapedRecipe.setIngredient('w', mwool);
+	    Bukkit.getServer().addRecipe(shapedRecipe);
+	}
+	
 	// Tarta sin huevo
 	MaterialData mmilkbucket = milkBucket.getData();
 	MaterialData sugar = new ItemStack(Material.SUGAR).getData();
@@ -160,5 +177,12 @@ public class CraftingRecipes
 	    Bukkit.getServer().addRecipe(shapedRecipe);
 	}
     }
-    
+    private ItemStack changeLeatherColor(ItemStack armor, Color color)
+    {
+	LeatherArmorMeta lam = (LeatherArmorMeta) armor.getItemMeta();
+	lam.setColor(color);
+	armor.setItemMeta(lam);
+	return armor;
+    }
+
 }
