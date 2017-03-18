@@ -5,9 +5,9 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 ## Download links:
 **Not yet**
 
-TODO:
+TO-DO:
 - Make plugin more configurable
-- Testing more bugs
+- Test
 
 ## Main features:
 ### ❱❱❱ New crafting recipes
@@ -26,9 +26,9 @@ You can heal dogs and cats with any type of food.
 If pets has a full life, two adult pets can have a child.
 
 ![](http://i.imgur.com/TMffFG9.png)
-### ❱❱❱ New way to pet ocelotes
-You do not need more fish to tame a cat !
-Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand, all ocelots and cats will want to be with you.
+### ❱❱❱ New way to tame ocelotes
+You don't need more fish to tame a ocelot !
+Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand, all ocelots and cats will want to be with you!
 
 ![](http://i.imgur.com/IVeAG2e.png)
 
