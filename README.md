@@ -17,9 +17,9 @@ TODO:
 
 ![](http://i.imgur.com/Qa9eojD.png) ![](http://i.imgur.com/ZNxZ17s.png) ![](http://i.imgur.com/lNOLOWX.png)
 
-![](http://i.imgur.com/MHbgf8G.png) ![](http://i.imgur.com/dYcbEdv.png) ![](http://i.imgur.com/3hfQ6Gi.png)
+![](http://i.imgur.com/MHbgf8G.png) ![](http://i.imgur.com/dYcbEdv.png) ![](http://i.imgur.com/ApKsfj2.png)
 
-![](http://i.imgur.com/7XhLZGl.png) ![](http://i.imgur.com/m4WKtM9.png) ![](http://i.imgur.com/2xI00jm.png)
+![](http://i.imgur.com/kAS0gvU.png) ![](http://i.imgur.com/ZDGPiYK.png) ![](http://i.imgur.com/2xI00jm.png)
 
 ### ❱❱❱ New ways to breed and grow pets
 You can heal dogs and cats with any type of food. 
