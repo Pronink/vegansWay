@@ -31,12 +31,23 @@ import org.bukkit.configuration.Configuration;
  */
 public class Config
 {
-    public static String catnip_name;
-    public static String cottonPlant_name;
+    public static boolean CONFIG_MODULE_CRAFTING_RECIPES;
+    public static boolean CONFIG_MODULE_HEALING_AND_TAMING;
+    public static boolean CONFIG_MODULE_SPIDERS_ENHANCED;
+    public static boolean CONFIG_MODULE_ITEMS_RENAMING;
+    public static String CONFIG_CATNIP_NAME;
+    public static String CONFIG_COTTONPLANT_NAME;
+    public static boolean CONFIG_SHOWLOGO;
     
     public static void load(Configuration c)
     {
-	catnip_name = c.getString("Catnip_Name");
-	cottonPlant_name = c.getString("CottonPlant_Name");
+	CONFIG_MODULE_CRAFTING_RECIPES = c.getBoolean("Crafting_Recipes");
+	CONFIG_MODULE_HEALING_AND_TAMING = c.getBoolean("Healing_And_Taming");
+	CONFIG_MODULE_SPIDERS_ENHANCED = c.getBoolean("Spiders_Enhanced");
+	CONFIG_MODULE_ITEMS_RENAMING = c.getBoolean("Items_Renaming");
+	CONFIG_CATNIP_NAME = c.getString("Catnip_Name");
+	CONFIG_COTTONPLANT_NAME = c.getString("CottonPlant_Name");
+	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
+	// TODO: Testear que si algo me llega NULL, vuelva a generar el archivo
     }
 }

@@ -1,5 +1,34 @@
+
+# -- MODULES --
+
+# -----------------------------------------------------------------------------------------------------
+
+# Crafting_Recipes adds 14 new recipes
+Crafting_Recipes: true
+
+# -----------------------------------------------------------------------------------------------------
+
+# Healing_And_Taming adds the ability to heal and tame dogs and cats with more kind of food
+Healing_And_Taming: true
+
+# -----------------------------------------------------------------------------------------------------
+
+# Spiders_Enhanced modifies drops and habilities of spiders, making you to get more string of them
+Spiders_Enhanced: true
+
+# -----------------------------------------------------------------------------------------------------
+
+# Items_Renaming renames some items to make them more integrated with rest of the plugin
+Items_Renaming: true
 # You can change the name of these modified items. By default all names are in spanish.
 # Catnip is the plant that cats love. It overrides Pink Tulip Item.
 Catnip_Name: Nepeta Cataria
 # The new wool source: Cotton plant. It overrides Pink Azure Bluet Item.
 CottonPlant_Name: Planta de algodón
+
+# -----------------------------------------------------------------------------------------------------
+
+# Show_Logo shows the logo in console on plugin loads
+Show_Logo: true
+
+# -----------------------------------------------------------------------------------------------------

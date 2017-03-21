@@ -24,6 +24,7 @@
 package VegansWay;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -37,7 +38,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Pronink
  */
-
 // TODO: Hacer que los perros y gatos se enamoren cuando los alimentas
 public class Main extends JavaPlugin implements Listener
 {
@@ -57,16 +57,35 @@ public class Main extends JavaPlugin implements Listener
 	saveDefaultConfig(); // Nunca sobreescribe si ya existe algo
 	Config.load(getConfig());
 	// INICIAR MÓDULOS
-	catTaming = new CatTaming();
-	itemRenaming = new ItemRenaming();
-	craftingRecipes = new CraftingRecipes();
-	spidersEnhanced = new SpidersEnhanced();
-	lovingPets = new LovingPets();
-	feedingPets = new FeedingPets(lovingPets);
+	if (Config.CONFIG_MODULE_ITEMS_RENAMING)
+	{
+	    itemRenaming = new ItemRenaming();
+	}
+	if (Config.CONFIG_MODULE_CRAFTING_RECIPES)
+	{
+	    craftingRecipes = new CraftingRecipes();
+	    craftingRecipes.addAllCraftingRecipes();
+	}
+	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+	{
+	    spidersEnhanced = new SpidersEnhanced();
+	}
+	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+	{
+	    catTaming = new CatTaming();
+	    lovingPets = new LovingPets();
+	    feedingPets = new FeedingPets(lovingPets);
+	}
 	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
 	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	startTimedEvents();
-	craftingRecipes.addAllCraftingRecipes();
+
+	// MISCELANEA
+	if (Config.CONFIG_SHOWLOGO)
+	{
+	    showLogo();
+	}
+	CatTaming.removeInvulnerableChickens();
     }
 
     private void startTimedEvents()
@@ -79,12 +98,15 @@ public class Main extends JavaPlugin implements Listener
 		state = ++state % 120; // EL CICLO DURA 60 SEGUNDOS
 		if (state % 2 == 0) // CADA 1 SEGUNDOS
 		{
-		    catTaming.testOcelotTaming();
-		    lovingPets.testLovingPets();
+		    if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+		    {
+			catTaming.testOcelotTaming();
+			lovingPets.testLovingPets();
+		    }
 		}
 		if (state % 6 == 0) // CADA 3 SEGUNDOS
 		{
-		    catTaming.removeInvulnerableChickens();
+		    CatTaming.removeInvulnerableChickens();
 		}
 	    }
 	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
@@ -94,39 +116,71 @@ public class Main extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
-	catTaming.removeInvulnerableChickens();
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e)
-    {
-	catTaming.removeInvulnerableChickens();
+	CatTaming.removeInvulnerableChickens();
     }
 
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event)
     {
-	itemRenaming.modifyItemGround(event);
+	if (Config.CONFIG_MODULE_ITEMS_RENAMING)
+	{
+	    itemRenaming.modifyItemGround(event);
+	}
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
-	spidersEnhanced.testSpiderWebAttack(event);
-	lovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
+	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+	{
+	    lovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
+	}
+	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+	{
+	    spidersEnhanced.testSpiderWebAttack(event);
+	}
     }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
-	spidersEnhanced.addSpiderDrops(event);
+	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+	{
+	    spidersEnhanced.addSpiderDrops(event);
+	}
     }
 
     @EventHandler
     public void onRightClick(PlayerInteractAtEntityEvent event)
     {
-	feedingPets.testPetFeeding(event);
+	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+	{
+	    feedingPets.testPetFeeding(event);
+	}
     }
 
-    
+    private void showLogo()
+    {
+	StringBuilder asciiLogo = new StringBuilder("");
+	asciiLogo.append(ChatColor.GREEN).append("\n");
+	asciiLogo.append("                    ynn                                                                                                \n");
+	asciiLogo.append(".s+`           -/oyhdN/                                                                                                \n");
+	asciiLogo.append("  oNo        -mMmMMMMN`                                                                                                \n");
+	asciiLogo.append("   +Md`      ds:dMMMMs                                                                                                 \n");
+	asciiLogo.append("    oMm`     .:NMMNh/                                               :+syhddhhysso+++++                `:+sssssyyyo/`   \n");
+	asciiLogo.append("     hMd     /N+.                                                 oNh+:-:oso/+ossyMMN-    .+o     `/yys/.`      `-oms  \n");
+	asciiLogo.append("     `NM+   /M/                                                  sMo    /.sM`    yMN-  `/dMd`  `+hy/`               s. \n");
+	asciiLogo.append("      +MN` :Mo                                                   .ymo/::+yy-    sMM: .smdMd` :yd+`                     \n");
+	asciiLogo.append("       NMo.Nm                                        -/             .:::.      oMM:-ym++Mm`/dh:                        \n");
+	asciiLogo.append("       oMNdM:  -syyds  `oyyhy:y/ .oyyds/h- `sNhomN/ `NNs`                     /MMshN+ /MNomd-`+yyhd:yo  /d/  /d/       \n");
+	asciiLogo.append("       `MMMm .dd: :h+`sN/  `MN+.hm:  -Mm: :mh- .mm.-h+Mm                     -MMMNo` :MMMm/ oNo`  mMo .hm:  hN/        \n");
+	asciiLogo.append("        hMM+ NMs/--`:hMy  :my.:mM+ `/Ns./yN/ `sNs+hM  :M/-o/                `mMMy.  .NMNo  /Md  -dd-:oNs` `Ny-/:       \n");
+	asciiLogo.append("        /hh` /ydyso+::ydmMNho+-:yhs+hyo+hs`  yhs+::y/+hhs/`                 /yy-    sys`   `shy+yhso+hysdNNho+-        \n");
+	asciiLogo.append("                     /+yMy`                                                                          /+hMs`            \n");
+	asciiLogo.append("                   .o-hm:                                                                          .o-hm-              \n");
+	asciiLogo.append("                   ysm+                                                                            ysm+                \n");
+	asciiLogo.append("                    .                                                                              `.                  \n\n");
+	Bukkit.getConsoleSender().sendMessage(asciiLogo.toString());
+    }
+
 }

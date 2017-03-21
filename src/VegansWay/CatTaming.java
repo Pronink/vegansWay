@@ -166,7 +166,7 @@ public class CatTaming
 
     }
 
-    public void removeInvulnerableChickens()
+    public static void removeInvulnerableChickens()
     {
 	for (World myWorld : Bukkit.getWorlds())
 	{
@@ -215,7 +215,7 @@ public class CatTaming
 	}
     }
 
-    private void safelyKillChicken(Chicken chicken)
+    private static void safelyKillChicken(Chicken chicken)
     {
 	// Ahora la mato
 	chicken.remove();

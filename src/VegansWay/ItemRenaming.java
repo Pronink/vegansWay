@@ -36,8 +36,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemRenaming
 {
 
-    private final String NEPETA = ChatColor.RESET + Config.catnip_name;
-    private final String COTTON = ChatColor.RESET + Config.cottonPlant_name;
+    private final String NEPETA = ChatColor.RESET + Config.CONFIG_CATNIP_NAME;
+    private final String COTTON = ChatColor.RESET + Config.CONFIG_COTTONPLANT_NAME;
 
     public void modifyItemGround(ItemSpawnEvent event)
     {

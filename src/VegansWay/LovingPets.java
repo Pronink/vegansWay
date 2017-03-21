@@ -76,7 +76,7 @@ public class LovingPets
 	this.catList = new ArrayList<>();
     }
 
-    public void testLovingPets()
+    public void testLovingPets() // Llamado desde el main cada 1 segundo para restar tiempo en las listas
     {
 	for (LovingDog ld : dogList)
 	{
@@ -154,7 +154,7 @@ public class LovingPets
 		boolean dog1exists = false, dog2exists = false;
 		LovingDog lovingDog1 = null;
 		LovingDog lovingDog2 = null;
-		for (LovingDog ld : dogList) // Puede que tenga que cambiarlo al tradicional (POSIBLE BUG) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		for (LovingDog ld : dogList)
 		{
 		    if (dog1.getUniqueId().compareTo(ld.entityDog.getUniqueId()) == 0)
 		    {
