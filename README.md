@@ -40,10 +40,11 @@ Necessary for the implementation of cat taming and crafting recipes. Names can b
 Modifications (New names overwrite older ones):
 - Pink tulip → Cat nip
 - Azure bluet → Wool plant
+
 Additions (new names):
 - Wool cap
 - Wool tunic
 - Wool pants
 - Wool boots
 
-Note: The item name changes when items are in ground.
+Note: The item name changes when items are in ground or when the item is crafted.
