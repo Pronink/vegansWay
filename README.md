@@ -38,10 +38,15 @@ These improvements will help you to get strings easily.
 
 ![](http://i.imgur.com/Uvxqx79.png)
 
-### ❱❱❱ Two little item name changes (configurable)
+### ❱❱❱ Item name additions and changes (configurable)
 Necessary for the implementation of cat taming and crafting recipes. Names can be changed from config.yml
-
+Modifications (New names overwrite older ones):
 - Pink tulip → Cat nip
-- Azure bluet → Cotton plant
+- Azure bluet → Wool plant
+Additions (new names):
+- Wool cap
+- Wool tunic
+- Wool pants
+- Wool boots
 
 Note: The item name changes when items are in ground.

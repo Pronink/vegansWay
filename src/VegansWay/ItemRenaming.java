@@ -29,9 +29,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemRenaming
 {
 
-    private final String NEPETA = ChatColor.RESET + Config.CONFIG_CATNIP_NAME;
-    private final String COTTON = ChatColor.RESET + Config.CONFIG_COTTONPLANT_NAME;
-
     public void modifyItemGround(ItemSpawnEvent event)
     {
 	Item item = event.getEntity();
@@ -39,18 +36,18 @@ public class ItemRenaming
 	//Bukkit.broadcastMessage("ItemStack data: "+fullName+"    ItemStack material+data: "+item.getItemStack().getType());
 	if (fullName.equals("RED_ROSE(7)")) // PINK TULIP
 	{
-	    item.setItemStack(changeName(item.getItemStack(), NEPETA));
+	    item.setItemStack(changeName(item.getItemStack(), Config.CONFIG_CATNIP_NAME));
 	}
 	else if (fullName.equals("RED_ROSE(3)")) // AZURE BLUET
 	{
-	    item.setItemStack(changeName(item.getItemStack(), COTTON)); // COTTON
+	    item.setItemStack(changeName(item.getItemStack(), Config.CONFIG_WOOLPLANT_NAME)); // COTTON
 	}
     }
 
     //ItemStack newItem = new ItemStack(Material.RED_ROSE, 1, (short) 7);
 
 
-    private ItemStack changeName(ItemStack itemStack, String name)
+    public static ItemStack changeName(ItemStack itemStack, String name)
     {
 	ItemMeta meta = itemStack.getItemMeta();
 	meta.setDisplayName(ChatColor.RESET + name);

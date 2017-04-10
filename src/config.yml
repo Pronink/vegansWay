@@ -21,10 +21,15 @@ Spiders_Enhanced: true
 # Items_Renaming renames some items to make them more integrated with rest of the plugin
 Items_Renaming: true
 # You can change the name of these modified items. By default all names are in spanish.
-# Catnip is the plant that cats love. It overrides Pink Tulip Item.
+# Catnip is the plant that cats love. It overrides Pink Tulip Item name.
 Catnip_Name: Nepeta Cataria
-# The new wool source: Cotton plant. It overrides Pink Azure Bluet Item.
-CottonPlant_Name: Planta de algodón
+# The new wool source: Wool plant. It overrides Pink Azure Bluet Item name.
+WoolPlant_Name: Planta de lana
+# The new wool armor, crafted with wool
+Wool_Cap_Name: Gorro de lana
+Wool_Tunic_Name: Túnica de lana
+Wool_Pants_Name: Pantalones de lana
+Wool_Boots_Name: Botas de lana
 
 # -----------------------------------------------------------------------------------------------------
 

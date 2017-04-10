@@ -28,9 +28,13 @@ public class Config
     public static boolean CONFIG_MODULE_HEALING_AND_TAMING;
     public static boolean CONFIG_MODULE_SPIDERS_ENHANCED;
     public static boolean CONFIG_MODULE_ITEMS_RENAMING;
-    public static String CONFIG_CATNIP_NAME;
-    public static String CONFIG_COTTONPLANT_NAME;
     public static boolean CONFIG_SHOWLOGO;
+    public static String CONFIG_CATNIP_NAME;
+    public static String CONFIG_WOOLPLANT_NAME;
+    public static String CONFIG_WOOL_CAP_NAME;
+    public static String CONFIG_WOOL_TUNIC_MAME;
+    public static String CONFIG_WOOL_PANTS_NAME;
+    public static String CONFIG_WOOL_BOOTS_NAME;
     
     public static void load(Configuration c)
     {
@@ -39,8 +43,11 @@ public class Config
 	CONFIG_MODULE_SPIDERS_ENHANCED = c.getBoolean("Spiders_Enhanced");
 	CONFIG_MODULE_ITEMS_RENAMING = c.getBoolean("Items_Renaming");
 	CONFIG_CATNIP_NAME = c.getString("Catnip_Name");
-	CONFIG_COTTONPLANT_NAME = c.getString("CottonPlant_Name");
+	CONFIG_WOOLPLANT_NAME = c.getString("WoolPlant_Name");
 	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
-	// TODO: Testear que si algo me llega NULL, vuelva a generar el archivo
+	CONFIG_WOOL_CAP_NAME = c.getString("Wool_Cap_Name");
+	CONFIG_WOOL_TUNIC_MAME = c.getString("Wool_Tunic_Name");
+	CONFIG_WOOL_PANTS_NAME = c.getString("Wool_Pants_Name");
+	CONFIG_WOOL_BOOTS_NAME = c.getString("Wool_Boots_Name");
     }
 }

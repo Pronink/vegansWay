@@ -105,6 +105,14 @@ public class CraftingRecipes
 	    ItemStack lchestplate = changeLeatherColor(new ItemStack(Material.LEATHER_CHESTPLATE), colorList[i]);
 	    ItemStack lleggings = changeLeatherColor(new ItemStack(Material.LEATHER_LEGGINGS), colorList[i]);
 	    ItemStack lboots = changeLeatherColor(new ItemStack(Material.LEATHER_BOOTS), colorList[i]);
+	    
+	    if (Config.CONFIG_MODULE_ITEMS_RENAMING == true) // Cambio de nombre
+	    {
+		lhelmet = ItemRenaming.changeName(lhelmet, Config.CONFIG_WOOL_CAP_NAME);
+		lchestplate = ItemRenaming.changeName(lchestplate, Config.CONFIG_WOOL_TUNIC_MAME);
+		lleggings = ItemRenaming.changeName(lleggings, Config.CONFIG_WOOL_PANTS_NAME);
+		lboots = ItemRenaming.changeName(lboots, Config.CONFIG_WOOL_BOOTS_NAME);
+	    }
 
 	    shapedRecipe = new ShapedRecipe(lhelmet);
 	    shapedRecipe.shape("www", "w w");
