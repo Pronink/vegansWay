@@ -66,8 +66,8 @@ public class Main extends JavaPlugin implements Listener
 	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
 	{
 	    catTaming = new CatTaming();
-	    lovingPets = new LovingPets();
-	    feedingPets = new FeedingPets(lovingPets);
+	    lovingPets = new LovingPets(); // El main lo llamará cada 1 segundo y tambien cuando dos mascotas se peguen
+	    feedingPets = new FeedingPets(lovingPets); // Feedingpets llamará a LovingPets cada vez que se sobrealimenta una mascota
 	}
 	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
 	Bukkit.getServer().getPluginManager().registerEvents(this, this);

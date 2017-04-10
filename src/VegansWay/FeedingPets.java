@@ -80,9 +80,9 @@ public class FeedingPets
 			{
 			    cat.setHealth(10D);
 			    cat.getWorld().spawnParticle(Particle.HEART, cat.getLocation().add(0, 1, 0), 4, 0.4, 0.4, 0.4);
+			    // TODO: lovingPets.addPet(cat);
 			}
 			Util.quitOneItemFromHand(event.getPlayer());
-			// TODO: lovingPets.addPet(cat);
 		    }
 		}
 	    }

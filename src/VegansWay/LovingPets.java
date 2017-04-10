@@ -18,6 +18,7 @@ package VegansWay;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -168,6 +169,13 @@ public class LovingPets
 			dogBaby.setBaby();
 			dogBaby.setTamed(true);
 			dogBaby.setOwner(dog1.getOwner());
+			// Bukkit.broadcastMessage("Nombre de los padres: "+dog1.getCustomName()+" - "+dog2.getCustomName());
+			if (dog1.getCustomName() != null && dog2.getCustomName() != null) // Si los dos tienen nombre...
+			{
+			    // Bukkit.broadcastMessage(Util.mergeNames(dog1.getCustomName(), dog2.getCustomName()));
+			    dogBaby.setCustomName(Util.mergeNames(dog1.getCustomName(), dog2.getCustomName()));
+			    dogBaby.setCustomNameVisible(dog1.isCustomNameVisible());
+			}
 
 			Wolf dogNew1 = (Wolf) dog1.getWorld().spawnEntity(dog1.getLocation(), EntityType.WOLF);
 			Wolf dogNew2 = (Wolf) dog2.getWorld().spawnEntity(dog2.getLocation(), EntityType.WOLF);

@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Util
 {
+
     public static void quitOneItemFromHand(Player player)
     {
 	ItemStack itemStack = player.getInventory().getItemInMainHand();
@@ -42,7 +43,7 @@ public class Util
 	    }
 	}
     }
-    
+
     public static Location getMiddlePoint(Location l1, Location l2)
     {
 	int x1 = l1.getBlockX();
@@ -51,11 +52,49 @@ public class Util
 	int y2 = l2.getBlockY();
 	int z1 = l1.getBlockZ();
 	int z2 = l2.getBlockZ();
-	
+
 	int x3 = (x1 + x2) / 2;
 	int y3 = (y1 + y2) / 2;
 	int z3 = (z1 + z2) / 2;
-	
+
 	return new Location(l1.getWorld(), x3, y3, z3);
+    }
+
+    public static String mergeNames(String s1, String s2)
+    {
+	char mid1 = s1.toLowerCase().charAt((s1.length() - 1) / 2);
+	boolean mid1vocal = isVocal(mid1);
+
+	int i = (s2.length() - 1) / 2;
+	while (i < 100)
+	{
+	    char mid2 = s2.toLowerCase().charAt(i);
+	    boolean mid2vocal = isVocal(mid2);
+	    System.out.println(mid1 + " " + mid2);
+	    if (mid1vocal != mid2vocal)
+	    {
+		// System.out.println(s1.substring(0, ((s1.length() - 1) / 2) + 1) + s2.substring(i));
+		return s1.substring(0, ((s1.length() - 1) / 2) + 1) + s2.substring(i);
+	    }
+	    /*else Muestra los nombres que rechaza (si las dos son minusculas o las dos son mayusculas)
+	    {
+		System.out.println(s1.substring(0, ((s1.length() - 1) / 2) + 1) + s2.substring(i) + " <- BAD, Testing more");
+	    }*/
+	    if (i < s2.length() - 1)
+	    {
+		i++;
+	    }
+	    else
+	    {
+		break;
+	    }
+	}
+	// Mezcla los nombres partiendolos por la mitad, salga lo que salga
+	return s1.substring(0, s1.length() / 2) + s2.substring(s2.length() / 2);
+    }
+
+    private static boolean isVocal(char ch)
+    {
+	return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');
     }
 }
