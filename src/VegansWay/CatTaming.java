@@ -70,7 +70,7 @@ public class CatTaming
 			    if (myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT))
 			    {
 				int random = (int) (Math.random() * 101); // De 0 a 100
-				if (random <= 40)
+				if (random <= 50)
 				{
 				    convertToCat(myOcelot, player);
 				    safelyKillChicken(chicken);

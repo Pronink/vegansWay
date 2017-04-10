@@ -112,7 +112,46 @@ public class LovingPets
 		}
 	    }
 	}
-	// TODO: Hacer lo mismo con la lista de Ocelotes
+	for (LovingCat lc : catList)
+	{
+	    if (lc.lovingTime > 0)
+	    {
+		lc.lovingTime--;
+	    }
+	    if (lc.breakTime > 0)
+	    {
+		lc.breakTime--;
+	    }
+	    if (lc.lovingTime > 0 && lc.breakTime == 0)
+	    {
+		lc.entityCat.getWorld().spawnParticle(Particle.HEART, lc.entityCat.getLocation().add(0, 1, 0), 1, 0, 0, 0);
+	    }
+	    if (lc.lovingTime > 0 && lc.breakTime > 0)
+	    {
+		lc.entityCat.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, lc.entityCat.getLocation().add(0, 1, 0), 1, 0, 0, 0);
+	    }
+	    if (lc.lovingTime > 0 && lc.breakTime == 0) // Si el gato puede amar...
+	    {
+		for (LovingCat lc2 : catList) // ... busca mas gatos en la lista
+		{
+		    if (lc2.lovingTime > 0 && lc2.breakTime == 0) // Si el segundo gato puede amar...
+		    {
+			if (lc.entityCat.getUniqueId().compareTo(lc2.entityCat.getUniqueId()) != 0) // Si no son el mismo gato
+			{
+			    if (lc.entityCat.getLocation().distance(lc2.entityCat.getLocation()) < 10) // Si estan a menos de 10 metros
+			    {
+				if (!lc.entityCat.isSitting() || !lc2.entityCat.isSitting()) // Si alguno de los dos esta de pie
+				{
+				    lc.entityCat.setTarget(lc2.entityCat); // Ahora solo tengo que esperar a que los gatos se peguen y ...
+				    lc2.entityCat.setTarget(lc.entityCat); // ... lancen el evento que los hagan tener una cria. Luego los target desaparecen
+				    //Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Hay 2 gatos que se aman " + ChatColor.RED + "<3");
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
     }
 
     public void addPet(Entity entity) // Llamado desde FeedingPets
@@ -134,7 +173,23 @@ public class LovingPets
 		dogList.add(new LovingDog(myDog));
 	    }
 	}
-	// TODO: Añadir lo mismo con el ocelot
+	if (entity instanceof Ocelot)
+	{
+	    Ocelot myOcelot = (Ocelot) entity;
+	    if (myOcelot.isTamed() && myOcelot.isAdult())
+	    {
+		UUID uuidCat = myOcelot.getUniqueId();
+		for (LovingCat lc : catList)
+		{
+		    if (uuidCat.compareTo(lc.entityCat.getUniqueId()) == 0)
+		    {
+			lc.lovingTime = 10; // Si lo encuentro en la lista, reinicio el contador de amar a 10
+			return;
+		    }
+		} // Si no lo encuentro en la lista, lo agrego
+		catList.add(new LovingCat(myOcelot));
+	    }
+	}
     }
 
     public void testNewDogOrCatBaby(Entity e1, Entity e2) // Llamado desde el main cada vez que dos pets se pegan (target)
@@ -206,6 +261,89 @@ public class LovingPets
 
 	    }
 	}
-	// TODO: Añadir lo mismo con el ocelot
+	if (e1 instanceof Ocelot && e2 instanceof Ocelot)
+	{
+	    Ocelot cat1 = (Ocelot) e1;
+	    Ocelot cat2 = (Ocelot) e2;
+	    if (cat1.isTamed() && cat2.isTamed() && cat1.isAdult() && cat2.isAdult())
+	    {
+		boolean cat1exists = false, cat2exists = false;
+		LovingCat lovingCat1 = null;
+		LovingCat lovingCat2 = null;
+		for (LovingCat lc : catList)
+		{
+		    if (cat1.getUniqueId().compareTo(lc.entityCat.getUniqueId()) == 0)
+		    {
+			cat1exists = true;
+			lovingCat1 = lc;
+		    }
+		    if (cat2.getUniqueId().compareTo(lc.entityCat.getUniqueId()) == 0)
+		    {
+			cat2exists = true;
+			lovingCat2 = lc;
+		    }
+		}
+		if (cat1exists && cat2exists)
+		{
+		    if (lovingCat1.breakTime == 0 && lovingCat2.breakTime == 0)
+		    {
+			Ocelot catBaby = (Ocelot) cat1.getWorld().spawnEntity(Util.getMiddlePoint(cat1.getLocation(), cat2.getLocation()), EntityType.OCELOT);
+			catBaby.setBaby();
+			catBaby.setTamed(true);
+			catBaby.setOwner(cat1.getOwner());
+			// Bukkit.broadcastMessage("Nombre de los padres: "+cat1.getCustomName()+" - "+cat2.getCustomName());
+			if (cat1.getCustomName() != null && cat2.getCustomName() != null) // Si los dos tienen nombre...
+			{
+			    // Bukkit.broadcastMessage(Util.mergeNames(cat1.getCustomName(), cat2.getCustomName()));
+			    catBaby.setCustomName(Util.mergeNames(cat1.getCustomName(), cat2.getCustomName()));
+			    catBaby.setCustomNameVisible(cat1.isCustomNameVisible());
+			}
+			int random = (int) (Math.random() * 3 + 1);
+			switch (random)
+			{
+			    case 1:
+				catBaby.setCatType(Ocelot.Type.BLACK_CAT);
+				break;
+			    case 2:
+				catBaby.setCatType(Ocelot.Type.RED_CAT);
+				break;
+			    case 3:
+				catBaby.setCatType(Ocelot.Type.SIAMESE_CAT);
+				break;
+			    default:
+				break;
+			}
+
+			Ocelot catNew1 = (Ocelot) cat1.getWorld().spawnEntity(cat1.getLocation(), EntityType.OCELOT);
+			Ocelot catNew2 = (Ocelot) cat2.getWorld().spawnEntity(cat2.getLocation(), EntityType.OCELOT);
+			catNew1.setTamed(true);
+			catNew1.setOwner(cat1.getOwner());
+			catNew1.setCatType(cat1.getCatType());
+			catNew1.setCustomName(cat1.getCustomName());
+			catNew1.setCustomNameVisible(cat1.isCustomNameVisible());
+			catNew1.setHealth(10);
+			catNew1.setVelocity(cat1.getVelocity());
+			catNew2.setTamed(true);
+			catNew2.setOwner(cat2.getOwner());
+			catNew2.setCatType(cat2.getCatType());
+			catNew2.setCustomName(cat2.getCustomName());
+			catNew2.setCustomNameVisible(cat2.isCustomNameVisible());
+			catNew2.setHealth(10);
+			catNew2.setVelocity(cat2.getVelocity());
+
+			lovingCat1.entityCat = catNew1;
+			lovingCat2.entityCat = catNew2;
+			lovingCat1.lovingTime = 0;
+			lovingCat2.lovingTime = 0;
+			lovingCat1.breakTime = 60;
+			lovingCat2.breakTime = 60;
+
+			cat1.remove();
+			cat2.remove();
+		    }
+		}
+
+	    }
+	}
     }
 }

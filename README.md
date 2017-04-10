@@ -5,9 +5,6 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 ## Download links:
 **Not yet**
 
-TO-DO:
-- The possibility of two adult cats having a child
-
 ## Main features:
 ### ❱❱❱ New crafting recipes
 ![](http://i.imgur.com/KLZwkg6.png) ![](http://i.imgur.com/9zxAZr3.png) ![](http://i.imgur.com/fzzH9Du.png)
