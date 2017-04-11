@@ -1,5 +1,6 @@
-VegansWay
+VegansWay<img align="right" width="300px" src="http://i.imgur.com/VIbB4Gi.jpg">
 =========
+
 VegansWay is a modular Bukkit plugin that adds vegan alternatives to Minecraft.
 Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 ## Download links:
@@ -7,6 +8,8 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 ## Main features:
 ### ❱❱❱ New crafting recipes
+<p align="center">
+
 ![](http://i.imgur.com/KLZwkg6.png) ![](http://i.imgur.com/9zxAZr3.png) ![](http://i.imgur.com/fzzH9Du.png)
 
 ![](http://i.imgur.com/A5DfVfR.png) ![](http://i.imgur.com/kOjOy5e.png) ![](http://i.imgur.com/1PgNS9M.png)
@@ -17,6 +20,7 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 ![](http://i.imgur.com/kAS0gvU.png) ![](http://i.imgur.com/ZDGPiYK.png) ![](http://i.imgur.com/2xI00jm.png)
 
+</p>
 ### ❱❱❱ New ways to breed and grow pets
 You can heal dogs and cats with any type of food. 
 If pets has a full life, two adult pets can have a child.
@@ -37,6 +41,7 @@ These improvements will help you to get strings easily.
 
 ### ❱❱❱ Item name additions and changes (configurable)
 Necessary for the implementation of cat taming and crafting recipes. Names can be changed from config.yml
+
 Modifications (New names overwrite older ones):
 - Pink tulip → Cat nip
 - Azure bluet → Wool plant
