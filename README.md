@@ -2,13 +2,16 @@ VegansWay<img align="right" width="300px" src="http://i.imgur.com/VIbB4Gi.jpg">
 =========
 
 VegansWay is a modular Bukkit plugin that adds vegan alternatives to Minecraft.
+
 Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
+
 ## Download links:
+
 **Not yet**
 
 ## Main features:
+
 ### ❱❱❱ New crafting recipes
-<p align="center">
 
 ![](http://i.imgur.com/KLZwkg6.png) ![](http://i.imgur.com/9zxAZr3.png) ![](http://i.imgur.com/fzzH9Du.png)
 
@@ -20,36 +23,44 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 ![](http://i.imgur.com/kAS0gvU.png) ![](http://i.imgur.com/ZDGPiYK.png) ![](http://i.imgur.com/2xI00jm.png)
 
-</p>
 ### ❱❱❱ New ways to breed and grow pets
-You can heal dogs and cats with any type of food. 
+
+You can heal dogs and cats with any type of food.
+
 If pets has a full life, two adult pets can have a child.
 
 ![](http://i.imgur.com/TMffFG9.png)
+
 ### ❱❱❱ New way to tame ocelotes
+
 You don't need more fish to tame a ocelot !
+
 Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand, all ocelots and cats will want to be with you!
 
 ![](http://i.imgur.com/IVeAG2e.png)
 
 ### ❱❱❱ Spiders now drops more strings and they have one new attack
+
 Spiders now drops 0 - 3 extra strings when they die.
+
 If you are damaged by one, there is a chance of getting trapped inside a web.
+
 These improvements will help you to get strings easily.
 
 ![](http://i.imgur.com/Uvxqx79.png)
 
 ### ❱❱❱ Item name additions and changes (configurable)
-Necessary for the implementation of cat taming and crafting recipes. Names can be changed from config.yml
 
-Modifications (New names overwrite older ones):
-- Pink tulip → Cat nip
-- Azure bluet → Wool plant
+Necessary for the implementation of cat taming and crafting recipes. Names can be renamed from config.yml
 
-Additions (new names):
-- Wool cap
-- Wool tunic
-- Wool pants
-- Wool boots
+- Modifications (New names overwrite older ones):
+  - Pink tulip → Cat nip
+  - Azure bluet → Wool plant
+
+- Additions (new names):
+  - Wool cap
+  - Wool tunic
+  - Wool pants
+  - Wool boots
 
 Note: The item name changes when items are in ground or when the item is crafted.
