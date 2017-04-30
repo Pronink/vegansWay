@@ -46,7 +46,7 @@ public class CatTaming
 	    ItemStack itemStack = player.getInventory().getItemInMainHand();
 	    if (itemStack.getData().toString().equals("RED_ROSE(7)"))
 	    {
-		List<Entity> nearbyEntities = player.getNearbyEntities(20, 20, 20); //Busco bichos dentro de un radiod el jugador
+		List<Entity> nearbyEntities = player.getNearbyEntities(20, 20, 20); //Busco bichos dentro de un radio del jugador
 		for (Entity nearbyEntitie : nearbyEntities)
 		{
 		    if (nearbyEntitie instanceof Ocelot)
@@ -54,23 +54,23 @@ public class CatTaming
 			Ocelot myOcelot = (Ocelot) nearbyEntitie;
 			Chicken chicken = createOrMoveNamedChicken(player);
 			myOcelot.setTarget(chicken);
-			if (myOcelot.getLocation().distance(player.getLocation()) < 1) // Si el gato esta cerca tuya se inicia la conversion en gato
+			if (myOcelot.getLocation().distance(player.getLocation()) < 1) // Si el ocelot esta cerca tuya se le cura
 			{
 			    Util.quitOneItemFromHand(player);
 
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 1, false, true), true);
 			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, 2, false, false), true);
-			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2, false, false), true);
+			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1, false, false), true);
 
 			    World myWorld = player.getWorld();
 			    myWorld.spawnParticle(Particle.CRIT, myOcelot.getEyeLocation(), 10, 0.2, 0.2, 0.2);
 			    myWorld.playSound(myOcelot.getLocation(), Sound.ENTITY_CAT_HURT, 1, 1);
 			    myWorld.playSound(myOcelot.getLocation(), Sound.BLOCK_GRASS_FALL, 1, 1);
 
-			    if (myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT))
+			    if (myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT)) // Y si es salvaje, se le domestica
 			    {
 				int random = (int) (Math.random() * 101); // De 0 a 100
-				if (random <= 50)
+				if (random <= 75)
 				{
 				    convertToCat(myOcelot, player);
 				    safelyKillChicken(chicken);
