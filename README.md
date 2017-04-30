@@ -7,7 +7,7 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 ## Download links:
 
-**Not yet**
+[DOWNLOAD](https://github.com/Pronink/vegansWay/releases)
 
 ## Main features:
 
@@ -27,7 +27,7 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 You can heal dogs and cats with any type of food.
 
-If pets has a full life, two adult pets can have a child.
+If pets has a full life, two adult pets can have a child. The baby's name will be generated from the parents' names !
 
 ![](http://i.imgur.com/TMffFG9.png)
 
@@ -35,7 +35,7 @@ If pets has a full life, two adult pets can have a child.
 
 You don't need more fish to tame a ocelot !
 
-Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand, all ocelots and cats will want to be with you!
+Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand, all ocelots and cats will want to be with you !
 
 ![](http://i.imgur.com/IVeAG2e.png)
 
