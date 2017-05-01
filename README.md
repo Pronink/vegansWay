@@ -1,4 +1,4 @@
-VegansWay<img align="right" width="300px" src="http://i.imgur.com/VIbB4Gi.jpg">
+VegansWay<img align="right" width="300px" src="http://i.imgur.com/7s2hLzi.jpg">
 =========
 
 VegansWay is a modular and configurable Bukkit plugin that adds vegan alternatives to Minecraft.
