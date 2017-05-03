@@ -30,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Pronink
  */
-// TODO: Hacer que los perros y gatos se enamoren cuando los alimentas
 public class Main extends JavaPlugin implements Listener
 {
 
@@ -75,9 +74,12 @@ public class Main extends JavaPlugin implements Listener
 	// MISCELANEA
 	if (Config.CONFIG_SHOWLOGO)
 	{
-	    showLogo();
+	    showLogo(); // Muestro el logo con la version
 	}
-	CatTaming.removeInvulnerableChickens();
+	else
+	{
+	    printC(getVersionInfo()); // Solo muestro la version
+	}
     }
 
     private void startTimedEvents()
@@ -96,10 +98,6 @@ public class Main extends JavaPlugin implements Listener
 			lovingPets.testLovingPets();
 		    }
 		}
-		if (state % 6 == 0) // CADA 3 SEGUNDOS
-		{
-		    CatTaming.removeInvulnerableChickens();
-		}
 	    }
 	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
 
@@ -108,7 +106,7 @@ public class Main extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
-	CatTaming.removeInvulnerableChickens();
+
     }
 
     @EventHandler
@@ -125,6 +123,7 @@ public class Main extends JavaPlugin implements Listener
     {
 	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
 	{
+	    catTaming.testConvertToCat(event);
 	    lovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
 	}
 	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
@@ -151,6 +150,7 @@ public class Main extends JavaPlugin implements Listener
 	}
     }
 
+    // MÉTODOS DE LA CONSOLA
     private void showLogo()
     {
 	StringBuilder asciiLogo = new StringBuilder("");
@@ -171,8 +171,32 @@ public class Main extends JavaPlugin implements Listener
 	asciiLogo.append("                     /+yMy`                                                                          /+hMs`            \n");
 	asciiLogo.append("                   .o-hm:                                                                          .o-hm-              \n");
 	asciiLogo.append("                   ysm+                                                                            ysm+                \n");
-	asciiLogo.append("                    .                                                                              `.                  \n\n");
-	Bukkit.getConsoleSender().sendMessage(asciiLogo.toString());
+	asciiLogo.append("                    .                                                                              `.                  \n");
+	asciiLogo.append(getVersionInfo()).append("\n");
+	printC(asciiLogo.toString());
+    }
+
+    private String getVersionInfo()
+    {
+	String installedVersion = "v" + getDescription().getVersion();
+	String latestVersion = Util.getLatestVersionName();
+	if (latestVersion.equals(""))
+	{
+	    return "";
+	}
+	if (installedVersion.equals(latestVersion))
+	{
+	    return (ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
+	}
+	else
+	{
+	    return (ChatColor.RED + "\nYou do not use the latest version of VegansWay:" + ChatColor.DARK_RED + "\n\tINSTALLED VERSION -> " + installedVersion + "\n\tLATEST VERSION    -> " + latestVersion + ChatColor.RED + "\nDownload the latest version from: " + ChatColor.RESET + "https://www.spigotmc.org/resources/vegansway.40292" + ChatColor.RED + " or " + ChatColor.RESET + "https://github.com/Pronink/vegansWay/releases" + "\n");
+	}
+    }
+
+    private void printC(String string)
+    {
+	Bukkit.getConsoleSender().sendMessage(string);
     }
 
 }

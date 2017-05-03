@@ -16,6 +16,12 @@
  */
 package VegansWay;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonValue;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -96,5 +102,37 @@ public class Util
     private static boolean isVocal(char ch)
     {
 	return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');
+    }
+
+    public static String getLatestVersionName()
+    {
+	try
+	{
+	    URL oracle = new URL("https://api.github.com/repos/Pronink/vegansWay/releases");
+	    BufferedReader in = new BufferedReader(
+		    new InputStreamReader(oracle.openStream()));
+
+	    String inputLine;
+	    StringBuffer sb = new StringBuffer("");
+	    while ((inputLine = in.readLine()) != null)
+	    {
+		sb.append(inputLine);
+	    }
+	    in.close();
+	    //System.out.println(sb);
+	    String json = sb.toString();
+	    JsonArray items = Json.parse(json).asArray();
+	    for (JsonValue item : items)
+	    {
+		String name = item.asObject().getString("tag_name", "");
+		return name; // Retorno el primero, ya que es la ultima version
+	    }
+	}
+	catch (Exception e)
+	{
+	    //System.out.println("No hay conexion a internet?");
+	    return "";
+	}
+	return "";
     }
 }

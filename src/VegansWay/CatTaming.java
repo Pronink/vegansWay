@@ -17,17 +17,17 @@
 package VegansWay;
 
 import java.util.List;
+import java.util.Random;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.GameMode;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -44,6 +44,7 @@ public class CatTaming
 	for (Player player : Bukkit.getOnlinePlayers())
 	{
 	    ItemStack itemStack = player.getInventory().getItemInMainHand();
+	    // Si tienes nepeta cataria en la mano
 	    if (itemStack.getData().toString().equals("RED_ROSE(7)"))
 	    {
 		List<Entity> nearbyEntities = player.getNearbyEntities(20, 20, 20); //Busco bichos dentro de un radio del jugador
@@ -52,31 +53,32 @@ public class CatTaming
 		    if (nearbyEntitie instanceof Ocelot)
 		    {
 			Ocelot myOcelot = (Ocelot) nearbyEntitie;
-			Chicken chicken = createOrMoveNamedChicken(player);
-			myOcelot.setTarget(chicken);
-			if (myOcelot.getLocation().distance(player.getLocation()) < 1) // Si el ocelot esta cerca tuya se le cura
+			if (myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT))
 			{
-			    Util.quitOneItemFromHand(player);
-
-			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 1, false, true), true);
-			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, 2, false, false), true);
-			    myOcelot.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1, false, false), true);
-
-			    World myWorld = player.getWorld();
-			    myWorld.spawnParticle(Particle.CRIT, myOcelot.getEyeLocation(), 10, 0.2, 0.2, 0.2);
-			    myWorld.playSound(myOcelot.getLocation(), Sound.ENTITY_CAT_HURT, 1, 1);
-			    myWorld.playSound(myOcelot.getLocation(), Sound.BLOCK_GRASS_FALL, 1, 1);
-
-			    if (myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT)) // Y si es salvaje, se le domestica
-			    {
-				int random = (int) (Math.random() * 101); // De 0 a 100
-				if (random <= 75)
-				{
-				    convertToCat(myOcelot, player);
-				    safelyKillChicken(chicken);
-				    return;
-				}
-			    }
+			    myOcelot.setTarget(player); // Cuando el ocelot dañe al jugador, el evento del main llamará a testConvertToCat()
+			}
+			// Como en creativo el ocelot no va a llamar a la funcion al no poder dañar al jugador, detecto si esta cerca y lo convierto directamente
+			// ya que SI tiene nepeta en la mano
+			if (player.getGameMode().equals(GameMode.CREATIVE) && myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT) && myOcelot.getLocation().distance(player.getLocation()) < 3)
+			{
+			    convertOcelotToCat(myOcelot, player);
+			}
+		    }
+		}
+	    }
+	    // Si no tienes nepeta cataria en la mano y eres modo creativo
+	    if (!itemStack.getData().toString().equals("RED_ROSE(7)") && player.getGameMode().equals(GameMode.CREATIVE))
+	    {
+		List<Entity> nearbyEntities = player.getNearbyEntities(1,1,1);
+		for (Entity nearbyEntitie : nearbyEntities){
+		    if (nearbyEntitie instanceof Ocelot)
+		    {
+			Ocelot myOcelot = (Ocelot) nearbyEntitie;
+			if (myOcelot.getCatType().equals(Ocelot.Type.WILD_OCELOT) && myOcelot.getTarget() != null)
+			{
+			    // Como en creativo el ocelot no va a llamar a la funcion al no poder dañar al jugador, detecto si esta cerca y lo anulo directamente
+			    // ya que NO tiene nepeta en la mano
+			    disappointedOcelot(myOcelot);
 			}
 		    }
 		}
@@ -84,143 +86,81 @@ public class CatTaming
 	}
     }
 
-    private Chicken createOrMoveNamedChicken(Player player)
+    public void testConvertToCat(EntityDamageByEntityEvent event) // Llamado desde el main cada vez que un ocelot pega a un player
     {
-	Location playerLoc = player.getLocation();
-	playerLoc.setY(playerLoc.getY() + 2);
-	// Checkear si ya existe una gallina
-	List<Entity> nearbyEntities = player.getNearbyEntities(20, 20, 20); // Busca una gallina cercana al jugador
-	for (Entity entity : nearbyEntities)
+	Entity damager = event.getDamager();
+	Entity entity = event.getEntity();
+	if (damager instanceof Ocelot && entity instanceof Player)
 	{
-	    if (entity instanceof Chicken)
+	    Ocelot ocelot = (Ocelot) damager;
+	    Player player = (Player) entity;
+	    if (ocelot.getCatType().equals(Ocelot.Type.WILD_OCELOT))
 	    {
-		Chicken chicken = (Chicken) entity;
-		if ((!chicken.hasAI()) && chicken.getCustomName().equals(player.getName()))
+		World myWorld = player.getWorld();
+		ItemStack itemStack = player.getInventory().getItemInMainHand();
+		if (itemStack.getData().toString().equals("RED_ROSE(7)"))
 		{
-		    chicken.teleport(playerLoc); // Y la teletransporta al jugador
-		    chicken.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0, false, false), true);
-		    return chicken;
+		    event.setCancelled(true);
+		    Util.quitOneItemFromHand(player);
+		    Random r = new Random();
+		    if (r.nextInt(100) < Config.CONFIG_OCELOT_TO_CAT_PERCENTAGE)
+		    {
+			convertOcelotToCat(ocelot, player);
+		    }
+		    else
+		    {
+			myWorld.spawnParticle(Particle.CRIT, ocelot.getEyeLocation(), 10, 0.2, 0.2, 0.2);
+			myWorld.playSound(ocelot.getLocation(), Sound.ENTITY_CAT_HURT, 1, 1);
+			myWorld.playSound(ocelot.getLocation(), Sound.BLOCK_GRASS_FALL, 1, 1);
+		    }
+		}
+		else
+		{
+		    event.setCancelled(true);
+		    disappointedOcelot(ocelot);
 		}
 	    }
 	}
-	// Si no se ha encontrado gallina, crear una nueva
-	World myWorld = player.getWorld();
-	Chicken chicken = (Chicken) myWorld.spawnEntity(playerLoc, EntityType.CHICKEN);
-	chicken.setCustomName(player.getName());
-	chicken.setCollidable(false);
-	chicken.setInvulnerable(true);
-	chicken.setGravity(false);
-	chicken.setAI(false);
-	chicken.setSilent(true);
-	chicken.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0, false, false), true);
-	return chicken;
     }
 
-    private void convertToCat(Ocelot myOcelot, Player owner)
+    private void convertOcelotToCat(Ocelot ocelot, Player player)
     {
-	int random = (int) (Math.random() * 3 + 1);
-	switch (random)
+	Ocelot newCat = (Ocelot) ocelot.getWorld().spawnEntity(ocelot.getLocation(), EntityType.OCELOT);
+	Random r = new Random();
+	switch (r.nextInt(3) + 1)
 	{
 	    case 1:
-		myOcelot.setCatType(Ocelot.Type.BLACK_CAT);
+		newCat.setCatType(Ocelot.Type.BLACK_CAT);
 		break;
 	    case 2:
-		myOcelot.setCatType(Ocelot.Type.RED_CAT);
+		newCat.setCatType(Ocelot.Type.RED_CAT);
 		break;
 	    case 3:
-		myOcelot.setCatType(Ocelot.Type.SIAMESE_CAT);
+		newCat.setCatType(Ocelot.Type.SIAMESE_CAT);
 		break;
 	    default:
 		break;
 	}
-	myOcelot.setTarget(null);
-	myOcelot.setOwner(owner);
-	World myWorld = myOcelot.getWorld();
-	myWorld.playSound(myOcelot.getLocation(), Sound.ENTITY_CAT_AMBIENT, 1, 1);
-	Thread thread = new Thread(new Runnable()
+	newCat.setTamed(true);
+	newCat.setOwner(player);
+	if (!ocelot.isAdult())
 	{
-	    @Override
-	    public void run()
-	    {
-		for (int i = 0; i < 10; i++)
-		{
-		    try
-		    {
-			Thread.sleep(750);
-		    }
-		    catch (InterruptedException ex)
-		    {
-		    }
-		    myWorld.spawnParticle(Particle.HEART, myOcelot.getLocation().add(0, 1, 0), 1, 0, 0, 0);
-		}
-	    }
-	});
-	thread.start();
-
+	    newCat.setBaby();
+	}
+	newCat.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 1, false, true), true);
+	newCat.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, 2, false, false), true);
+	newCat.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1, false, false), true);
+	World myWorld = newCat.getWorld();
+	myWorld.playSound(newCat.getLocation(), Sound.ENTITY_CAT_AMBIENT, 1, 1);
+	myWorld.playSound(newCat.getLocation(), Sound.BLOCK_GRASS_FALL, 1, 1);
+	myWorld.spawnParticle(Particle.HEART, newCat.getLocation().add(0, 1, 0), 5, 0.2, 0.2, 0.2);
+	ocelot.remove();
     }
 
-    public static void removeInvulnerableChickens()
+    private void disappointedOcelot(Ocelot ocelot)
     {
-	for (World myWorld : Bukkit.getWorlds())
-	{
-	    for (LivingEntity livingEntity : myWorld.getLivingEntities())
-	    {
-		if (livingEntity instanceof Chicken)
-		{
-		    Chicken chicken = (Chicken) livingEntity;
-		    if (!chicken.hasAI()) // Si se cumple se inicia el borrado de gallinas y pasa por varias pruebas
-		    {
-			Player player = null;
-			for (Player players : Bukkit.getOnlinePlayers())
-			{
-			    if (players.getName().equals(chicken.getCustomName()))
-			    {
-				player = players;
-			    }
-			}
-			if (player == null) // Si el jugador de la gallina no esta conectado, se muere la gallina
-			{
-			    safelyKillChicken(chicken);
-			    //Bukkit.broadcastMessage(ChatColor.RED + "Una gallina se ha borrado porque no hay jugador");
-			    return;
-			}
-
-			if (!player.getInventory().getItemInMainHand().getData().toString().equals("RED_ROSE(7)")) // Si el jugador ya no tiene la Nepeta, se muere la gallina
-			{
-			    safelyKillChicken(chicken);
-			    //Bukkit.broadcastMessage(ChatColor.RED + "Una gallina se ha borrado porque no hay item en la mano");
-			    return;
-			}
-
-			List<Entity> livingThings = player.getNearbyEntities(20, 20, 20);
-			for (Entity livingThing : livingThings) // Si ya no hay Ocelotes cerca, se muere la gallina
-			{
-			    if (livingThing instanceof Ocelot)
-			    {
-				return;
-			    }
-			}
-			safelyKillChicken(chicken);
-			//Bukkit.broadcastMessage(ChatColor.RED + "Una gallina se ha borrado");
-		    }
-		}
-	    }
-	}
-    }
-
-    private static void safelyKillChicken(Chicken chicken)
-    {
-	// Ahora la mato
-	chicken.remove();
-	// Primero quito a los ocelotes de alrededor su tarjet al pollo
-	List<Entity> nearbyEntities = chicken.getNearbyEntities(20, 20, 20);
-	for (Entity entity : nearbyEntities)
-	{
-	    if (entity instanceof Ocelot)
-	    {
-		Ocelot myOcelot = (Ocelot) entity;
-		myOcelot.setTarget(null);
-	    }
-	}
+	ocelot.setTarget(null);
+	ocelot.getWorld().playSound(ocelot.getLocation(), Sound.ENTITY_CAT_HURT, 1, 1);
+	ocelot.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, ocelot.getLocation().add(0, 1, 0), 5, 0.2, 0.2, 0.2);
     }
 }

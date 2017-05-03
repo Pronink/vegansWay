@@ -16,6 +16,7 @@
  */
 package VegansWay;
 
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -37,7 +38,8 @@ public class SpidersEnhanced
     {
 	if (event.getDamager() instanceof Spider || event.getDamager() instanceof CaveSpider)
 	{
-	    if ((int) (Math.random() * 4 + 1) == 1) // 1/4 parte de las veces entra
+	    Random r = new Random();
+	    if (r.nextInt(100) < Config.CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE) // 1/4 parte de las veces entra
 	    {
 		Block block = event.getEntity().getLocation().getBlock();
 		Entity spider = event.getDamager();
@@ -55,7 +57,7 @@ public class SpidersEnhanced
     {
 	if (event.getEntity() instanceof Spider || event.getEntity() instanceof CaveSpider)
 	{
-	    int nStrings = (int) (Math.random() * 4); // De 0 a 3 drops de cuerdas extra
+	    int nStrings = (int) (Math.random() * Config.CONFIG_SPIDERS_EXTRA_STRING_DROP); // De 0 al número que haya en la configuración
 	    event.getDrops().add(new ItemStack(Material.STRING, nStrings));
 	}
     }

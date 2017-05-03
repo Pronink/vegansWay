@@ -1,48 +1,59 @@
 
 # -- MODULES --
+# Disabling a module disables the rest of that section.
+# The sections are divided by the horizontal bars ( -------------- ).
 
 # -----------------------------------------------------------------------------------------------------
 
-# Crafting_Recipes adds 14 new recipes
+# Crafting_Recipes adds 14 new recipes.
 Crafting_Recipes: true
 
 # -----------------------------------------------------------------------------------------------------
 
-# Healing_And_Taming adds the ability to heal and tame dogs and cats with more kind of food
+# Healing_And_Taming adds the ability to heal and tame dogs and cats with more
+# type of food.
 Healing_And_Taming: true
 
+# You can set the probability percentage of an ocelot converting into a cat when
+# they eat catnip from your hand. 0 - 100 %.
+Ocelote_To_Cat_Percentage: 50
+
 # -----------------------------------------------------------------------------------------------------
 
-# Spiders_Enhanced modifies drops and habilities of spiders, making you to get more string of them
+# Spiders_Enhanced modifies drops and habilities of spiders, making you to get
+# more string from them.
 Spiders_Enhanced: true
 
+# You can set the probability percentage of an spider placing a web to trap a
+# damaged player.
+Spiders_Generate_Web_Percentage: 25
+
+# Sets the number of extra strings droped from spiders when they die. Randmonly
+# from 0 to the value of your choice.
+Spiders_Extra_String_Drop: 4
+
 # -----------------------------------------------------------------------------------------------------
 
-# Items_Renaming renames some items to make them more integrated with rest of the plugin
+# Items_Renaming renames some items to make them more integrated with rest of
+# the plugin.
 Items_Renaming: true
 
-# You can change the name of these modified items. By default all names are in spanish.
+# You can change the name of these modified items.
 # Catnip is the plant that cats love. It overrides Pink Tulip Item name.
 Catnip_Name: Catnip
-#Catnip_Name: Nepeta Cataria
 
-# The new wool source: Wool plant. It overrides Pink Azure Bluet Item name.
-WoolPlant_Name: Wool Plant
-#WoolPlant_Name: Planta de lana
+# The new wool source: Fiber plant. It overrides Pink Azure Bluet Item name.
+WoolPlant_Name: Fiber Plant
 
-# The new wool armor, crafted with wool
+# The new wool armor, crafted with (fiber) wool.
 Wool_Cap_Name: Wool Cap
 Wool_Tunic_Name: Wool Tunic
 Wool_Pants_Name: Wool Pants
 Wool_Boots_Name: Wool Boots
-#Wool_Cap_Name: Gorro de lana
-#Wool_Tunic_Name: Túnica de lana
-#Wool_Pants_Name: Pantalones de lana
-#Wool_Boots_Name: Botas de lana
 
 # -----------------------------------------------------------------------------------------------------
 
-# Show_Logo shows the logo in console on plugin loads
+# Show_Logo shows the logo in console on plugin loading.
 Show_Logo: true
 
 # -----------------------------------------------------------------------------------------------------

@@ -29,6 +29,9 @@ public class Config
     public static boolean CONFIG_MODULE_SPIDERS_ENHANCED;
     public static boolean CONFIG_MODULE_ITEMS_RENAMING;
     public static boolean CONFIG_SHOWLOGO;
+    public static int CONFIG_OCELOT_TO_CAT_PERCENTAGE;
+    public static int CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE;
+    public static int CONFIG_SPIDERS_EXTRA_STRING_DROP;
     public static String CONFIG_CATNIP_NAME;
     public static String CONFIG_WOOLPLANT_NAME;
     public static String CONFIG_WOOL_CAP_NAME;
@@ -45,6 +48,9 @@ public class Config
 	CONFIG_CATNIP_NAME = c.getString("Catnip_Name");
 	CONFIG_WOOLPLANT_NAME = c.getString("WoolPlant_Name");
 	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
+	CONFIG_OCELOT_TO_CAT_PERCENTAGE = c.getInt("Ocelote_To_Cat_Percentage");
+	CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE = c.getInt("Spiders_Generate_Web_Percentage");
+	CONFIG_SPIDERS_EXTRA_STRING_DROP = c.getInt("Spiders_Extra_String_Drop");
 	CONFIG_WOOL_CAP_NAME = c.getString("Wool_Cap_Name");
 	CONFIG_WOOL_TUNIC_MAME = c.getString("Wool_Tunic_Name");
 	CONFIG_WOOL_PANTS_NAME = c.getString("Wool_Pants_Name");
