@@ -67,7 +67,7 @@ Note: The item name changes when items are in ground or when the item is crafted
 
 ## Changelog
 
-**1.01** (2/May/2017)
+**1.01** (4/May/2017)
 - Algorithm change for ocelote taming (no more chickens)
 - You can configure more values from the config.yml
   - Probability percentage of an ocelot converting into a cat when they eat catnip from your hand
@@ -76,6 +76,6 @@ Note: The item name changes when items are in ground or when the item is crafted
 - Renamed Wool Plant -> Fiber Plant
 - When the servers starts, VegansWay looks for a new version and then warns you
 
-**1.0** (4/May/2017)
+**1.0** (2/May/2017)
 - First release !
 - Crafting, taming, loving, spiders and item name changes
