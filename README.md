@@ -5,10 +5,6 @@ VegansWay is a modular and configurable Bukkit plugin that adds vegan alternativ
 
 Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
-## Download links:
-
-[DOWNLOAD](https://github.com/Pronink/vegansWay/releases)
-
 ## Main features:
 
 ### ❱❱❱ New crafting recipes
@@ -41,7 +37,7 @@ Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand,
 
 ### ❱❱❱ Spiders now drops more strings and they have one new attack
 
-Spiders now drops 0 - 3 extra strings when they die.
+Spiders now drops 0 - 4 extra strings when they die.
 
 If you are damaged by one, there is a chance of getting trapped inside a web.
 
@@ -55,7 +51,7 @@ Necessary for the implementation of cat taming and crafting recipes. Names can b
 
 - Modifications (New names overwrite older ones):
   - Pink tulip → Cat nip
-  - Azure bluet → Wool plant
+  - Azure bluet → Fiber plant
 
 - Additions (new names):
   - Wool cap
@@ -64,3 +60,22 @@ Necessary for the implementation of cat taming and crafting recipes. Names can b
   - Wool boots
 
 Note: The item name changes when items are in ground or when the item is crafted.
+
+## Download links:
+
+[DOWNLOAD](https://github.com/Pronink/vegansWay/releases)
+
+## Changelog
+
+**1.01** (2/May/2017)
+- Algorithm change for ocelote taming (no more chickens)
+- You can configure more values from the config.yml
+  - Probability percentage of an ocelot converting into a cat when they eat catnip from your hand
+  - Probability percentage of an spider placing a web to trap a damaged player
+  - Number of extra strings droped from spiders when they die
+- Renamed Wool Plant -> Fiber Plant
+- When the servers starts, VegansWay looks for a new version and then warns you
+
+**1.0** (4/May/2017)
+- First release !
+- Crafting, taming, loving, spiders and item name changes
