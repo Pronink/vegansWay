@@ -49,6 +49,10 @@ public class CraftingRecipes
 	MaterialData bucket = new ItemStack(Material.BUCKET).getData();
 	MaterialData pumpkinSeeds = new ItemStack(Material.PUMPKIN_SEEDS).getData();
 	ItemStack milkBucket = new ItemStack(Material.MILK_BUCKET);
+        if (Config.CONFIG_MODULE_ITEMS_RENAMING)
+        {
+            milkBucket = ItemRenaming.changeName(milkBucket, Config.CONFIG_PUMPKIN_SEED_DRINK_NAME);
+        }
 	shapelessRecipe = new ShapelessRecipe(milkBucket);
 	shapelessRecipe.addIngredient(bucket);
 	shapelessRecipe.addIngredient(pumpkinSeeds);
@@ -102,7 +106,7 @@ public class CraftingRecipes
 	    ItemStack lleggings = changeLeatherColor(new ItemStack(Material.LEATHER_LEGGINGS), colorList[i]);
 	    ItemStack lboots = changeLeatherColor(new ItemStack(Material.LEATHER_BOOTS), colorList[i]);
 	    
-	    if (Config.CONFIG_MODULE_ITEMS_RENAMING == true) // Cambio de nombre
+	    if (Config.CONFIG_MODULE_ITEMS_RENAMING) // Cambio de nombre
 	    {
 		lhelmet = ItemRenaming.changeName(lhelmet, Config.CONFIG_WOOL_CAP_NAME);
 		lchestplate = ItemRenaming.changeName(lchestplate, Config.CONFIG_WOOL_TUNIC_MAME);
@@ -161,7 +165,7 @@ public class CraftingRecipes
 	Bukkit.getServer().addRecipe(shapedRecipe);
 
 	// Madera y heno -> Cama
-	ItemStack bed = new ItemStack(Material.BED);
+        ItemStack bed = new ItemStack(Material.BED, 1, (short) 4);
 	MaterialData hay = new ItemStack(Material.HAY_BLOCK).getData();
 	MaterialData wood;
 	for (int i = 0; i < 6; i++) // Para agregar todos los tipos de madera
@@ -173,6 +177,7 @@ public class CraftingRecipes
 	    shapedRecipe.setIngredient('w', wood);
 	    Bukkit.getServer().addRecipe(shapedRecipe);
 	}
+        
     }
     private ItemStack changeLeatherColor(ItemStack armor, Color color)
     {

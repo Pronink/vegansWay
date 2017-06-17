@@ -13,7 +13,7 @@ Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
 
 ![](http://i.imgur.com/A5DfVfR.png) ![](http://i.imgur.com/kOjOy5e.png) ![](http://i.imgur.com/1PgNS9M.png)
 
-![](http://i.imgur.com/Qa9eojD.png) ![](http://i.imgur.com/ZNxZ17s.png) ![](http://i.imgur.com/lNOLOWX.png)
+![](http://i.imgur.com/Qa9eojD.png) ![](http://i.imgur.com/ZNxZ17s.png) ![](http://i.imgur.com/tuQQxTv.png)
 
 ![](http://i.imgur.com/MHbgf8G.png) ![](http://i.imgur.com/dYcbEdv.png) ![](http://i.imgur.com/ApKsfj2.png)
 
@@ -58,14 +58,24 @@ Necessary for the implementation of cat taming and crafting recipes. Names can b
   - Wool tunic
   - Wool pants
   - Wool boots
+  - Pumpkin Seed Drink
 
 Note: The item name changes when items are in ground or when the item is crafted.
 
 ## Download links:
 
+Compatibility List
+- For MINECRAFT 1.12: VegansWay v1.02
+- For MINECRAFT 1.11: VegansWay v1.0, v1.01
+
 [DOWNLOAD](https://github.com/Pronink/vegansWay/releases)
 
 ## Changelog
+
+**1.02** (17/June/2017)
+- Updated to 1.12 Minecraft Version
+- Changed color of custom bed crafted by Hay Bale
+- Renamed crafted milk -> Pumpkin Seed Drink (Name configurable from the config.yml)
 
 **1.01** (4/May/2017)
 - Algorithm change for ocelote taming (no more chickens)

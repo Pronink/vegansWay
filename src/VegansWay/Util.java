@@ -76,7 +76,7 @@ public class Util
 	{
 	    char mid2 = s2.toLowerCase().charAt(i);
 	    boolean mid2vocal = isVocal(mid2);
-	    System.out.println(mid1 + " " + mid2);
+	    //System.out.println(mid1 + " " + mid2);
 	    if (mid1vocal != mid2vocal)
 	    {
 		// System.out.println(s1.substring(0, ((s1.length() - 1) / 2) + 1) + s2.substring(i));

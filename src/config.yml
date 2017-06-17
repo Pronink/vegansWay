@@ -51,6 +51,9 @@ Wool_Tunic_Name: Wool Tunic
 Wool_Pants_Name: Wool Pants
 Wool_Boots_Name: Wool Boots
 
+# The new drink made of pumpkin seeds.
+Pumpkin_Seed_Drink_Name: Pumpkin Seed Drink
+
 # -----------------------------------------------------------------------------------------------------
 
 # Show_Logo shows the logo in console on plugin loading.
