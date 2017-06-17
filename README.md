@@ -3,7 +3,7 @@ VegansWay<img align="right" width="300px" src="http://i.imgur.com/7s2hLzi.jpg">
 
 VegansWay is a modular and configurable Bukkit plugin that adds vegan alternatives to Minecraft.
 
-Tested for Minecraft 1.11.2 and Bukkit API version 1.11.2-R0.1-SNAPSHOT
+Tested for Minecraft 1.12 and 1.11
 
 ## Main features:
 
@@ -64,7 +64,7 @@ Note: The item name changes when items are in ground or when the item is crafted
 
 ## Download links:
 
-Compatibility List
+Compatibility List:
 - For MINECRAFT 1.12: VegansWay v1.02
 - For MINECRAFT 1.11: VegansWay v1.0, v1.01
 
