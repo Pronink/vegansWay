@@ -95,8 +95,7 @@ public class Util
 		break;
 	    }
 	}
-	// Mezcla los nombres partiendolos por la mitad, salga lo que salga
-	return s1.substring(0, s1.length() / 2) + s2.substring(s2.length() / 2);
+	return s1.substring(0, s1.length() / 2) + s2.substring(s2.length() / 2); // Mezcla los nombres partiendolos por la mitad, salga lo que salga
     }
 
     private static boolean isVocal(char ch)
@@ -108,12 +107,12 @@ public class Util
     {
 	try
 	{
-	    URL oracle = new URL("https://api.github.com/repos/Pronink/vegansWay/releases");
+	    URL myurl = new URL("https://api.github.com/repos/Pronink/vegansWay/releases");
 	    BufferedReader in = new BufferedReader(
-		    new InputStreamReader(oracle.openStream()));
+		    new InputStreamReader(myurl.openStream()));
 
 	    String inputLine;
-	    StringBuffer sb = new StringBuffer("");
+	    StringBuilder sb = new StringBuilder("");
 	    while ((inputLine = in.readLine()) != null)
 	    {
 		sb.append(inputLine);

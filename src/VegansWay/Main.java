@@ -16,6 +16,7 @@
  */
 package VegansWay;
 
+import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -25,6 +26,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 /**
  *
@@ -72,14 +74,14 @@ public class Main extends JavaPlugin implements Listener
 	startTimedEvents();
 
 	// MISCELANEA
-	if (Config.CONFIG_SHOWLOGO)
-	{
-	    showLogo(); // Muestro el logo con la version
-	}
-	else
-	{
-	    printC(getVersionInfo()); // Solo muestro la version
-	}
+	getVersionInfo(); // Muestro el logo (si esta habilitado), la version y busco actualizaciones (hilo)
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+            printC("Algo falló al iniciar Metrics");
+        }
     }
 
     private void startTimedEvents()
@@ -151,10 +153,10 @@ public class Main extends JavaPlugin implements Listener
     }
 
     // MÉTODOS DE LA CONSOLA
-    private void showLogo()
+    private String getLogo()
     {
 	StringBuilder asciiLogo = new StringBuilder("");
-	asciiLogo.append(ChatColor.GREEN).append("\n");
+	asciiLogo.append(ChatColor.GREEN).append("\n\n");
 	asciiLogo.append("                    ynn                                                                                                \n");
 	asciiLogo.append(".s+`           -/oyhdN/                                                                                                \n");
 	asciiLogo.append("  oNo        -mMmMMMMN`                                                                                                \n");
@@ -172,26 +174,36 @@ public class Main extends JavaPlugin implements Listener
 	asciiLogo.append("                   .o-hm:                                                                          .o-hm-              \n");
 	asciiLogo.append("                   ysm+                                                                            ysm+                \n");
 	asciiLogo.append("                    .                                                                              `.                  \n");
-	asciiLogo.append(getVersionInfo()).append("\n");
-	printC(asciiLogo.toString());
+	return (asciiLogo.toString());
     }
 
-    private String getVersionInfo()
+    private void getVersionInfo()
     {
-	String installedVersion = "v" + getDescription().getVersion();
-	String latestVersion = Util.getLatestVersionName();
-	if (latestVersion.equals(""))
-	{
-	    return "";
-	}
-	if (installedVersion.equals(latestVersion))
-	{
-	    return (ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
-	}
-	else
-	{
-	    return (ChatColor.RED + "\nYou do not use the latest version of VegansWay:" + ChatColor.DARK_RED + "\n\tINSTALLED VERSION -> " + installedVersion + "\n\tLATEST VERSION    -> " + latestVersion + ChatColor.RED + "\nDownload the latest version from: " + ChatColor.RESET + "https://www.spigotmc.org/resources/vegansway.40292" + ChatColor.RED + " or " + ChatColor.RESET + "https://github.com/Pronink/vegansWay/releases" + "\n");
-	}
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String installedVersion = "v" + getDescription().getVersion();
+                String latestVersion = Util.getLatestVersionName();
+                String logo = "";
+                if (Config.CONFIG_SHOWLOGO)
+                {
+                    logo = getLogo(); // Muestro el logo con la version
+                }
+                if (latestVersion.equals(""))
+                {
+                    printC(logo);
+                }
+                else if (installedVersion.equals(latestVersion))
+                {
+                    printC(logo + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
+                }
+                else
+                {
+                    printC(logo + ChatColor.RED + "\nYou do not use the latest version of VegansWay:" + ChatColor.DARK_RED + "\n\tINSTALLED VERSION -> " + installedVersion + "\n\tLATEST VERSION    -> " + latestVersion + ChatColor.RED + "\nDownload the latest version from: " + ChatColor.RESET + "https://www.spigotmc.org/resources/vegansway.40292" + ChatColor.RED + " or " + ChatColor.RESET + "https://github.com/Pronink/vegansWay/releases" + "\n");
+                }
+            }
+        });
+        t.start();
     }
 
     private void printC(String string)
