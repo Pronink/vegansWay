@@ -17,15 +17,20 @@
 package VegansWay;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.CaveSpider;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Donkey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
@@ -48,6 +53,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -158,19 +165,40 @@ public class Main extends JavaPlugin implements Listener
 	    spidersEnhanced.testSpiderWebAttack(event);
 	}
         
-        Location location = event.getEntity().getLocation();
         World world = event.getEntity().getWorld();
         Entity entity = event.getEntity();
+        Location location = event.getEntity().getLocation();
+        ItemStack is = new ItemStack(Material.RAW_BEEF);
+        world.spawnParticle(Particle.ITEM_CRACK, location, 50, 0.2f, 0.2f, 0.2f, 0.2f, is);
         if(isFriendlyMob(entity))
         {
-            world.playEffect(location, Effect.STEP_SOUND, 214);
-            world.playEffect(location, Effect.STEP_SOUND, 233);
-            world.playEffect(location, Effect.STEP_SOUND, 152);
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 5*5; i++)
+                    {
+                        if (event.getEntity().isDead())
+                        {
+                            break;
+                        }
+                        Location nowLocation = event.getEntity().getLocation();
+                        MaterialData md = new MaterialData(Material.NETHER_WART_BLOCK);
+                        world.spawnParticle(Particle.BLOCK_CRACK, nowLocation, 5, 0.2f, 0.2f, 0.2f, 0.1f, md);
+                        try
+                        {
+                            Thread.sleep(200);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            });
+            t.start();
         }
         else if(entity instanceof Zombie)
         {
-            location = location.add(0, 1, 0);
-            world.playEffect(location, Effect.STEP_SOUND, 165);
+            Location locationMasArriba = location.add(0, 1, 0);
+            world.playEffect(locationMasArriba, Effect.STEP_SOUND, 165);
         }
         else if(entity instanceof Spider || entity instanceof CaveSpider)
         {
