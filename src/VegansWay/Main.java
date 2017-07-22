@@ -19,6 +19,29 @@ package VegansWay;
 import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.CaveSpider;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Donkey;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.Mule;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -73,8 +96,10 @@ public class Main extends JavaPlugin implements Listener
 	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	startTimedEvents();
 
-	// MISCELANEA
+	// MOSTRAR VERSIONES
 	getVersionInfo(); // Muestro el logo (si esta habilitado), la version y busco actualizaciones (hilo)
+        
+        // INICIO METRICS
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -132,8 +157,36 @@ public class Main extends JavaPlugin implements Listener
 	{
 	    spidersEnhanced.testSpiderWebAttack(event);
 	}
+        
+        Location location = event.getEntity().getLocation();
+        World world = event.getEntity().getWorld();
+        Entity entity = event.getEntity();
+        if(isFriendlyMob(entity))
+        {
+            world.playEffect(location, Effect.STEP_SOUND, 214);
+            world.playEffect(location, Effect.STEP_SOUND, 233);
+            world.playEffect(location, Effect.STEP_SOUND, 152);
+        }
+        else if(entity instanceof Zombie)
+        {
+            location = location.add(0, 1, 0);
+            world.playEffect(location, Effect.STEP_SOUND, 165);
+        }
+        else if(entity instanceof Spider || entity instanceof CaveSpider)
+        {
+            world.playEffect(location, Effect.STEP_SOUND, 165);
+        }
     }
 
+    private boolean isFriendlyMob(Entity e)
+    {
+        if(e instanceof Player || e instanceof Bat || e instanceof Chicken || e instanceof Cow || e instanceof Pig || e instanceof Rabbit || e instanceof Sheep || e instanceof Squid || e instanceof Villager || e instanceof Donkey || e instanceof Horse || e instanceof Llama || e instanceof Mule || e instanceof Ocelot || e instanceof Parrot || e instanceof Wolf)
+        {
+            return true;
+        }
+        return false;
+    }
+    
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
@@ -184,22 +237,22 @@ public class Main extends JavaPlugin implements Listener
             public void run() {
                 String installedVersion = "v" + getDescription().getVersion();
                 String latestVersion = Util.getLatestVersionName();
-                String logo = "";
+                String text = "";
                 if (Config.CONFIG_SHOWLOGO)
                 {
-                    logo = getLogo(); // Muestro el logo con la version
+                    text = getLogo(); // Obtengo el logo
                 }
-                if (latestVersion.equals(""))
+                if (latestVersion.equals("")) // Si no hay conexion a github
                 {
-                    printC(logo);
+                    printC(text); // Imprime el logo, si este ha sido activado antes
                 }
-                else if (installedVersion.equals(latestVersion))
+                else if (installedVersion.equals(latestVersion)) // Si esta actualizado
                 {
-                    printC(logo + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
+                    printC(text + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
                 }
                 else
                 {
-                    printC(logo + ChatColor.RED + "\nYou do not use the latest version of VegansWay:" + ChatColor.DARK_RED + "\n\tINSTALLED VERSION -> " + installedVersion + "\n\tLATEST VERSION    -> " + latestVersion + ChatColor.RED + "\nDownload the latest version from: " + ChatColor.RESET + "https://www.spigotmc.org/resources/vegansway.40292" + ChatColor.RED + " or " + ChatColor.RESET + "https://github.com/Pronink/vegansWay/releases" + "\n");
+                    printC(text + ChatColor.RED + "\nYou do not use the latest version of VegansWay:" + ChatColor.DARK_RED + "\n\tINSTALLED VERSION -> " + installedVersion + "\n\tLATEST VERSION    -> " + latestVersion + ChatColor.RED + "\nDownload the latest version from: " + ChatColor.RESET + "https://www.spigotmc.org/resources/vegansway.40292" + ChatColor.RED + " or " + ChatColor.RESET + "https://github.com/Pronink/vegansWay/releases" + "\n");
                 }
             }
         });
