@@ -34,6 +34,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Donkey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.Mule;
 import org.bukkit.entity.Ocelot;
@@ -165,50 +166,56 @@ public class Main extends JavaPlugin implements Listener
 	    spidersEnhanced.testSpiderWebAttack(event);
 	}
         
-        World world = event.getEntity().getWorld();
         Entity entity = event.getEntity();
-        Location location = event.getEntity().getLocation();
-        ItemStack is = new ItemStack(Material.RAW_BEEF);
-        world.spawnParticle(Particle.ITEM_CRACK, location, 50, 0.2f, 0.2f, 0.2f, 0.2f, is);
-        if(isFriendlyMob(entity))
+        World world = entity.getWorld();
+        if (entity instanceof LivingEntity) // Tengo que establkecer que si son armor stands o otra cosa, no funcione tampoco: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html
         {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < 5*5; i++)
-                    {
-                        if (event.getEntity().isDead())
+            Location location = ((LivingEntity)entity).getEyeLocation();
+            if(isFriendlyMob(entity))
+            {
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Location nowLocation = ((LivingEntity)event.getEntity()).getEyeLocation();
+                        world.spawnParticle(Particle.ITEM_CRACK, nowLocation, 50, 0.2f, 0.2f, 0.2f, 0.2f, new ItemStack(Material.RAW_BEEF));
+                        for (int i = 0; i < 5*5; i++)
                         {
-                            break;
-                        }
-                        Location nowLocation = event.getEntity().getLocation();
-                        MaterialData md = new MaterialData(Material.NETHER_WART_BLOCK);
-                        world.spawnParticle(Particle.BLOCK_CRACK, nowLocation, 5, 0.2f, 0.2f, 0.2f, 0.1f, md);
-                        try
-                        {
-                            Thread.sleep(200);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            nowLocation = (((LivingEntity)event.getEntity()).getEyeLocation()).add(0, -0.4f, 0);
+                            world.spawnParticle(Particle.BLOCK_CRACK, nowLocation, 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.NETHER_WART_BLOCK));
+                            if (event.getEntity().isDead())
+                            {
+                                break;
+                            }
+                            try
+                            {
+                                Thread.sleep(200);
+                            } catch (InterruptedException ex) {
+                            }
                         }
                     }
-                }
-            });
-            t.start();
-        }
-        else if(entity instanceof Zombie)
-        {
-            Location locationMasArriba = location.add(0, 1, 0);
-            world.playEffect(locationMasArriba, Effect.STEP_SOUND, 165);
-        }
-        else if(entity instanceof Spider || entity instanceof CaveSpider)
-        {
-            world.playEffect(location, Effect.STEP_SOUND, 165);
+                });
+                t.start();
+            }
+            else
+            {
+                world.spawnParticle(Particle.BLOCK_CRACK, location, 5, 0.2f, 0.2f, 0.2f, 0.1f, new MaterialData(Material.SLIME_BLOCK));
+            }
+            /*else if(entity instanceof Zombie)
+            {
+                world.spawnParticle(Particle.ITEM_CRACK, location.add(0, -0.5f, 0), 5, 0.2f, 0.5f, 0.2f, 0.1f, new ItemStack(Material.ROTTEN_FLESH));
+                world.spawnParticle(Particle.BLOCK_CRACK, location.add(0, -0.5f, 0), 5, 0.2f, 0.5f, 0.2f, 0.1f, new MaterialData(Material.SLIME_BLOCK));
+            }
+            else if(entity instanceof Spider || entity instanceof CaveSpider)
+            {
+                world.spawnParticle(Particle.ITEM_CRACK, location, 5, 0.2f, 0.2f, 0.2f, 0.1f, new ItemStack(Material.SPIDER_EYE));
+                world.spawnParticle(Particle.BLOCK_CRACK, location, 5, 0.2f, 0.2f, 0.2f, 0.1f, new MaterialData(Material.SLIME_BLOCK));
+            }*/
         }
     }
 
     private boolean isFriendlyMob(Entity e)
     {
-        if(e instanceof Player || e instanceof Bat || e instanceof Chicken || e instanceof Cow || e instanceof Pig || e instanceof Rabbit || e instanceof Sheep || e instanceof Squid || e instanceof Villager || e instanceof Donkey || e instanceof Horse || e instanceof Llama || e instanceof Mule || e instanceof Ocelot || e instanceof Parrot || e instanceof Wolf)
+        if(e instanceof Player || e instanceof Bat || e instanceof Chicken || e instanceof Cow || e instanceof Pig || e instanceof Rabbit || e instanceof Sheep || e instanceof Squid || e instanceof Villager || e instanceof Donkey || e instanceof Horse || e instanceof Llama || e instanceof Mule || e instanceof Ocelot || e instanceof Parrot || e instanceof Wolf || e instanceof Squid)
         {
             return true;
         }
