@@ -56,6 +56,11 @@ Pumpkin_Seed_Drink_Name: Pumpkin Seed Drink
 
 # -----------------------------------------------------------------------------------------------------
 
+# Mobs_Bleeding make pacific and passive mobs bleeding when they are atacked
+Mobs_Bleeding: true
+
+# -----------------------------------------------------------------------------------------------------
+
 # Show_Logo shows the logo in console on plugin loading.
 Show_Logo: true
 

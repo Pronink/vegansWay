@@ -73,6 +73,7 @@ public class Main extends JavaPlugin implements Listener
     SpidersEnhanced spidersEnhanced;
     LovingPets lovingPets;
     FeedingPets feedingPets;
+    MobBleeding mobBleeding;
 
     @Override
     public void onEnable()
@@ -100,6 +101,10 @@ public class Main extends JavaPlugin implements Listener
 	    lovingPets = new LovingPets(); // El main lo llamará cada 1 segundo y tambien cuando dos mascotas se peguen
 	    feedingPets = new FeedingPets(lovingPets); // Feedingpets llamará a LovingPets cada vez que se sobrealimenta una mascota
 	}
+        if (Config.CONFIG_MODULE_MOBS_BLEEDING)
+        {
+            mobBleeding = new MobBleeding();
+        }
 	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
 	Bukkit.getServer().getPluginManager().registerEvents(this, this);
 	startTimedEvents();
@@ -165,62 +170,13 @@ public class Main extends JavaPlugin implements Listener
 	{
 	    spidersEnhanced.testSpiderWebAttack(event);
 	}
-        
-        Entity entity = event.getEntity();
-        World world = entity.getWorld();
-        if (entity instanceof LivingEntity) // Tengo que establkecer que si son armor stands o otra cosa, no funcione tampoco: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html
+        if (Config.CONFIG_MODULE_MOBS_BLEEDING)
         {
-            Location location = ((LivingEntity)entity).getEyeLocation();
-            if(isFriendlyMob(entity))
-            {
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Location nowLocation = ((LivingEntity)event.getEntity()).getEyeLocation();
-                        world.spawnParticle(Particle.ITEM_CRACK, nowLocation, 50, 0.2f, 0.2f, 0.2f, 0.2f, new ItemStack(Material.RAW_BEEF));
-                        for (int i = 0; i < 5*5; i++)
-                        {
-                            nowLocation = (((LivingEntity)event.getEntity()).getEyeLocation()).add(0, -0.4f, 0);
-                            world.spawnParticle(Particle.BLOCK_CRACK, nowLocation, 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.NETHER_WART_BLOCK));
-                            if (event.getEntity().isDead())
-                            {
-                                break;
-                            }
-                            try
-                            {
-                                Thread.sleep(200);
-                            } catch (InterruptedException ex) {
-                            }
-                        }
-                    }
-                });
-                t.start();
-            }
-            else
-            {
-                world.spawnParticle(Particle.BLOCK_CRACK, location, 5, 0.2f, 0.2f, 0.2f, 0.1f, new MaterialData(Material.SLIME_BLOCK));
-            }
-            /*else if(entity instanceof Zombie)
-            {
-                world.spawnParticle(Particle.ITEM_CRACK, location.add(0, -0.5f, 0), 5, 0.2f, 0.5f, 0.2f, 0.1f, new ItemStack(Material.ROTTEN_FLESH));
-                world.spawnParticle(Particle.BLOCK_CRACK, location.add(0, -0.5f, 0), 5, 0.2f, 0.5f, 0.2f, 0.1f, new MaterialData(Material.SLIME_BLOCK));
-            }
-            else if(entity instanceof Spider || entity instanceof CaveSpider)
-            {
-                world.spawnParticle(Particle.ITEM_CRACK, location, 5, 0.2f, 0.2f, 0.2f, 0.1f, new ItemStack(Material.SPIDER_EYE));
-                world.spawnParticle(Particle.BLOCK_CRACK, location, 5, 0.2f, 0.2f, 0.2f, 0.1f, new MaterialData(Material.SLIME_BLOCK));
-            }*/
+            mobBleeding.testMobBleeding(event);
         }
     }
 
-    private boolean isFriendlyMob(Entity e)
-    {
-        if(e instanceof Player || e instanceof Bat || e instanceof Chicken || e instanceof Cow || e instanceof Pig || e instanceof Rabbit || e instanceof Sheep || e instanceof Squid || e instanceof Villager || e instanceof Donkey || e instanceof Horse || e instanceof Llama || e instanceof Mule || e instanceof Ocelot || e instanceof Parrot || e instanceof Wolf || e instanceof Squid)
-        {
-            return true;
-        }
-        return false;
-    }
+    
     
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)

@@ -28,6 +28,7 @@ public class Config
     public static boolean CONFIG_MODULE_HEALING_AND_TAMING;
     public static boolean CONFIG_MODULE_SPIDERS_ENHANCED;
     public static boolean CONFIG_MODULE_ITEMS_RENAMING;
+    public static boolean CONFIG_MODULE_MOBS_BLEEDING;
     public static boolean CONFIG_SHOWLOGO;
     public static int CONFIG_OCELOT_TO_CAT_PERCENTAGE;
     public static int CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE;
@@ -46,6 +47,7 @@ public class Config
 	CONFIG_MODULE_HEALING_AND_TAMING = c.getBoolean("Healing_And_Taming");
 	CONFIG_MODULE_SPIDERS_ENHANCED = c.getBoolean("Spiders_Enhanced");
 	CONFIG_MODULE_ITEMS_RENAMING = c.getBoolean("Items_Renaming");
+        CONFIG_MODULE_MOBS_BLEEDING = c.getBoolean("Mobs_Bleeding");
 	CONFIG_CATNIP_NAME = c.getString("Catnip_Name");
 	CONFIG_WOOLPLANT_NAME = c.getString("WoolPlant_Name");
 	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
