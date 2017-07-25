@@ -50,6 +50,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -156,6 +157,12 @@ public class Main extends JavaPlugin implements Listener
 	{
 	    itemRenaming.modifyItemGround(event);
 	}
+    }
+    
+    @EventHandler
+    public void onCreatureSpawn(CreatureSpawnEvent event)
+    {
+        Bukkit.broadcastMessage("Ha spawneado una hermosa criatura");
     }
 
     @EventHandler
