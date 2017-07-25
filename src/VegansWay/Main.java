@@ -17,6 +17,7 @@
 package VegansWay;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -26,6 +27,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.CaveSpider;
 import org.bukkit.entity.Chicken;
@@ -43,6 +46,7 @@ import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Villager;
@@ -162,7 +166,38 @@ public class Main extends JavaPlugin implements Listener
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event)
     {
-        Bukkit.broadcastMessage("Ha spawneado una hermosa criatura");
+        Entity entity = event.getEntity();
+        if (entity instanceof Skeleton)
+        {
+            Bukkit.broadcastMessage("Ha spawneado un esqueleto hermoso");
+            Block block = entity.getLocation().getBlock();
+            
+            int x = block.getX()-2, y = block.getY()-1, z = block.getZ()-2;
+            int relx = x, rely = y, relz = z;
+            for (int i = 0; i <= 4; i++) {
+                relx = x + i;
+                for (int j = 0; j <= 2; j++) {
+                    rely = y + j;
+                    for (int k = 0; k <= 4; k++) {
+                        relz = z + k;
+                        /**/
+                        Block newBlock = entity.getWorld().getBlockAt(relx, rely, relz);
+                        if (newBlock.getType().equals(Material.AIR) && newBlock.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
+                        {
+                            Random r = new Random();
+                            if (r.nextInt(100) < 25)
+                            {
+                                newBlock.setType(Material.RED_ROSE);
+                                newBlock.setData((byte)3);
+                            }
+                        }
+                        
+                    }
+                }
+            }
+            
+            
+        }
     }
 
     @EventHandler
