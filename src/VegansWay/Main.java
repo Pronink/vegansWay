@@ -18,40 +18,17 @@ package VegansWay;
 
 import java.io.IOException;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.SkullType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Bat;
-import org.bukkit.entity.CaveSpider;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Donkey;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Llama;
-import org.bukkit.entity.Mule;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Parrot;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
-import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.Squid;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -59,8 +36,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
+import org.bukkit.event.world.ChunkPopulateEvent;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -169,19 +147,19 @@ public class Main extends JavaPlugin implements Listener
         Entity entity = event.getEntity();
         if (entity instanceof Skeleton)
         {
-            Bukkit.broadcastMessage("Ha spawneado un esqueleto hermoso");
+            //Bukkit.broadcastMessage("Ha spawneado un esqueleto hermoso");
             Block block = entity.getLocation().getBlock();
             
-            int x = block.getX()-2, y = block.getY()-1, z = block.getZ()-2;
-            int relx = x, rely = y, relz = z;
+            int initX = block.getX()-2, initY = block.getY()-1, initZ = block.getZ()-2;
+            int relX, relY, relZ;
             for (int i = 0; i <= 4; i++) {
-                relx = x + i;
+                relX = initX + i;
                 for (int j = 0; j <= 2; j++) {
-                    rely = y + j;
+                    relY = initY + j;
                     for (int k = 0; k <= 4; k++) {
-                        relz = z + k;
-                        /**/
-                        Block newBlock = entity.getWorld().getBlockAt(relx, rely, relz);
+                        relZ = initZ + k;
+                        
+                        Block newBlock = entity.getWorld().getBlockAt(relX, relY, relZ);
                         if (newBlock.getType().equals(Material.AIR) && newBlock.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
                         {
                             Random r = new Random();
@@ -199,7 +177,87 @@ public class Main extends JavaPlugin implements Listener
             
         }
     }
+    
+    @EventHandler
+    public void onChunkPopulate(ChunkPopulateEvent event)
+    {
+        int x = event.getChunk().getBlock(7, 0, 7).getX();
+        int z = event.getChunk().getBlock(7, 0, 7).getZ();
+        World w = event.getWorld();
+        int y = w.getHighestBlockYAt(x, z);
+        //w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).setType(Material.TNT);
+        if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
+        {
+            int initX = x-6, initY = y-14, initZ = z-6;
+            int relX, relY, relZ;
+            for (int i = 0; i <= 12; i++) {
+                relX = initX + i;
+                for (int j = 0; j <= 28; j++) {
+                    relY = initY + j;
+                    for (int k = 0; k <= 12; k++) {
+                        relZ = initZ + k;
 
+                        Random r = new Random();
+                        if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean())
+                        {
+                            Block b = w.getBlockAt(relX, relY, relZ);
+                            if (b.getType().equals(Material.AIR))
+                            {
+                                if (b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES_2))
+                                {
+                                    generatePineapple(b, 'n');
+                                }
+                                else if (b.getRelative(BlockFace.SOUTH).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.SOUTH).getType().equals(Material.LEAVES_2))
+                                {
+                                    generatePineapple(b, 's');
+                                }
+                                else if (b.getRelative(BlockFace.EAST).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES_2))
+                                {
+                                    generatePineapple(b, 'e');
+                                }
+                                else if (b.getRelative(BlockFace.WEST).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES_2))
+                                {
+                                    generatePineapple(b, 'w');
+                                }
+                                else
+                                {
+                                    b.setType(Material.GLASS);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public void generatePineapple(Block b, char bf)
+    {
+        b.setType(Material.SKULL);
+        Skull cabeza = (Skull)b.getState();
+        cabeza.setSkullType(SkullType.PLAYER);
+        cabeza.setOwningPlayer(Bukkit.getOfflinePlayer(pina));
+        switch (bf) {
+            case 'n':
+                cabeza.setRawData((byte)3);
+                break;
+            case 's':
+                cabeza.setRawData((byte)2);
+                break;
+            case 'e':
+                cabeza.setRawData((byte)4);
+                break;
+            case 'w':
+                cabeza.setRawData((byte)5);
+                break;
+            default:
+                break;
+        }
+        cabeza.update();
+    }
+
+    String manzana = "KylexDavis";
+    String pina = "Rocket_Ash";
+    
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
