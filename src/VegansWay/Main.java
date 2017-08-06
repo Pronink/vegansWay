@@ -181,49 +181,46 @@ public class Main extends JavaPlugin implements Listener
     @EventHandler
     public void onChunkPopulate(ChunkPopulateEvent event)
     {
-        int x = event.getChunk().getBlock(7, 0, 7).getX();
-        int z = event.getChunk().getBlock(7, 0, 7).getZ();
-        World w = event.getWorld();
-        int y = w.getHighestBlockYAt(x, z);
-        //w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).setType(Material.TNT);
-        if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
+        Random r = new Random();
+        if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean())
         {
-            int initX = x-6, initY = y-14, initZ = z-6;
-            int relX, relY, relZ;
-            for (int i = 0; i <= 12; i++) {
-                relX = initX + i;
-                for (int j = 0; j <= 28; j++) {
-                    relY = initY + j;
-                    for (int k = 0; k <= 12; k++) {
-                        relZ = initZ + k;
+            int x = event.getChunk().getBlock(7, 0, 7).getX();
+            int z = event.getChunk().getBlock(7, 0, 7).getZ();
+            World w = event.getWorld();
+            int y = w.getHighestBlockYAt(x, z);
+            //w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).setType(Material.TNT);
+            if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
+            {
+                int initX = x-6, initY = y-14, initZ = z-6;
+                int relX, relY, relZ;
+                for (int i = 0; i <= 12; i++) {
+                    relX = initX + i;
+                    for (int j = 0; j <= 28; j++) {
+                        relY = initY + j;
+                        for (int k = 0; k <= 12; k++) {
+                            relZ = initZ + k;
 
-                        Random r = new Random();
-                        if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean())
-                        {
-                            Block b = w.getBlockAt(relX, relY, relZ);
-                            if (b.getType().equals(Material.AIR))
-                            {
-                                if (b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES_2))
+                                Block b = w.getBlockAt(relX, relY, relZ);
+                                if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() &&
+                                    b.getType().equals(Material.AIR) && 
+                                    b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
                                 {
-                                    generatePineapple(b, 'n');
+                                    b.setType(Material.RED_ROSE);
+                                    b.setData((byte)3);
                                 }
-                                else if (b.getRelative(BlockFace.SOUTH).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.SOUTH).getType().equals(Material.LEAVES_2))
+                                if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() &&
+                                    b.getType().equals(Material.AIR) && 
+                                    b.getRelative(BlockFace.DOWN).getType().equals(Material.SAND) &&
+                                    b.getRelative(BlockFace.NORTH).getType().equals(Material.AIR) &&
+                                    b.getRelative(BlockFace.SOUTH).getType().equals(Material.AIR) &&
+                                    b.getRelative(BlockFace.EAST).getType().equals(Material.AIR) &&
+                                    b.getRelative(BlockFace.WEST).getType().equals(Material.AIR))
                                 {
-                                    generatePineapple(b, 's');
+                                    b.setType(Material.CACTUS);
+                                    Block b2 = b.getRelative(BlockFace.UP);
+                                    b2.setType(Material.WOOL);
+                                    b2.setData((byte)r.nextInt(16));
                                 }
-                                else if (b.getRelative(BlockFace.EAST).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES_2))
-                                {
-                                    generatePineapple(b, 'e');
-                                }
-                                else if (b.getRelative(BlockFace.WEST).getType().equals(Material.LEAVES) || b.getRelative(BlockFace.NORTH).getType().equals(Material.LEAVES_2))
-                                {
-                                    generatePineapple(b, 'w');
-                                }
-                                else
-                                {
-                                    b.setType(Material.GLASS);
-                                }
-                            }
                         }
                     }
                 }
@@ -257,6 +254,12 @@ public class Main extends JavaPlugin implements Listener
 
     String manzana = "KylexDavis";
     String pina = "Rocket_Ash";
+    String lanaBlanca = "ema";
+    String lanaRoja = "wool";
+    String lanaGris = "graywool";
+    String lanaVerde = "Talia";
+    String lanaAmarilla = "TNTniceman";
+    String cactus = "MHF_Cactus";
     
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
