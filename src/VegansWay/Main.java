@@ -24,6 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
@@ -179,48 +180,61 @@ public class Main extends JavaPlugin implements Listener
     }
     
     @EventHandler
-    public void onChunkPopulate(ChunkPopulateEvent event)
-    {
+    public void onChunkPopulate(ChunkPopulateEvent event) {
         Random r = new Random();
-        if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean())
-        {
-            int x = event.getChunk().getBlock(7, 0, 7).getX();
-            int z = event.getChunk().getBlock(7, 0, 7).getZ();
-            World w = event.getWorld();
-            int y = w.getHighestBlockYAt(x, z);
-            //w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).setType(Material.TNT);
-            if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
-            {
-                int initX = x-6, initY = y-14, initZ = z-6;
-                int relX, relY, relZ;
-                for (int i = 0; i <= 12; i++) {
-                    relX = initX + i;
-                    for (int j = 0; j <= 28; j++) {
-                        relY = initY + j;
-                        for (int k = 0; k <= 12; k++) {
-                            relZ = initZ + k;
+        int chunkRandom = r.nextInt(100);
+        Biome biome = event.getChunk().getBlock(7, 0, 7).getBiome();
+        boolean isDesert = biome.equals(Biome.DESERT) || biome.equals(Biome.DESERT_HILLS) || biome.equals(Biome.MUTATED_DESERT);
 
-                                Block b = w.getBlockAt(relX, relY, relZ);
-                                if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() &&
-                                    b.getType().equals(Material.AIR) && 
-                                    b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
-                                {
-                                    b.setType(Material.RED_ROSE);
-                                    b.setData((byte)3);
-                                }
-                                if (r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() && r.nextBoolean() &&
-                                    b.getType().equals(Material.AIR) && 
-                                    b.getRelative(BlockFace.DOWN).getType().equals(Material.SAND) &&
-                                    b.getRelative(BlockFace.NORTH).getType().equals(Material.AIR) &&
-                                    b.getRelative(BlockFace.SOUTH).getType().equals(Material.AIR) &&
-                                    b.getRelative(BlockFace.EAST).getType().equals(Material.AIR) &&
-                                    b.getRelative(BlockFace.WEST).getType().equals(Material.AIR))
-                                {
-                                    b.setType(Material.CACTUS);
-                                    Block b2 = b.getRelative(BlockFace.UP);
-                                    b2.setType(Material.WOOL);
-                                    b2.setData((byte)r.nextInt(16));
-                                }
+        int x = event.getChunk().getBlock(7, 0, 7).getX();
+        int z = event.getChunk().getBlock(7, 0, 7).getZ();
+        World w = event.getWorld();
+        int y = w.getHighestBlockYAt(x, z);
+
+        if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER)) {
+            int initX = x - 6, initY = y - 14, initZ = z - 6;
+            int relX, relY, relZ;
+            for (int i = 0; i <= 12; i++) {
+                relX = initX + i;
+                for (int j = 0; j <= 28; j++) {
+                    relY = initY + j;
+                    for (int k = 0; k <= 12; k++) {
+                        relZ = initZ + k;
+
+                        Block b = w.getBlockAt(relX, relY, relZ);
+
+                        if (!isDesert && chunkRandom < 25 && r.nextInt(100) < 10
+                                && b.getType().equals(Material.AIR)) {
+                            if (b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS)) {
+                                b.setType(Material.RED_ROSE);
+                                b.setData((byte) 3);
+                            }
+                        }
+                        /*if (isDesert && chunkRandom < 50 && r.nextInt(100) < 25
+                                && b.getType().equals(Material.AIR)) {
+                            if (b.getRelative(BlockFace.NORTH).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 'n');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            } else if (b.getRelative(BlockFace.SOUTH).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 's');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            } else if (b.getRelative(BlockFace.EAST).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 'e');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            } else if (b.getRelative(BlockFace.WEST).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 'w');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            }
+                        }*/
+
+                        if (isDesert && chunkRandom < 75 && r.nextInt(100) < 50
+                                && b.getType().equals(Material.AIR)
+                                && b.getRelative(BlockFace.DOWN).getType().equals(Material.AIR)
+                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)) {
+                            b.getRelative(BlockFace.DOWN).setType(Material.CACTUS);
+                            b.setType(Material.WOOL);
+                            b.setData((byte) r.nextInt(16));
+                            Bukkit.broadcastMessage("Cactus lana en: " + relX + " " + relZ);
                         }
                     }
                 }
@@ -232,7 +246,7 @@ public class Main extends JavaPlugin implements Listener
         b.setType(Material.SKULL);
         Skull cabeza = (Skull)b.getState();
         cabeza.setSkullType(SkullType.PLAYER);
-        cabeza.setOwningPlayer(Bukkit.getOfflinePlayer(pina));
+        cabeza.setOwningPlayer(Bukkit.getOfflinePlayer(cactus));
         switch (bf) {
             case 'n':
                 cabeza.setRawData((byte)3);
