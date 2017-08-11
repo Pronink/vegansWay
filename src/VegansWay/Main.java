@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
@@ -28,7 +29,9 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,9 +41,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.EulerAngle;
 import org.mcstats.Metrics;
 
 /**
@@ -203,7 +208,7 @@ public class Main extends JavaPlugin implements Listener
 
                         Block b = w.getBlockAt(relX, relY, relZ);
 
-                        if (!isDesert && chunkRandom < 25 && r.nextInt(100) < 10
+                        if (!isDesert && chunkRandom < 25 && r.nextInt(100) < 5
                                 && b.getType().equals(Material.AIR)) {
                             if (b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS)) {
                                 b.setType(Material.RED_ROSE);
@@ -226,14 +231,35 @@ public class Main extends JavaPlugin implements Listener
                                 Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
                             }
                         }*/
-
+                        // /summon armor_stand ~ ~ ~ {Invisible:1b,NoBasePlate:1b,NoGravity:1b,Rotation:[120f],ArmorItems:[{},{},{},{id:"171",Count:1b,Damage:1}],HandItems:[{},{}],Pose:{Head:[10f,15f,10f]}}
+                        
+                        
                         if (isDesert && chunkRandom < 75 && r.nextInt(100) < 50
                                 && b.getType().equals(Material.AIR)
-                                && b.getRelative(BlockFace.DOWN).getType().equals(Material.AIR)
-                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)) {
+                                //&& b.getRelative(BlockFace.DOWN).getType().equals(Material.AIR)
+                                //&& b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.AIR)
+                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)) {
+                            /*b.setType(Material.WOOL);
+                              b.setData((byte) r.nextInt(16));*/
+                            
                             b.getRelative(BlockFace.DOWN).setType(Material.CACTUS);
-                            b.setType(Material.WOOL);
-                            b.setData((byte) r.nextInt(16));
+                            b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).setType(Material.CACTUS);
+
+                            double rdX = r.nextDouble();
+                            double rdY = r.nextDouble();
+                            double rdZ = r.nextDouble();
+                            int color = r.nextInt(16);
+
+                            for (int a = 0; a < 360; a = a + 60) {
+                                ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, relX+0.5f, relY-1.4f, relZ+0.5f, a, a), EntityType.ARMOR_STAND);
+                                as.setGravity(false);
+                                as.setHeadPose(new EulerAngle(rdX, rdY, rdZ));
+                                as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
+                                as.setVisible(false);
+                                System.out.println(a+"");
+                            }
+                            
                             Bukkit.broadcastMessage("Cactus lana en: " + relX + " " + relZ);
                         }
                     }
