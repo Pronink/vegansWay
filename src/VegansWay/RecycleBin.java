@@ -100,4 +100,61 @@ public class RecycleBin {
         }
         cabeza.update();
     }*/
+    
+    
+    
+    // CABEZAS DE CACTUS
+    /*public void generatePineapple(Block b, char bf)
+    {
+        b.setType(Material.SKULL);
+        Skull cabeza = (Skull)b.getState();
+        cabeza.setSkullType(SkullType.PLAYER);
+        cabeza.setOwningPlayer(Bukkit.getOfflinePlayer(cactus));
+        switch (bf) {
+            case 'n':
+                cabeza.setRawData((byte)3);
+                break;
+            case 's':
+                cabeza.setRawData((byte)2);
+                break;
+            case 'e':
+                cabeza.setRawData((byte)4);
+                break;
+            case 'w':
+                cabeza.setRawData((byte)5);
+                break;
+            default:
+                break;
+        }
+        cabeza.update();
+    }
+
+    String manzana = "KylexDavis";
+    String pina = "Rocket_Ash";
+    String lanaBlanca = "ema";
+    String lanaRoja = "wool";
+    String lanaGris = "graywool";
+    String lanaVerde = "Talia";
+    String lanaAmarilla = "TNTniceman";
+    String cactus = "MHF_Cactus";*/
+    
+                        /*if (isDesert && chunkRandom < 50 && r.nextInt(100) < 25
+                                && b.getType().equals(Material.AIR)) {
+                            if (b.getRelative(BlockFace.NORTH).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 'n');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            } else if (b.getRelative(BlockFace.SOUTH).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 's');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            } else if (b.getRelative(BlockFace.EAST).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 'e');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            } else if (b.getRelative(BlockFace.WEST).getType().equals(Material.CACTUS)) {
+                                generatePineapple(b, 'w');
+                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
+                            }
+                        }*/
+                        // /summon armor_stand ~ ~ ~ {Invisible:1b,NoBasePlate:1b,NoGravity:1b,Rotation:[120f],ArmorItems:[{},{},{},{id:"171",Count:1b,Damage:1}],HandItems:[{},{}],Pose:{Head:[10f,15f,10f]}}
+                        
+                        
 }

@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
 import org.bukkit.SkullType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -37,15 +38,21 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.mcstats.Metrics;
@@ -217,33 +224,10 @@ public class Main extends JavaPlugin implements Listener
                                 b.setData((byte) 3);
                             }
                         }
-                        /*if (isDesert && chunkRandom < 50 && r.nextInt(100) < 25
-                                && b.getType().equals(Material.AIR)) {
-                            if (b.getRelative(BlockFace.NORTH).getType().equals(Material.CACTUS)) {
-                                generatePineapple(b, 'n');
-                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
-                            } else if (b.getRelative(BlockFace.SOUTH).getType().equals(Material.CACTUS)) {
-                                generatePineapple(b, 's');
-                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
-                            } else if (b.getRelative(BlockFace.EAST).getType().equals(Material.CACTUS)) {
-                                generatePineapple(b, 'e');
-                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
-                            } else if (b.getRelative(BlockFace.WEST).getType().equals(Material.CACTUS)) {
-                                generatePineapple(b, 'w');
-                                Bukkit.broadcastMessage("Cactus pequeño en: " + relX + " " + relZ);
-                            }
-                        }*/
-                        // /summon armor_stand ~ ~ ~ {Invisible:1b,NoBasePlate:1b,NoGravity:1b,Rotation:[120f],ArmorItems:[{},{},{},{id:"171",Count:1b,Damage:1}],HandItems:[{},{}],Pose:{Head:[10f,15f,10f]}}
-                        
-                        
                         if (isDesert && chunkRandom < 75 && r.nextInt(100) < 50
                                 && b.getType().equals(Material.AIR)
-                                //&& b.getRelative(BlockFace.DOWN).getType().equals(Material.AIR)
-                                //&& b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.AIR)
                                 && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
                                 && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)) {
-                            /*b.setType(Material.WOOL);
-                              b.setData((byte) r.nextInt(16));*/
                             
                             b.getRelative(BlockFace.DOWN).setType(Material.CACTUS);
                             b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).setType(Material.CACTUS);
@@ -273,61 +257,54 @@ public class Main extends JavaPlugin implements Listener
             }
         }
     }
-    
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onBlockPhysicsEvent(BlockPhysicsEvent event){
         if (event.getBlock().getType().equals(Material.CACTUS)) {
             Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
+            double x = cactusLocation.getX();
+            double y = cactusLocation.getY();
+            double z = cactusLocation.getZ();
             Entity[] entities = event.getBlock().getChunk().getEntities();
             for (Entity entity : entities) {
                 if (entity != null
                         && entity instanceof ArmorStand
                         && entity.getCustomName().equals("vegansWay_CactusFlower")
-                        && entity.getLocation().getX() == cactusLocation.getX()
-                        && entity.getLocation().getZ() == cactusLocation.getZ()
-                        && Math.abs(entity.getLocation().getY() - cactusLocation.getY()) < 3) {
+                        && entity.getLocation().getX() == x
+                        && entity.getLocation().getZ() == z
+                        && Math.abs(entity.getLocation().getY() - y) < 3d) {
                     Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
-                    entity.getWorld().dropItemNaturally(entity.getLocation(), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                    entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                    entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
                     entity.remove();
                 }
             }
         }
     }
-    
-    public void generatePineapple(Block b, char bf)
-    {
-        b.setType(Material.SKULL);
-        Skull cabeza = (Skull)b.getState();
-        cabeza.setSkullType(SkullType.PLAYER);
-        cabeza.setOwningPlayer(Bukkit.getOfflinePlayer(cactus));
-        switch (bf) {
-            case 'n':
-                cabeza.setRawData((byte)3);
-                break;
-            case 's':
-                cabeza.setRawData((byte)2);
-                break;
-            case 'e':
-                cabeza.setRawData((byte)4);
-                break;
-            case 'w':
-                cabeza.setRawData((byte)5);
-                break;
-            default:
-                break;
+    // -------------------------------------------------------------------------------------------- TENGO QUE TESTEAR QUE SIN EL METODO DE ABAJO TODO FUNCIONE TAMBIEN. AHORA MISMITO LO QUE OCURRE ES QUE CUANDO ROMPES UN BLOQUE TE DA NO 6, SI NO 6*3 BLOQUES
+    @EventHandler/**//************************/
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.getBlock().getType().equals(Material.CACTUS)) {
+            Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
+            double x = cactusLocation.getX();
+            double y = cactusLocation.getY();
+            double z = cactusLocation.getZ();
+            Entity[] entities = event.getBlock().getChunk().getEntities();
+            for (Entity entity : entities) {
+                if (entity != null
+                        && entity instanceof ArmorStand
+                        && entity.getCustomName().equals("vegansWay_CactusFlower")
+                        && entity.getLocation().getX() == x
+                        && entity.getLocation().getZ() == z
+                        && Math.abs(entity.getLocation().getY() - y) < 3d) {
+                    Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
+                    entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                    entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
+                    entity.remove();
+                }
+            }
         }
-        cabeza.update();
     }
-
-    String manzana = "KylexDavis";
-    String pina = "Rocket_Ash";
-    String lanaBlanca = "ema";
-    String lanaRoja = "wool";
-    String lanaGris = "graywool";
-    String lanaVerde = "Talia";
-    String lanaAmarilla = "TNTniceman";
-    String cactus = "MHF_Cactus";
-    
+   
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
@@ -343,6 +320,26 @@ public class Main extends JavaPlugin implements Listener
         if (Config.CONFIG_MODULE_MOBS_BLEEDING)
         {
             mobBleeding.testMobBleeding(event);
+        }
+        if (event.getEntity() instanceof ArmorStand) {
+            Location firstASLocation = event.getEntity().getLocation(); // Armor stand que ha recibido el golpe y sus coordenadas
+            double x = firstASLocation.getX();
+            double y = firstASLocation.getY();
+            double z = firstASLocation.getZ();
+            Entity[] entities = event.getEntity().getLocation().getChunk().getEntities(); // Armor stands cercanos
+            for (Entity entity : entities) {
+                if (entity != null
+                        && entity instanceof ArmorStand
+                        && entity.getCustomName().equals("vegansWay_CactusFlower")
+                        && entity.getLocation().getX() == x
+                        && entity.getLocation().getZ() == z
+                        && Math.abs(entity.getLocation().getY() - y) < 1d) {
+                    Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
+                    entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                    entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
+                    entity.remove();
+                }
+            }
         }
     }
 
