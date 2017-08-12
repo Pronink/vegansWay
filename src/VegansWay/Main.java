@@ -17,6 +17,7 @@
 package VegansWay;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,6 +36,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -254,10 +256,14 @@ public class Main extends JavaPlugin implements Listener
                             for (int a = 0; a < 360; a = a + 60) {
                                 ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, relX+0.5f, relY-1.4f, relZ+0.5f, a, a), EntityType.ARMOR_STAND);
                                 as.setGravity(false);
+                                as.setCollidable(false);
+                                as.setAI(false);
+                                as.setInvulnerable(true);
                                 as.setHeadPose(new EulerAngle(rdX, rdY, rdZ));
                                 as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
                                 as.setVisible(false);
-                                System.out.println(a+"");
+                                as.setCustomName("vegansWay_CactusFlower");
+                                as.setCustomNameVisible(false);
                             }
                             
                             Bukkit.broadcastMessage("Cactus lana en: " + relX + " " + relZ);
@@ -267,6 +273,27 @@ public class Main extends JavaPlugin implements Listener
             }
         }
     }
+    
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.getBlock().getType().equals(Material.CACTUS)) {
+            Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
+            Entity[] entities = event.getBlock().getChunk().getEntities();
+            for (Entity entity : entities) {
+                if (entity != null
+                        && entity instanceof ArmorStand
+                        && entity.getCustomName().equals("vegansWay_CactusFlower")
+                        && entity.getLocation().getX() == cactusLocation.getX()
+                        && entity.getLocation().getZ() == cactusLocation.getZ()
+                        && Math.abs(entity.getLocation().getY() - cactusLocation.getY()) < 3) {
+                    Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
+                    entity.getWorld().dropItemNaturally(entity.getLocation(), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                    entity.remove();
+                }
+            }
+        }
+    }
+    
     public void generatePineapple(Block b, char bf)
     {
         b.setType(Material.SKULL);
