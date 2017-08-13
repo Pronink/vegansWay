@@ -39,6 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -76,45 +77,48 @@ public class Main extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
-	// INICIAR CONFIGURACIÓN
-	saveDefaultConfig(); // Nunca sobreescribe si ya existe algo
-	Config.load(getConfig());
-	// INICIAR MÓDULOS
-	if (Config.CONFIG_MODULE_ITEMS_RENAMING)
-	{
-	    itemRenaming = new ItemRenaming();
-	}
-	if (Config.CONFIG_MODULE_CRAFTING_RECIPES)
-	{
-	    craftingRecipes = new CraftingRecipes();
-	    craftingRecipes.addAllCraftingRecipes();
-	}
-	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
-	{
-	    spidersEnhanced = new SpidersEnhanced();
-	}
-	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
-	{
-	    catTaming = new CatTaming();
-	    lovingPets = new LovingPets(); // El main lo llamará cada 1 segundo y tambien cuando dos mascotas se peguen
-	    feedingPets = new FeedingPets(lovingPets); // Feedingpets llamará a LovingPets cada vez que se sobrealimenta una mascota
-	}
+        // INICIAR CONFIGURACIÓN
+        saveDefaultConfig(); // Nunca sobreescribe si ya existe algo
+        Config.load(getConfig());
+        // INICIAR MÓDULOS
+        if (Config.CONFIG_MODULE_ITEMS_RENAMING)
+        {
+            itemRenaming = new ItemRenaming();
+        }
+        if (Config.CONFIG_MODULE_CRAFTING_RECIPES)
+        {
+            craftingRecipes = new CraftingRecipes();
+            craftingRecipes.addAllCraftingRecipes();
+        }
+        if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+        {
+            spidersEnhanced = new SpidersEnhanced();
+        }
+        if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+        {
+            catTaming = new CatTaming();
+            lovingPets = new LovingPets(); // El main lo llamará cada 1 segundo y tambien cuando dos mascotas se peguen
+            feedingPets = new FeedingPets(lovingPets); // Feedingpets llamará a LovingPets cada vez que se sobrealimenta una mascota
+        }
         if (Config.CONFIG_MODULE_MOBS_BLEEDING)
         {
             mobBleeding = new MobBleeding();
         }
-	// REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
-	Bukkit.getServer().getPluginManager().registerEvents(this, this);
-	startTimedEvents();
+        // REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
+        Bukkit.getServer().getPluginManager().registerEvents(this, this);
+        startTimedEvents();
 
-	// MOSTRAR VERSIONES
-	getVersionInfo(); // Muestro el logo (si esta habilitado), la version y busco actualizaciones (hilo)
-        
+        // MOSTRAR VERSIONES
+        getVersionInfo(); // Muestro el logo (si esta habilitado), la version y busco actualizaciones (hilo)
+
         // INICIO METRICS
-        try {
+        try
+        {
             Metrics metrics = new Metrics(this);
             metrics.start();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // Failed to submit the stats :-(
             printC("Algo falló al iniciar Metrics");
         }
@@ -122,22 +126,22 @@ public class Main extends JavaPlugin implements Listener
 
     private void startTimedEvents()
     {
-	Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
-	{
-	    @Override
-	    public void run() // Añadir aqui los eventos que se ejecutaran cada segundo
-	    {
-		state = ++state % 120; // EL CICLO DURA 60 SEGUNDOS
-		if (state % 2 == 0) // CADA 1 SEGUNDOS
-		{
-		    if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
-		    {
-			catTaming.testOcelotTaming();
-			lovingPets.testLovingPets();
-		    }
-		}
-	    }
-	}, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
+        {
+            @Override
+            public void run() // Añadir aqui los eventos que se ejecutaran cada segundo
+            {
+                state = ++state % 120; // EL CICLO DURA 60 SEGUNDOS
+                if (state % 2 == 0) // CADA 1 SEGUNDOS
+                {
+                    if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+                    {
+                        catTaming.testOcelotTaming();
+                        lovingPets.testLovingPets();
+                    }
+                }
+            }
+        }, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
 
     }
 
@@ -150,13 +154,13 @@ public class Main extends JavaPlugin implements Listener
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event)
     {
-	if (Config.CONFIG_MODULE_ITEMS_RENAMING)
-	{
-	    itemRenaming.modifyItemGround(event);
-	}
+        if (Config.CONFIG_MODULE_ITEMS_RENAMING)
+        {
+            itemRenaming.modifyItemGround(event);
+        }
     }
-    
-    @EventHandler
+
+    /*@EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event)
     {
         Entity entity = event.getEntity();
@@ -164,16 +168,19 @@ public class Main extends JavaPlugin implements Listener
         {
             //Bukkit.broadcastMessage("Ha spawneado un esqueleto hermoso");
             Block block = entity.getLocation().getBlock();
-            
-            int initX = block.getX()-2, initY = block.getY()-1, initZ = block.getZ()-2;
+
+            int initX = block.getX() - 2, initY = block.getY() - 1, initZ = block.getZ() - 2;
             int relX, relY, relZ;
-            for (int i = 0; i <= 4; i++) {
+            for (int i = 0; i <= 4; i++)
+            {
                 relX = initX + i;
-                for (int j = 0; j <= 2; j++) {
+                for (int j = 0; j <= 2; j++)
+                {
                     relY = initY + j;
-                    for (int k = 0; k <= 4; k++) {
+                    for (int k = 0; k <= 4; k++)
+                    {
                         relZ = initZ + k;
-                        
+
                         Block newBlock = entity.getWorld().getBlockAt(relX, relY, relZ);
                         if (newBlock.getType().equals(Material.AIR) && newBlock.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
                         {
@@ -181,22 +188,21 @@ public class Main extends JavaPlugin implements Listener
                             if (r.nextInt(100) < 25)
                             {
                                 newBlock.setType(Material.RED_ROSE);
-                                newBlock.setData((byte)3);
+                                newBlock.setData((byte) 3);
                             }
                         }
-                        
+
                     }
                 }
             }
-            
-            
+
         }
-    }
-    
+    }*/
     @EventHandler
-    public void onChunkPopulate(ChunkPopulateEvent event) {
+    public void onChunkPopulate(ChunkPopulateEvent event)
+    {
         Random r = new Random();
-        int chunkRandom = r.nextInt(100);
+        int chunkRandom = r.nextInt(100); // No en todos los chunks se van a generar cosas
         Biome biome = event.getChunk().getBlock(7, 0, 7).getBiome();
         boolean isDesert = biome.equals(Biome.DESERT) || biome.equals(Biome.DESERT_HILLS) || biome.equals(Biome.MUTATED_DESERT);
 
@@ -205,21 +211,28 @@ public class Main extends JavaPlugin implements Listener
         World w = event.getWorld();
         int y = w.getHighestBlockYAt(x, z);
 
-        if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER)) {
+        // Recorrer la zona centro de cada chunk
+        if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
+        {
             int initX = x - 6, initY = y - 14, initZ = z - 6;
             int relX, relY, relZ;
-            for (int i = 0; i <= 12; i++) {
+            for (int i = 0; i <= 12; i++)
+            {
                 relX = initX + i;
-                for (int j = 0; j <= 28; j++) {
+                for (int j = 0; j <= 28; j++)
+                {
                     relY = initY + j;
-                    for (int k = 0; k <= 12; k++) {
+                    for (int k = 0; k <= 12; k++)
+                    {
                         relZ = initZ + k;
 
                         Block b = w.getBlockAt(relX, relY, relZ);
 
                         if (!isDesert && chunkRandom < 25 && r.nextInt(100) < 5
-                                && b.getType().equals(Material.AIR)) {
-                            if (b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS)) {
+                                && b.getType().equals(Material.AIR))
+                        {
+                            if (b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
+                            {
                                 b.setType(Material.RED_ROSE);
                                 b.setData((byte) 3);
                             }
@@ -227,8 +240,9 @@ public class Main extends JavaPlugin implements Listener
                         if (isDesert && chunkRandom < 75 && r.nextInt(100) < 50
                                 && b.getType().equals(Material.AIR)
                                 && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)) {
-                            
+                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND))
+                        {
+
                             b.getRelative(BlockFace.DOWN).setType(Material.CACTUS);
                             b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).setType(Material.CACTUS);
 
@@ -237,8 +251,9 @@ public class Main extends JavaPlugin implements Listener
                             double rdZ = r.nextDouble();
                             int color = r.nextInt(16);
 
-                            for (int a = 0; a < 360; a = a + 60) {
-                                ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, relX+0.5f, relY-1.4f, relZ+0.5f, a, a), EntityType.ARMOR_STAND);
+                            for (int a = 0; a < 360; a = a + 60)
+                            {
+                                ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, relX + 0.5d, relY - 1.4d, relZ + 0.5d, a, a), EntityType.ARMOR_STAND);
                                 as.setGravity(false);
                                 as.setCollidable(false);
                                 as.setAI(false);
@@ -249,7 +264,7 @@ public class Main extends JavaPlugin implements Listener
                                 as.setCustomName("vegansWay_CactusFlower");
                                 as.setCustomNameVisible(false);
                             }
-                            
+
                             Bukkit.broadcastMessage("Cactus lana en: " + relX + " " + relZ);
                         }
                     }
@@ -257,142 +272,198 @@ public class Main extends JavaPlugin implements Listener
             }
         }
     }
+
     @EventHandler
-    public void onBlockPhysicsEvent(BlockPhysicsEvent event){
-        if (event.getBlock().getType().equals(Material.CACTUS)) {
+    public void onBlockGrow(BlockGrowEvent event)
+    {
+        if (event.getNewState().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                && event.getNewState().getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS))
+        {
+            Random r = new Random();
+            World w = event.getNewState().getWorld();
+            double x = event.getNewState().getBlock().getX() + 0.5d;
+            double y = event.getNewState().getBlock().getY() - 0.4d;
+            double z = event.getNewState().getBlock().getZ() + 0.5d;
+
+            double rdX = r.nextDouble();
+            double rdY = r.nextDouble();
+            double rdZ = r.nextDouble();
+            int color = r.nextInt(16);
+
+            for (int a = 0; a < 360; a = a + 60)
+            {
+                ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, x, y, z, a, a), EntityType.ARMOR_STAND);
+                as.setGravity(false);
+                as.setCollidable(false);
+                as.setAI(false);
+                as.setInvulnerable(true);
+                as.setHeadPose(new EulerAngle(rdX, rdY, rdZ));
+                as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
+                as.setVisible(false);
+                as.setCustomName("vegansWay_CactusFlower");
+                as.setCustomNameVisible(false);
+            }
+
+            Bukkit.broadcastMessage("Cactus NUEVO lana en: " + x + " " + z);
+        }
+    }
+
+    /*@EventHandler
+    public void onBlockPhysicsEvent(BlockPhysicsEvent event)
+    {
+        if (event.getBlock().getType().equals(Material.CACTUS))
+        {
             Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
             double x = cactusLocation.getX();
             double y = cactusLocation.getY();
             double z = cactusLocation.getZ();
             Entity[] entities = event.getBlock().getChunk().getEntities();
-            for (Entity entity : entities) {
+            for (Entity entity : entities)
+            {
                 if (entity != null
                         && entity instanceof ArmorStand
                         && entity.getCustomName().equals("vegansWay_CactusFlower")
                         && entity.getLocation().getX() == x
                         && entity.getLocation().getZ() == z
-                        && Math.abs(entity.getLocation().getY() - y) < 3d) {
-                    Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
-                    entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
-                    entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
-                    entity.remove();
+                        && Math.abs(entity.getLocation().getY() - y) < 3d)
+                {
+                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
+                    if (!entity.isDead())
+                    {
+                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
+                        entity.remove();
+                    }
                 }
             }
         }
-    }
-    // -------------------------------------------------------------------------------------------- TENGO QUE TESTEAR QUE SIN EL METODO DE ABAJO TODO FUNCIONE TAMBIEN. AHORA MISMITO LO QUE OCURRE ES QUE CUANDO ROMPES UN BLOQUE TE DA NO 6, SI NO 6*3 BLOQUES
-    @EventHandler/**//************************/
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType().equals(Material.CACTUS)) {
+    }*/
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event)
+    {
+        if (event.getBlock().getType().equals(Material.CACTUS))
+        {
             Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
             double x = cactusLocation.getX();
             double y = cactusLocation.getY();
             double z = cactusLocation.getZ();
             Entity[] entities = event.getBlock().getChunk().getEntities();
-            for (Entity entity : entities) {
+            for (Entity entity : entities)
+            {
                 if (entity != null
                         && entity instanceof ArmorStand
                         && entity.getCustomName().equals("vegansWay_CactusFlower")
                         && entity.getLocation().getX() == x
                         && entity.getLocation().getZ() == z
-                        && Math.abs(entity.getLocation().getY() - y) < 3d) {
-                    Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
-                    entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
-                    entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
-                    entity.remove();
+                        && Math.abs(entity.getLocation().getY() - y) < 3d)
+                {
+                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
+                    if (!entity.isDead())
+                    {
+                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
+                        entity.remove();
+                    }
                 }
             }
         }
     }
-   
+
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
-	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
-	{
-	    catTaming.testConvertToCat(event);
-	    lovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
-	}
-	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
-	{
-	    spidersEnhanced.testSpiderWebAttack(event);
-	}
-        if (Config.CONFIG_MODULE_MOBS_BLEEDING)
+        if (event.getEntity() instanceof ArmorStand)
         {
-            mobBleeding.testMobBleeding(event);
-        }
-        if (event.getEntity() instanceof ArmorStand) {
             Location firstASLocation = event.getEntity().getLocation(); // Armor stand que ha recibido el golpe y sus coordenadas
             double x = firstASLocation.getX();
             double y = firstASLocation.getY();
             double z = firstASLocation.getZ();
             Entity[] entities = event.getEntity().getLocation().getChunk().getEntities(); // Armor stands cercanos
-            for (Entity entity : entities) {
+            for (Entity entity : entities)
+            {
                 if (entity != null
                         && entity instanceof ArmorStand
                         && entity.getCustomName().equals("vegansWay_CactusFlower")
                         && entity.getLocation().getX() == x
                         && entity.getLocation().getZ() == z
-                        && Math.abs(entity.getLocation().getY() - y) < 1d) {
-                    Byte color = ((ArmorStand)entity).getHelmet().getData().getData();
-                    entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
-                    entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
-                    entity.remove();
+                        && Math.abs(entity.getLocation().getY() - y) < 1d)
+                {
+                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
+                    if (!entity.isDead())
+                    {
+                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
+                        entity.remove();
+                    }
                 }
             }
         }
+        if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+        {
+            catTaming.testConvertToCat(event);
+            lovingPets.testNewDogOrCatBaby(event.getDamager(), event.getEntity());
+        }
+        if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+        {
+            spidersEnhanced.testSpiderWebAttack(event);
+        }
+        if (Config.CONFIG_MODULE_MOBS_BLEEDING)
+        {
+            mobBleeding.testMobBleeding(event);
+        }
     }
 
-    
-    
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
-	if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
-	{
-	    spidersEnhanced.addSpiderDrops(event);
-	}
+        if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+        {
+            spidersEnhanced.addSpiderDrops(event);
+        }
     }
 
     @EventHandler
     public void onRightClick(PlayerInteractAtEntityEvent event)
     {
-	if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
-	{
-	    feedingPets.testPetFeeding(event);
-	}
+        if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
+        {
+            feedingPets.testPetFeeding(event);
+        }
     }
 
     // MÉTODOS DE LA CONSOLA
     private String getLogo()
     {
-	StringBuilder asciiLogo = new StringBuilder("");
-	asciiLogo.append(ChatColor.GREEN).append("\n\n");
-	asciiLogo.append("                    ynn                                                                                                \n");
-	asciiLogo.append(".s+`           -/oyhdN/                                                                                                \n");
-	asciiLogo.append("  oNo        -mMmMMMMN`                                                                                                \n");
-	asciiLogo.append("   +Md`      ds:dMMMMs                                                                                                 \n");
-	asciiLogo.append("    oMm`     .:NMMNh/                                               :+syhddhhysso+++++                `:+sssssyyyo/`   \n");
-	asciiLogo.append("     hMd     /N+.                                                 oNh+:-:oso/+ossyMMN-    .+o     `/yys/.`      `-oms  \n");
-	asciiLogo.append("     `NM+   /M/                                                  sMo    /.sM`    yMN-  `/dMd`  `+hy/`               s. \n");
-	asciiLogo.append("      +MN` :Mo                                                   .ymo/::+yy-    sMM: .smdMd` :yd+`                     \n");
-	asciiLogo.append("       NMo.Nm                                        -/             .:::.      oMM:-ym++Mm`/dh:                        \n");
-	asciiLogo.append("       oMNdM:  -syyds  `oyyhy:y/ .oyyds/h- `sNhomN/ `NNs`                     /MMshN+ /MNomd-`+yyhd:yo  /d/  /d/       \n");
-	asciiLogo.append("       `MMMm .dd: :h+`sN/  `MN+.hm:  -Mm: :mh- .mm.-h+Mm                     -MMMNo` :MMMm/ oNo`  mMo .hm:  hN/        \n");
-	asciiLogo.append("        hMM+ NMs/--`:hMy  :my.:mM+ `/Ns./yN/ `sNs+hM  :M/-o/                `mMMy.  .NMNo  /Md  -dd-:oNs` `Ny-/:       \n");
-	asciiLogo.append("        /hh` /ydyso+::ydmMNho+-:yhs+hyo+hs`  yhs+::y/+hhs/`                 /yy-    sys`   `shy+yhso+hysdNNho+-        \n");
-	asciiLogo.append("                     /+yMy`                                                                          /+hMs`            \n");
-	asciiLogo.append("                   .o-hm:                                                                          .o-hm-              \n");
-	asciiLogo.append("                   ysm+                                                                            ysm+                \n");
-	asciiLogo.append("                    .                                                                              `.                  \n");
-	return (asciiLogo.toString());
+        StringBuilder asciiLogo = new StringBuilder("");
+        asciiLogo.append(ChatColor.GREEN).append("\n\n");
+        asciiLogo.append("                    ynn                                                                                                \n");
+        asciiLogo.append(".s+`           -/oyhdN/                                                                                                \n");
+        asciiLogo.append("  oNo        -mMmMMMMN`                                                                                                \n");
+        asciiLogo.append("   +Md`      ds:dMMMMs                                                                                                 \n");
+        asciiLogo.append("    oMm`     .:NMMNh/                                               :+syhddhhysso+++++                `:+sssssyyyo/`   \n");
+        asciiLogo.append("     hMd     /N+.                                                 oNh+:-:oso/+ossyMMN-    .+o     `/yys/.`      `-oms  \n");
+        asciiLogo.append("     `NM+   /M/                                                  sMo    /.sM`    yMN-  `/dMd`  `+hy/`               s. \n");
+        asciiLogo.append("      +MN` :Mo                                                   .ymo/::+yy-    sMM: .smdMd` :yd+`                     \n");
+        asciiLogo.append("       NMo.Nm                                        -/             .:::.      oMM:-ym++Mm`/dh:                        \n");
+        asciiLogo.append("       oMNdM:  -syyds  `oyyhy:y/ .oyyds/h- `sNhomN/ `NNs`                     /MMshN+ /MNomd-`+yyhd:yo  /d/  /d/       \n");
+        asciiLogo.append("       `MMMm .dd: :h+`sN/  `MN+.hm:  -Mm: :mh- .mm.-h+Mm                     -MMMNo` :MMMm/ oNo`  mMo .hm:  hN/        \n");
+        asciiLogo.append("        hMM+ NMs/--`:hMy  :my.:mM+ `/Ns./yN/ `sNs+hM  :M/-o/                `mMMy.  .NMNo  /Md  -dd-:oNs` `Ny-/:       \n");
+        asciiLogo.append("        /hh` /ydyso+::ydmMNho+-:yhs+hyo+hs`  yhs+::y/+hhs/`                 /yy-    sys`   `shy+yhso+hysdNNho+-        \n");
+        asciiLogo.append("                     /+yMy`                                                                          /+hMs`            \n");
+        asciiLogo.append("                   .o-hm:                                                                          .o-hm-              \n");
+        asciiLogo.append("                   ysm+                                                                            ysm+                \n");
+        asciiLogo.append("                    .                                                                              `.                  \n");
+        return (asciiLogo.toString());
     }
 
     private void getVersionInfo()
     {
-        Thread t = new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 String installedVersion = "v" + getDescription().getVersion();
                 String latestVersion = Util.getLatestVersionName();
                 String text = "";
@@ -419,7 +490,7 @@ public class Main extends JavaPlugin implements Listener
 
     private void printC(String string)
     {
-	Bukkit.getConsoleSender().sendMessage(string);
+        Bukkit.getConsoleSender().sendMessage(string);
     }
 
 }
