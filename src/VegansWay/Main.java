@@ -34,6 +34,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,6 +74,7 @@ public class Main extends JavaPlugin implements Listener
     LovingPets lovingPets;
     FeedingPets feedingPets;
     MobBleeding mobBleeding;
+    BetterWorld betterWorld;
 
     @Override
     public void onEnable()
@@ -104,6 +106,7 @@ public class Main extends JavaPlugin implements Listener
         {
             mobBleeding = new MobBleeding();
         }
+        betterWorld = new BetterWorld(); 
         // REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         startTimedEvents();
@@ -139,6 +142,7 @@ public class Main extends JavaPlugin implements Listener
                         catTaming.testOcelotTaming();
                         lovingPets.testLovingPets();
                     }
+                    betterWorld.findFloatingFlowers();
                 }
             }
         }, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
@@ -160,245 +164,36 @@ public class Main extends JavaPlugin implements Listener
         }
     }
 
-    /*@EventHandler
-    public void onCreatureSpawn(CreatureSpawnEvent event)
-    {
-        Entity entity = event.getEntity();
-        if (entity instanceof Skeleton)
-        {
-            //Bukkit.broadcastMessage("Ha spawneado un esqueleto hermoso");
-            Block block = entity.getLocation().getBlock();
-
-            int initX = block.getX() - 2, initY = block.getY() - 1, initZ = block.getZ() - 2;
-            int relX, relY, relZ;
-            for (int i = 0; i <= 4; i++)
-            {
-                relX = initX + i;
-                for (int j = 0; j <= 2; j++)
-                {
-                    relY = initY + j;
-                    for (int k = 0; k <= 4; k++)
-                    {
-                        relZ = initZ + k;
-
-                        Block newBlock = entity.getWorld().getBlockAt(relX, relY, relZ);
-                        if (newBlock.getType().equals(Material.AIR) && newBlock.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
-                        {
-                            Random r = new Random();
-                            if (r.nextInt(100) < 25)
-                            {
-                                newBlock.setType(Material.RED_ROSE);
-                                newBlock.setData((byte) 3);
-                            }
-                        }
-
-                    }
-                }
-            }
-
-        }
-    }*/
     @EventHandler
     public void onChunkPopulate(ChunkPopulateEvent event)
     {
-        Random r = new Random();
-        int chunkRandom = r.nextInt(100); // No en todos los chunks se van a generar cosas
-        Biome biome = event.getChunk().getBlock(7, 0, 7).getBiome();
-        boolean isDesert = biome.equals(Biome.DESERT) || biome.equals(Biome.DESERT_HILLS) || biome.equals(Biome.MUTATED_DESERT);
-
-        int x = event.getChunk().getBlock(7, 0, 7).getX();
-        int z = event.getChunk().getBlock(7, 0, 7).getZ();
-        World w = event.getWorld();
-        int y = w.getHighestBlockYAt(x, z);
-
-        // Recorrer la zona centro de cada chunk
-        if (!w.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
-        {
-            int initX = x - 6, initY = y - 14, initZ = z - 6;
-            int relX, relY, relZ;
-            for (int i = 0; i <= 12; i++)
-            {
-                relX = initX + i;
-                for (int j = 0; j <= 28; j++)
-                {
-                    relY = initY + j;
-                    for (int k = 0; k <= 12; k++)
-                    {
-                        relZ = initZ + k;
-
-                        Block b = w.getBlockAt(relX, relY, relZ);
-
-                        if (!isDesert && chunkRandom < 25 && r.nextInt(100) < 5
-                                && b.getType().equals(Material.AIR))
-                        {
-                            if (b.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
-                            {
-                                b.setType(Material.RED_ROSE);
-                                b.setData((byte) 3);
-                            }
-                        }
-                        if (isDesert && chunkRandom < 75 && r.nextInt(100) < 50
-                                && b.getType().equals(Material.AIR)
-                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                                && b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND))
-                        {
-
-                            b.getRelative(BlockFace.DOWN).setType(Material.CACTUS);
-                            b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).setType(Material.CACTUS);
-
-                            double rdX = r.nextDouble();
-                            double rdY = r.nextDouble();
-                            double rdZ = r.nextDouble();
-                            int color = r.nextInt(16);
-
-                            for (int a = 0; a < 360; a = a + 60)
-                            {
-                                ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, relX + 0.5d, relY - 1.4d, relZ + 0.5d, a, a), EntityType.ARMOR_STAND);
-                                as.setGravity(false);
-                                as.setCollidable(false);
-                                as.setAI(false);
-                                as.setInvulnerable(true);
-                                as.setHeadPose(new EulerAngle(rdX, rdY, rdZ));
-                                as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
-                                as.setVisible(false);
-                                as.setCustomName("vegansWay_CactusFlower");
-                                as.setCustomNameVisible(false);
-                            }
-
-                            Bukkit.broadcastMessage("Cactus lana en: " + relX + " " + relZ);
-                        }
-                    }
-                }
-            }
-        }
+        betterWorld.testGeneration(event);
     }
+
+    
 
     @EventHandler
     public void onBlockGrow(BlockGrowEvent event)
     {
-        if (event.getNewState().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                && event.getNewState().getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS))
-        {
-            Random r = new Random();
-            World w = event.getNewState().getWorld();
-            double x = event.getNewState().getBlock().getX() + 0.5d;
-            double y = event.getNewState().getBlock().getY() - 0.4d;
-            double z = event.getNewState().getBlock().getZ() + 0.5d;
-
-            double rdX = r.nextDouble();
-            double rdY = r.nextDouble();
-            double rdZ = r.nextDouble();
-            int color = r.nextInt(16);
-
-            for (int a = 0; a < 360; a = a + 60)
-            {
-                ArmorStand as = (ArmorStand) w.spawnEntity(new Location(w, x, y, z, a, a), EntityType.ARMOR_STAND);
-                as.setGravity(false);
-                as.setCollidable(false);
-                as.setAI(false);
-                as.setInvulnerable(true);
-                as.setHeadPose(new EulerAngle(rdX, rdY, rdZ));
-                as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
-                as.setVisible(false);
-                as.setCustomName("vegansWay_CactusFlower");
-                as.setCustomNameVisible(false);
-            }
-
-            Bukkit.broadcastMessage("Cactus NUEVO lana en: " + x + " " + z);
-        }
+        betterWorld.testCactusGrow(event);
+        
     }
-
-    /*@EventHandler
-    public void onBlockPhysicsEvent(BlockPhysicsEvent event)
-    {
-        if (event.getBlock().getType().equals(Material.CACTUS))
-        {
-            Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
-            double x = cactusLocation.getX();
-            double y = cactusLocation.getY();
-            double z = cactusLocation.getZ();
-            Entity[] entities = event.getBlock().getChunk().getEntities();
-            for (Entity entity : entities)
-            {
-                if (entity != null
-                        && entity instanceof ArmorStand
-                        && entity.getCustomName().equals("vegansWay_CactusFlower")
-                        && entity.getLocation().getX() == x
-                        && entity.getLocation().getZ() == z
-                        && Math.abs(entity.getLocation().getY() - y) < 3d)
-                {
-                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
-                    if (!entity.isDead())
-                    {
-                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
-                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
-                        entity.remove();
-                    }
-                }
-            }
-        }
-    }*/
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
     {
-        if (event.getBlock().getType().equals(Material.CACTUS))
-        {
-            Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
-            double x = cactusLocation.getX();
-            double y = cactusLocation.getY();
-            double z = cactusLocation.getZ();
-            Entity[] entities = event.getBlock().getChunk().getEntities();
-            for (Entity entity : entities)
-            {
-                if (entity != null
-                        && entity instanceof ArmorStand
-                        && entity.getCustomName().equals("vegansWay_CactusFlower")
-                        && entity.getLocation().getX() == x
-                        && entity.getLocation().getZ() == z
-                        && Math.abs(entity.getLocation().getY() - y) < 3d)
-                {
-                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
-                    if (!entity.isDead())
-                    {
-                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
-                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
-                        entity.remove();
-                    }
-                }
-            }
-        }
+        betterWorld.testCactusBreak(event);
+        
     }
+
+    // Escuchar a onPlayerPlaceBlock y onPistonExtends/retract y verificar que si un bloque circundante es cactus, destruir la flor de arriba
+    
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
-        if (event.getEntity() instanceof ArmorStand)
-        {
-            Location firstASLocation = event.getEntity().getLocation(); // Armor stand que ha recibido el golpe y sus coordenadas
-            double x = firstASLocation.getX();
-            double y = firstASLocation.getY();
-            double z = firstASLocation.getZ();
-            Entity[] entities = event.getEntity().getLocation().getChunk().getEntities(); // Armor stands cercanos
-            for (Entity entity : entities)
-            {
-                if (entity != null
-                        && entity instanceof ArmorStand
-                        && entity.getCustomName().equals("vegansWay_CactusFlower")
-                        && entity.getLocation().getX() == x
-                        && entity.getLocation().getZ() == z
-                        && Math.abs(entity.getLocation().getY() - y) < 1d)
-                {
-                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
-                    if (!entity.isDead())
-                    {
-                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
-                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
-                        entity.remove();
-                    }
-                }
-            }
-        }
+        betterWorld.testCactusFlowerDamaged(event);
+        
         if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
         {
             catTaming.testConvertToCat(event);

@@ -156,5 +156,76 @@ public class RecycleBin {
                         }*/
                         // /summon armor_stand ~ ~ ~ {Invisible:1b,NoBasePlate:1b,NoGravity:1b,Rotation:[120f],ArmorItems:[{},{},{},{id:"171",Count:1b,Damage:1}],HandItems:[{},{}],Pose:{Head:[10f,15f,10f]}}
                         
-                        
+              
+    
+    
+    // QUE UN BLOQUE QUE SE ROMPE POR FISICAS ROMPA LAS FLORES (AHORA USO MEJOR DETECTAR ENTIDADES CERCANAS CADA CIERTO TIEMPO => findFloatingFlowers() <= )
+    /*@EventHandler
+    public void onBlockPhysicsEvent(BlockPhysicsEvent event)
+    {
+        if (event.getBlock().getType().equals(Material.CACTUS))
+        {
+            Location cactusLocation = event.getBlock().getLocation().add(0.5d, 0, 0.5d);
+            double x = cactusLocation.getX();
+            double y = cactusLocation.getY();
+            double z = cactusLocation.getZ();
+            Entity[] entities = event.getBlock().getChunk().getEntities();
+            for (Entity entity : entities)
+            {
+                if (entity != null
+                        && entity instanceof ArmorStand
+                        && entity.getCustomName().equals("vegansWay_CactusFlower")
+                        && entity.getLocation().getX() == x
+                        && entity.getLocation().getZ() == z
+                        && Math.abs(entity.getLocation().getY() - y) < 3d)
+                {
+                    Byte color = ((ArmorStand) entity).getHelmet().getData().getData();
+                    if (!entity.isDead())
+                    {
+                        entity.getWorld().dropItemNaturally(entity.getLocation().add(0, 1.5d, 0), new ItemStack(Material.WOOL, 1, (short) 0, color));
+                        entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation().add(0, 1.5d, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, color));
+                        entity.remove();
+                    }
+                }
+            }
+        }
+    
+    // QUE LOS ESQUELETOS GENEREN FLORES
+    /*@EventHandler
+    public void onCreatureSpawn(CreatureSpawnEvent event)
+    {
+        Entity entity = event.getEntity();
+        if (entity instanceof Skeleton)
+        {
+            //Bukkit.broadcastMessage("Ha spawneado un esqueleto hermoso");
+            Block block = entity.getLocation().getBlock();
+
+            int initX = block.getX() - 2, initY = block.getY() - 1, initZ = block.getZ() - 2;
+            int relX, relY, relZ;
+            for (int i = 0; i <= 4; i++)
+            {
+                relX = initX + i;
+                for (int j = 0; j <= 2; j++)
+                {
+                    relY = initY + j;
+                    for (int k = 0; k <= 4; k++)
+                    {
+                        relZ = initZ + k;
+
+                        Block newBlock = entity.getWorld().getBlockAt(relX, relY, relZ);
+                        if (newBlock.getType().equals(Material.AIR) && newBlock.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
+                        {
+                            Random r = new Random();
+                            if (r.nextInt(100) < 25)
+                            {
+                                newBlock.setType(Material.RED_ROSE);
+                                newBlock.setData((byte) 3);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    }*/
 }
