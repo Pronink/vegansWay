@@ -17,46 +17,18 @@
 package VegansWay;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Particle;
-import org.bukkit.SkullType;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Skull;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.EulerAngle;
 import org.mcstats.Metrics;
 
 /**
@@ -146,7 +118,6 @@ public class Main extends JavaPlugin implements Listener
                 }
             }
         }, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
-
     }
 
     @Override
@@ -176,18 +147,13 @@ public class Main extends JavaPlugin implements Listener
     public void onBlockGrow(BlockGrowEvent event)
     {
         betterWorld.testCactusGrow(event);
-        
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
     {
         betterWorld.testCactusBreak(event);
-        
     }
-
-    // Escuchar a onPlayerPlaceBlock y onPistonExtends/retract y verificar que si un bloque circundante es cactus, destruir la flor de arriba
-    
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)

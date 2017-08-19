@@ -2,6 +2,7 @@
 # -- MODULES --
 # Disabling a module disables the rest of that section.
 # The sections are divided by the horizontal bars ( -------------- ).
+Config_V: 2
 
 # -----------------------------------------------------------------------------------------------------
 
@@ -25,7 +26,7 @@ Ocelote_To_Cat_Percentage: 50
 Spiders_Enhanced: true
 
 # You can set the probability percentage of an spider placing a web to trap a
-# damaged player.
+# damaged player. 0 - 100 %.
 Spiders_Generate_Web_Percentage: 25
 
 # Sets the number of extra strings droped from spiders when they die. Randmonly
@@ -61,7 +62,27 @@ Mobs_Bleeding: true
 
 # -----------------------------------------------------------------------------------------------------
 
-# Show_Logo shows the logo in console on plugin loading.
-Show_Logo: true
+# Better_World modifica la generación del terreno para generar aleatoriamente:
+# Fiber Plants en la hierba, cactus con flores de fibra en el desierto y Catnip en la jungla
+Better_World: true
+
+# Porcentaje de que un cactus que termina de crecer genere una flor de fibra
+Cactus_Grow_Percentage: 50
+
+# Permitir que el Wool Plant y el Cactus crezcan si le das Bone Meal
+Allow_BoneMeal_On_WoolPlant_And_Cactus: true
+
+# Si el mundo ya se generó sin el plugin, habrá escasez de Fiber Plants. Una alternativa es hacer que cuando un esqueleto spawnee, 
+# genere Fiber Plants a su alrededor aleatoriamente.
+# Por defecto esta propiedad está desactivada. Make sure que esta propiedad se activa de forma temporal para no saturar el mapa.
+Skeletons_Generate_FiberPlants: false
 
 # -----------------------------------------------------------------------------------------------------
+
+# Buscar actualizaciones periodicamente y alertar de ellas en la consola
+Find_Updates_Periodicly: true
+
+# -----------------------------------------------------------------------------------------------------
+
+# Show_Logo shows the logo in console on plugin loading.
+Show_Logo: true
