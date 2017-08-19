@@ -34,6 +34,11 @@ import org.bukkit.inventory.ItemStack;
 public class Util
 {
 
+    public static ItemStack getItemFromHand(Player player)
+    {
+	return player.getInventory().getItemInMainHand();
+    }
+    
     public static void quitOneItemFromHand(Player player)
     {
 	ItemStack itemStack = player.getInventory().getItemInMainHand();

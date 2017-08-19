@@ -21,13 +21,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -38,7 +41,7 @@ import org.mcstats.Metrics;
 public class Main extends JavaPlugin implements Listener
 {
 
-    int state = 0;
+    int state = 1;
     CatTaming catTaming;
     ItemRenaming itemRenaming;
     CraftingRecipes craftingRecipes;
@@ -78,13 +81,13 @@ public class Main extends JavaPlugin implements Listener
         {
             mobBleeding = new MobBleeding();
         }
-        betterWorld = new BetterWorld(); 
+        betterWorld = new BetterWorld();
         // REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         startTimedEvents();
 
         // MOSTRAR VERSIONES
-        getVersionInfo(); // Muestro el logo (si esta habilitado), la version y busco actualizaciones (hilo)
+        testAndPrintPluginVersion(true); // Muestro el logo (si esta habilitado), la version y busco actualizaciones (hilo)
 
         // INICIO METRICS
         try
@@ -106,7 +109,7 @@ public class Main extends JavaPlugin implements Listener
             @Override
             public void run() // Añadir aqui los eventos que se ejecutaran cada segundo
             {
-                state = ++state % 120; // EL CICLO DURA 60 SEGUNDOS
+                state = ++state % 600; // EL CICLO DURA 300 SEGUNDOS (5 min)
                 if (state % 2 == 0) // CADA 1 SEGUNDOS
                 {
                     if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
@@ -114,7 +117,14 @@ public class Main extends JavaPlugin implements Listener
                         catTaming.testOcelotTaming();
                         lovingPets.testLovingPets();
                     }
+                }
+                if (state % 6 == 0) // CADA 3 SEGUNDOS
+                {
                     betterWorld.findFloatingFlowers();
+                }
+                if (state % 600 == 0) // CADA 300 SEGUNDOS (5 min)
+                {
+                    testAndPrintPluginVersion(false);
                 }
             }
         }, 20 * 1, 20 * 1 / 2); // Cada 1/2 segundos, empezando desde el segundo 1
@@ -138,10 +148,8 @@ public class Main extends JavaPlugin implements Listener
     @EventHandler
     public void onChunkPopulate(ChunkPopulateEvent event)
     {
-        betterWorld.testGeneration(event);
+        betterWorld.modifyGeneration(event);
     }
-
-    
 
     @EventHandler
     public void onBlockGrow(BlockGrowEvent event)
@@ -159,7 +167,7 @@ public class Main extends JavaPlugin implements Listener
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
         betterWorld.testCactusFlowerDamaged(event);
-        
+
         if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
         {
             catTaming.testConvertToCat(event);
@@ -175,15 +183,7 @@ public class Main extends JavaPlugin implements Listener
         }
     }
 
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent event)
-    {
-        if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
-        {
-            spidersEnhanced.addSpiderDrops(event);
-        }
-    }
-
+    // Cuando un jugador hace click derecho sobre una entidad
     @EventHandler
     public void onRightClick(PlayerInteractAtEntityEvent event)
     {
@@ -192,12 +192,31 @@ public class Main extends JavaPlugin implements Listener
             feedingPets.testPetFeeding(event);
         }
     }
+    
+    // Cuando un jugador hace click derecho sobre un bloque
+    @EventHandler
+    public void playerInteract(PlayerInteractEvent event)
+    {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)) // El evento se ejecuta 2 veces. Una por cada mano
+        {
+            betterWorld.testFertilize(event);
+        }
+    }
 
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event)
+    {
+        if (Config.CONFIG_MODULE_SPIDERS_ENHANCED)
+        {
+            spidersEnhanced.addSpiderDrops(event);
+        }
+    }
+    
     // MÉTODOS DE LA CONSOLA
     private String getLogo()
     {
         StringBuilder asciiLogo = new StringBuilder("");
-        asciiLogo.append(ChatColor.GREEN).append("\n\n");
+        asciiLogo.append(ChatColor.GREEN).append("\n");
         asciiLogo.append("                    ynn                                                                                                \n");
         asciiLogo.append(".s+`           -/oyhdN/                                                                                                \n");
         asciiLogo.append("  oNo        -mMmMMMMN`                                                                                                \n");
@@ -218,7 +237,7 @@ public class Main extends JavaPlugin implements Listener
         return (asciiLogo.toString());
     }
 
-    private void getVersionInfo()
+    private void testAndPrintPluginVersion(boolean isServerBooting)
     {
         Thread t = new Thread(new Runnable()
         {
@@ -226,23 +245,23 @@ public class Main extends JavaPlugin implements Listener
             public void run()
             {
                 String installedVersion = "v" + getDescription().getVersion();
-                String latestVersion = Util.getLatestVersionName();
-                String text = "";
-                if (Config.CONFIG_SHOWLOGO)
+                String latestVersion = Util.getLatestVersionName(); // Retorna "" si algun error ocurre
+                String logoText = "";
+                if (Config.CONFIG_SHOWLOGO && isServerBooting)
                 {
-                    text = getLogo(); // Obtengo el logo
+                    logoText = getLogo(); // Obtengo el logo
                 }
-                if (latestVersion.equals("")) // Si no hay conexion a github
+                if (latestVersion.equals("") && isServerBooting) // Si no hay conexion a github
                 {
-                    printC(text); // Imprime el logo, si este ha sido activado antes
+                    printC(logoText); // Imprime el logo, si este ha sido activado antes
                 }
-                else if (installedVersion.equals(latestVersion)) // Si esta actualizado
+                else if (installedVersion.equals(latestVersion) && isServerBooting) // Si esta actualizado
                 {
-                    printC(text + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
+                    printC(logoText + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
                 }
                 else
                 {
-                    printC(text + ChatColor.RED + "\nYou do not use the latest version of VegansWay:" + ChatColor.DARK_RED + "\n\tINSTALLED VERSION -> " + installedVersion + "\n\tLATEST VERSION    -> " + latestVersion + ChatColor.RED + "\nDownload the latest version from: " + ChatColor.RESET + "https://www.spigotmc.org/resources/vegansway.40292" + ChatColor.RED + " or " + ChatColor.RESET + "https://github.com/Pronink/vegansWay/releases" + "\n");
+                    printC(logoText + ChatColor.RED + "You do not use the latest version of VegansWay. You should updade from " + installedVersion + " to " + latestVersion + "\n");
                 }
             }
         });

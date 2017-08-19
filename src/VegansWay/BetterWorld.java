@@ -32,7 +32,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.EulerAngle;
@@ -45,13 +47,13 @@ public class BetterWorld
 {
 
     // MÉTODOS QUE CREAN FLORES AL GENERAR EL MUNDO O AL CRECER LOS CACTUS (TENGO QUE HACER QUE CON BONE MEAL CREES LANA EN LOS FIBER PLANTS)
-    
-    public void testGeneration(ChunkPopulateEvent event)
+    public void modifyGeneration(ChunkPopulateEvent event)
     {
         Random r = new Random();
         int chunkRandom = r.nextInt(100); // No en todos los chunks se van a generar cosas
         Biome biome = event.getChunk().getBlock(7, 0, 7).getBiome();
         boolean isDesert = biome.equals(Biome.DESERT) || biome.equals(Biome.DESERT_HILLS) || biome.equals(Biome.MUTATED_DESERT);
+        boolean isJungle = biome.equals(Biome.JUNGLE) || biome.equals(Biome.JUNGLE_HILLS) || biome.equals(Biome.JUNGLE_EDGE) || biome.equals(Biome.MUTATED_JUNGLE) || biome.equals(Biome.MUTATED_JUNGLE_EDGE);
 
         int x = event.getChunk().getBlock(7, 0, 7).getX();
         int z = event.getChunk().getBlock(7, 0, 7).getZ();
@@ -73,17 +75,29 @@ public class BetterWorld
                     {
                         relZ = initZ + k;
 
-                        Block block = world.getBlockAt(relX, relY, relZ);
+                        Block block = world.getBlockAt(relX, relY, relZ); // Este bloque recorre la zona (cuadrado de 12x28x12) de la superficie de cada chunk
 
-                        if (!isDesert && chunkRandom < 25 && r.nextInt(100) < 5
-                                && block.getType().equals(Material.AIR))
+                        // GENERACIÓN EN TODO
+                        if (!isDesert && !isJungle
+                                && chunkRandom < 15 && r.nextInt(100) < 5
+                                && block.getType().equals(Material.AIR)
+                                && block.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
                         {
-                            if (block.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
-                            {
-                                makeFiberPlant(block);
-                            }
+                            makeFiberPlant(block);
                         }
-                        if (isDesert && chunkRandom < 75 && r.nextInt(100) < 50
+
+                        // GENERACIÓN EN JUNGLA
+                        if (isJungle
+                                && chunkRandom < 30 && r.nextInt(100) < 10
+                                && (block.getType().equals(Material.AIR))
+                                && block.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
+                        {
+                            makeCatnip(block);
+                        }
+
+                        // GENERACIÓN EN DESIERTOS
+                        if (isDesert
+                                && chunkRandom < 75 && r.nextInt(100) < 50
                                 && block.getType().equals(Material.AIR)
                                 && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
                                 && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND))
@@ -117,18 +131,13 @@ public class BetterWorld
         }
     }
 
-    
-
     // MÉTODOS QUE DETECTAN SI SE DEBE ROMPER UNA FLOR
-    
     public void findFloatingFlowers()
     {
-        int entidades = 0;
         for (Player player : Bukkit.getOnlinePlayers())
         {
             for (Entity entity : player.getNearbyEntities(10, 10, 10))
             {
-                entidades++;
                 if (isCactusFlower(entity)
                         && !entity.getLocation().getBlock().getRelative(BlockFace.UP).getType().equals(Material.CACTUS))
                 {
@@ -136,9 +145,8 @@ public class BetterWorld
                 }
             }
         }
-        Bukkit.broadcastMessage(entidades + "");
     }
-    
+
     public void testCactusBreak(BlockBreakEvent event)
     {
         if (event.getBlock().getType().equals(Material.CACTUS))
@@ -183,10 +191,23 @@ public class BetterWorld
         }
     }
 
-    
-    
+    public void testFertilize(PlayerInteractEvent event)
+    {
+        if (isBoneMeal(event.getItem()))
+        {
+            Block block = event.getClickedBlock();
+            if (block.getType().equals(Material.CACTUS))
+            {
+                block.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, block.getLocation().add(0.5d, 0.5d, 0.5d), 20, 0.4f, 0.4f, 0.4f);
+                Util.quitOneItemFromHand(event.getPlayer());
+            }
+            // Si es nepeta cataria...
+            
+            // Si es fiber plant...
+        }
+    }
+
     // MÉTODOS AYUDANTES
-    
     private void makeCactusFlower(World world, double flowerX, double flowerY, double flowerZ)
     {
         Random r = new Random();
@@ -234,5 +255,15 @@ public class BetterWorld
         block.setData((byte) 3);
     }
 
-    
+    private void makeCatnip(Block block)
+    {
+        block.setType(Material.RED_ROSE);
+        block.setData((byte) 7);
+    }
+
+    private boolean isBoneMeal(ItemStack item)
+    {
+        return (item.getType().equals(Material.INK_SACK) && item.getDurability() == 15);
+    }
+
 }

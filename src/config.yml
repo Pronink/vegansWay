@@ -86,3 +86,6 @@ Find_Updates_Periodicly: true
 
 # Show_Logo shows the logo in console on plugin loading.
 Show_Logo: true
+
+
+Allow_Metrics: true
