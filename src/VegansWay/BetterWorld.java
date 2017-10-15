@@ -191,18 +191,73 @@ public class BetterWorld
         }
     }
 
-    public void testFertilize(PlayerInteractEvent event)
-    {
-        if (isBoneMeal(event.getItem()))
-        {
+    public void testFertilize(PlayerInteractEvent event) {
+        if (isBoneMeal(event.getItem())) {
             Block block = event.getClickedBlock();
-            if (block.getType().equals(Material.CACTUS))
-            {
-                block.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, block.getLocation().add(0.5d, 0.5d, 0.5d), 20, 0.4f, 0.4f, 0.4f);
-                Util.quitOneItemFromHand(event.getPlayer());
-            }
-            // Si es nepeta cataria...
             
+            // SI ES CACTUS
+            if (block.getType().equals(Material.CACTUS)) {
+                // Prepara algunas cosas
+                double flowerX = block.getX() + 0.5d;
+                double flowerY = block.getY() - 0.4d;
+                double flowerZ = block.getZ() + 0.5d;
+                generateGrowParticle(block);
+                Util.quitOneItemFromHand(event.getPlayer());
+                Random r = new Random();
+                // Hacer config para los porcentajes de crecer cactus de manera natural y cuando le das con bonemeal
+                // Hacer que se puedan cambiar los colores de la lana en la mesa de crafteo
+                if (r.nextInt(100) < 50/*Config.CONFIG_CACTUS_GROW_PERCENTEAGE*/)
+                {
+                    // Caso SAND-(CACTUS)-AIR
+                    if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    {
+                        block.getRelative(BlockFace.UP).setType(Material.CACTUS);
+                    } // Caso SAND-(CACTUS)-CACTUS-AIR
+                    else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    {
+                        block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).setType(Material.CACTUS);
+                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
+                    } 
+                    // Caso SAND-CACTUS-(CACTUS)-AIR
+                    else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    {
+                        block.getRelative(BlockFace.UP).setType(Material.CACTUS);
+                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
+                    } 
+                    // Caso SAND-(CACTUS)-CACTUS-CACTUS-AIR
+                    else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    {
+                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
+                    } 
+                    // Caso SAND-CACTUS-(CACTUS)-CACTUS-AIR
+                    else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    {
+                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
+                    } 
+                    // Caso SAND-CACTUS-CACTUS-(CACTUS)-AIR
+                    else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    {
+                        makeCactusFlower(block.getWorld(), flowerX, flowerY, flowerZ);
+                    }
+                }
+            }
+
+
+            // Si es nepeta cataria...
             // Si es fiber plant...
         }
     }
@@ -210,27 +265,40 @@ public class BetterWorld
     // MÉTODOS AYUDANTES
     private void makeCactusFlower(World world, double flowerX, double flowerY, double flowerZ)
     {
-        Random r = new Random();
-        double randomAngleX = r.nextDouble();
-        double randomAngleY = r.nextDouble();
-        double randomAngleZ = r.nextDouble();
-        int color = r.nextInt(16);
-
-        for (int a = 0; a < 360; a = a + 60)
+        boolean existsCactusFlower = false;
+        for (Entity entity : world.getNearbyEntities(new Location(world, flowerX, flowerY, flowerZ), 0.5f, 0.5f, 0.5f)) 
         {
-            ArmorStand as = (ArmorStand) world.spawnEntity(new Location(world, flowerX, flowerY, flowerZ, a, a), EntityType.ARMOR_STAND);
-            as.setGravity(false);
-            as.setCollidable(false);
-            as.setAI(false);
-            as.setInvulnerable(true);
-            as.setHeadPose(new EulerAngle(randomAngleX, randomAngleY, randomAngleZ));
-            as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
-            as.setVisible(false);
-            as.setCustomName("vegansWay_CactusFlower");
-            as.setCustomNameVisible(false);
+            if (isCactusFlower(entity)) {
+                existsCactusFlower = true;
+            }
         }
+        if (!existsCactusFlower)
+        {
+            Random r = new Random();
+            double randomAngleX = r.nextDouble();
+            double randomAngleY = r.nextDouble();
+            double randomAngleZ = r.nextDouble();
+            int color = r.nextInt(16);
 
-        Bukkit.broadcastMessage("Cactus lana en: " + flowerX + " " + flowerZ);
+            for (int a = 0; a < 360; a = a + 60)
+            {
+                ArmorStand as = (ArmorStand) world.spawnEntity(new Location(world, flowerX, flowerY, flowerZ, a, a), EntityType.ARMOR_STAND);
+                as.setGravity(false);
+                as.setCollidable(false);
+                as.setAI(false);
+                as.setInvulnerable(true);
+                as.setHeadPose(new EulerAngle(randomAngleX, randomAngleY, randomAngleZ));
+                as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
+                as.setVisible(false);
+                as.setCustomName("vegansWay_CactusFlower");
+                as.setCustomNameVisible(false);
+            }
+            Bukkit.broadcastMessage("Cactus lana en: " + flowerX + " ... " + flowerZ);
+        }
+        else
+        {
+            Bukkit.broadcastMessage("ERROR. Ya existe cactus lana en: " + flowerX + " ... " + flowerZ);
+        }
     }
 
     private void breakCactusFlower(ArmorStand armorStand)
@@ -265,5 +333,9 @@ public class BetterWorld
     {
         return (item.getType().equals(Material.INK_SACK) && item.getDurability() == 15);
     }
-
+    
+    private void generateGrowParticle(Block block)
+    {
+        block.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, block.getLocation().add(0.5d, 0.5d, 0.5d), 20, 0.4f, 0.4f, 0.4f);
+    }
 }
