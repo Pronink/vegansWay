@@ -16,7 +16,10 @@
  */
 package VegansWay;
 
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -194,7 +197,8 @@ public class BetterWorld
     public void testFertilize(PlayerInteractEvent event) {
         if (isBoneMeal(event.getItem())) {
             Block block = event.getClickedBlock();
-            
+            World world = block.getWorld();
+            Random random = new Random();
             // SI ES CACTUS
             if (block.getType().equals(Material.CACTUS)) {
                 // Prepara algunas cosas
@@ -203,10 +207,9 @@ public class BetterWorld
                 double flowerZ = block.getZ() + 0.5d;
                 generateGrowParticle(block);
                 Util.quitOneItemFromHand(event.getPlayer());
-                Random r = new Random();
                 // Hacer config para los porcentajes de crecer cactus de manera natural y cuando le das con bonemeal
                 // Hacer que se puedan cambiar los colores de la lana en la mesa de crafteo
-                if (r.nextInt(100) < 50/*Config.CONFIG_CACTUS_GROW_PERCENTEAGE*/)
+                if (random.nextInt(100) < 50/*Config.CONFIG_CACTUS_GROW_PERCENTEAGE*/)
                 {
                     // Caso SAND-(CACTUS)-AIR
                     if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
@@ -219,7 +222,8 @@ public class BetterWorld
                             && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
                         block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).setType(Material.CACTUS);
-                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
+                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
+                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
                     } 
                     // Caso SAND-CACTUS-(CACTUS)-AIR
                     else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
@@ -227,7 +231,8 @@ public class BetterWorld
                             && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
                         block.getRelative(BlockFace.UP).setType(Material.CACTUS);
-                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
+                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
+                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
                     } 
                     // Caso SAND-(CACTUS)-CACTUS-CACTUS-AIR
                     else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
@@ -235,7 +240,8 @@ public class BetterWorld
                             && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
                             && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
+                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
+                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
                     } 
                     // Caso SAND-CACTUS-(CACTUS)-CACTUS-AIR
                     else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
@@ -243,7 +249,8 @@ public class BetterWorld
                             && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
                             && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
+                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
+                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
                     } 
                     // Caso SAND-CACTUS-CACTUS-(CACTUS)-AIR
                     else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
@@ -251,14 +258,44 @@ public class BetterWorld
                             && block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
                             && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        makeCactusFlower(block.getWorld(), flowerX, flowerY, flowerZ);
+                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
+                            makeCactusFlower(block.getWorld(), flowerX, flowerY, flowerZ);
                     }
                 }
             }
-
-
-            // Si es nepeta cataria...
-            // Si es fiber plant...
+            // Si es fiber plant... o nepeta cataria...
+            if (block.getType().equals(Material.RED_ROSE) && (block.getData() == (byte)3 || block.getData() == (byte)7)) {
+                Bukkit.broadcastMessage("Fiber plant");
+                Util.quitOneItemFromHand(event.getPlayer());
+                int initX = block.getX()-2, initY = block.getY()-2, initZ = block.getZ()-2;
+                int relX, relY, relZ;
+                ArrayList<Block> places = new ArrayList();
+                for (int i = 0; i <= 4; i++)
+                {
+                    relX = initX + i;
+                    for (int j = 0; j <= 4; j++)
+                    {
+                        relY = initY + j;
+                        for (int k = 0; k <= 4; k++)
+                        {
+                            relZ = initZ + k;
+                            Block relBlock = world.getBlockAt(relX, relY, relZ);
+                            if (relBlock.getType().equals(Material.AIR) && relBlock.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
+                            {
+                                places.add(relBlock);
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < 1; i++)// CONFIG AQUI
+                {
+                    Block selectedPlace = places.get(random.nextInt(places.size()));
+                    selectedPlace.setType(Material.RED_ROSE);
+                    selectedPlace.setData(block.getData());
+                    
+                    generateLineOfParticles(block, selectedPlace);
+                }
+            }
         }
     }
 
@@ -293,6 +330,7 @@ public class BetterWorld
                 as.setCustomName("vegansWay_CactusFlower");
                 as.setCustomNameVisible(false);
             }
+            world.spawnParticle(Particle.BLOCK_CRACK, new Location(world, flowerX, flowerY, flowerZ).add(0, 2f, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, (byte)color));
             Bukkit.broadcastMessage("Cactus lana en: " + flowerX + " ... " + flowerZ);
         }
         else
@@ -337,5 +375,45 @@ public class BetterWorld
     private void generateGrowParticle(Block block)
     {
         block.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, block.getLocation().add(0.5d, 0.5d, 0.5d), 20, 0.4f, 0.4f, 0.4f);
+    }
+
+    private void generateLineOfParticles(Block block, Block selectedPlace)
+    {
+        final double x1 = block.getX()+0.5d;
+        final double y1 = block.getY()+0.5d;
+        final double z1 = block.getZ()+0.5d;
+        final double x2 = selectedPlace.getX()+0.5d;
+        final double y2 = selectedPlace.getY()+0.5d;
+        final double z2 = selectedPlace.getZ()+0.5d;
+        final double modx = ((double)x2 - (double)x1)/10d;
+        final double mody = ((double)y2 - (double)y1)/10d;
+        final double modz = ((double)z2 - (double)z1)/10d;
+        Thread thread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                double x = x1;
+                double y = y1;
+                double z = z1;
+                for (int i = 0; i < 11; i++)
+                {
+                    block.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, new Location(block.getWorld(),x,y,z), 1, 0d, 0d, 0d);
+                    x += modx;
+                    y += mody;
+                    z += modz;
+                    try
+                    {
+                        Thread.sleep(20);
+                    }
+                    catch (InterruptedException ex)
+                    {
+                        Logger.getLogger(BetterWorld.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                generateGrowParticle(selectedPlace);
+            }
+        });
+        thread.start();
     }
 }

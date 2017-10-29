@@ -40,7 +40,7 @@ public class ItemRenaming
 	}
 	else if (fullName.equals("RED_ROSE(3)")) // AZURE BLUET
 	{
-	    item.setItemStack(changeName(item.getItemStack(), Config.CONFIG_WOOLPLANT_NAME)); // COTTON
+	    item.setItemStack(changeName(item.getItemStack(), Config.CONFIG_FIBERPLANT_NAME)); // COTTON
 	}
     }
 

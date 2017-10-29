@@ -44,7 +44,7 @@ Items_Renaming: true
 Catnip_Name: Catnip
 
 # The new wool source: Fiber plant. It overrides Pink Azure Bluet Item name.
-WoolPlant_Name: Fiber Plant
+FiberPlant_Name: Fiber Plant
 
 # The new wool armor, crafted with (fiber) wool.
 Wool_Cap_Name: Wool Cap
@@ -63,14 +63,24 @@ Mobs_Bleeding: true
 # -----------------------------------------------------------------------------------------------------
 
 # Better_World modifica la generación del terreno para generar aleatoriamente:
-# Fiber Plants en la hierba, cactus con flores de fibra en el desierto y Catnip en la jungla
+# Fiber Plants en la hierba, Fiber Flowers en los cactus y Catnip en la jungla
 Better_World: true
 
-# Porcentaje de que un cactus que termina de crecer genere una flor de fibra
-Cactus_Grow_Percentage: 50
+# Si se quiere que se generen plantas de fibra extra en el mundo
+Generate_FiberPlant: true
+# Numero de plantas de fibra que van a crecer si se les aplica bonemeal. 0 desactiva la caracteristica
+BoneMeal_On_FiberPlant: 1
 
-# Permitir que el Wool Plant y el Cactus crezcan si le das Bone Meal
-Allow_BoneMeal_On_WoolPlant_And_Cactus: true
+# Si se quiere que se generen catnip extra en el mundo
+Generate_Catnip: true
+# Numero de catnip que van a crecer si se les aplica bonemeal. 0 desactiva la caracteristica
+BoneMeal_On_Catnip: 1
+
+# Porcentaje de que un cactus genere una flor de fibra cuando termina de crecer. 0 desactiva las flores de fibra.
+Generate_FiberFlower: 50
+# Porcentaje de que un cactus crece si se les aplica bonemeal 0 - 100 %. 0 desactiva el crecimiento de los cactus con bonemeal.
+BoneMeal_On_Cactus: 50
+
 
 # Si el mundo ya se generó sin el plugin, habrá escasez de Fiber Plants. Una alternativa es hacer que cuando un esqueleto spawnee, 
 # genere Fiber Plants a su alrededor aleatoriamente.

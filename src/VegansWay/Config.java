@@ -34,7 +34,7 @@ public class Config
     public static int CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE;
     public static int CONFIG_SPIDERS_EXTRA_STRING_DROP;
     public static String CONFIG_CATNIP_NAME;
-    public static String CONFIG_WOOLPLANT_NAME;
+    public static String CONFIG_FIBERPLANT_NAME;
     public static String CONFIG_WOOL_CAP_NAME;
     public static String CONFIG_WOOL_TUNIC_MAME;
     public static String CONFIG_WOOL_PANTS_NAME;
@@ -49,7 +49,7 @@ public class Config
 	CONFIG_MODULE_ITEMS_RENAMING = c.getBoolean("Items_Renaming");
         CONFIG_MODULE_MOBS_BLEEDING = c.getBoolean("Mobs_Bleeding");
 	CONFIG_CATNIP_NAME = c.getString("Catnip_Name");
-	CONFIG_WOOLPLANT_NAME = c.getString("WoolPlant_Name");
+	CONFIG_FIBERPLANT_NAME = c.getString("FiberPlant_Name");
 	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
 	CONFIG_OCELOT_TO_CAT_PERCENTAGE = c.getInt("Ocelote_To_Cat_Percentage");
 	CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE = c.getInt("Spiders_Generate_Web_Percentage");
