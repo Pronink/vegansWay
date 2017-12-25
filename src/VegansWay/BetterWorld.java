@@ -37,7 +37,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.EulerAngle;
@@ -64,7 +63,7 @@ public class BetterWorld
         int y = world.getHighestBlockYAt(x, z);
 
         // Recorrer la zona centro de cada chunk
-        if (!world.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER))
+        if (!world.getBlockAt(x, y, z).getRelative(BlockFace.DOWN).getType().equals(Material.STATIONARY_WATER)) // Si no es océano
         {
             int initX = x - 6, initY = y - 14, initZ = z - 6;
             int relX, relY, relZ;
@@ -81,7 +80,8 @@ public class BetterWorld
                         Block block = world.getBlockAt(relX, relY, relZ); // Este bloque recorre la zona (cuadrado de 12x28x12) de la superficie de cada chunk
 
                         // GENERACIÓN EN TODO
-                        if (!isDesert && !isJungle
+                        if (Config.CONFIG_GENERATE_FIBERPLANT
+                                && !isDesert && !isJungle
                                 && chunkRandom < 15 && r.nextInt(100) < 5
                                 && block.getType().equals(Material.AIR)
                                 && block.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
@@ -90,7 +90,8 @@ public class BetterWorld
                         }
 
                         // GENERACIÓN EN JUNGLA
-                        if (isJungle
+                        if (Config.CONFIG_GENERATE_CATNIP
+                                && isJungle
                                 && chunkRandom < 30 && r.nextInt(100) < 10
                                 && (block.getType().equals(Material.AIR))
                                 && block.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS))
@@ -99,7 +100,8 @@ public class BetterWorld
                         }
 
                         // GENERACIÓN EN DESIERTOS
-                        if (isDesert
+                        if (Config.CONFIG_GENERATE_FIBERFLOWER > 0
+                                && isDesert
                                 && chunkRandom < 75 && r.nextInt(100) < 50
                                 && block.getType().equals(Material.AIR)
                                 && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
@@ -112,6 +114,7 @@ public class BetterWorld
                             double flowerY = relY - 1.4d;
                             double flowerZ = relZ + 0.5d;
 
+                            // Solo crece en cactus completamente crecidos. Aqui el porcentaje siempre sera 100%
                             makeCactusFlower(world, flowerX, flowerY, flowerZ);
                         }
                     }
@@ -122,15 +125,19 @@ public class BetterWorld
 
     public void testCactusGrow(BlockGrowEvent event)
     {
-        if (event.getNewState().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                && event.getNewState().getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS))
+        Random random = new Random();
+        if (random.nextInt(100) < Config.CONFIG_GENERATE_FIBERFLOWER)
         {
-            World world = event.getNewState().getWorld();
-            double flowerX = event.getNewState().getBlock().getX() + 0.5d;
-            double flowerY = event.getNewState().getBlock().getY() - 0.4d;
-            double flowerZ = event.getNewState().getBlock().getZ() + 0.5d;
+            if (event.getNewState().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                    && event.getNewState().getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS))
+            {
+                World world = event.getNewState().getWorld();
+                double flowerX = event.getNewState().getBlock().getX() + 0.5d;
+                double flowerY = event.getNewState().getBlock().getY() - 0.4d;
+                double flowerZ = event.getNewState().getBlock().getZ() + 0.5d;
 
-            makeCactusFlower(world, flowerX, flowerY, flowerZ);
+                makeCactusFlower(world, flowerX, flowerY, flowerZ);
+            }
         }
     }
 
@@ -196,78 +203,76 @@ public class BetterWorld
 
     public void testFertilize(PlayerInteractEvent event) {
         if (isBoneMeal(event.getItem())) {
-            Block block = event.getClickedBlock();
-            World world = block.getWorld();
+            Block clickedBlock = event.getClickedBlock();
+            World world = clickedBlock.getWorld();
             Random random = new Random();
             // SI ES CACTUS
-            if (block.getType().equals(Material.CACTUS)) {
+            if (clickedBlock.getType().equals(Material.CACTUS)) {
                 // Prepara algunas cosas
-                double flowerX = block.getX() + 0.5d;
-                double flowerY = block.getY() - 0.4d;
-                double flowerZ = block.getZ() + 0.5d;
-                generateGrowParticle(block);
+                double flowerX = clickedBlock.getX() + 0.5d;
+                double flowerY = clickedBlock.getY() - 0.4d;
+                double flowerZ = clickedBlock.getZ() + 0.5d;
+                generateGrowParticle(clickedBlock);
                 Util.quitOneItemFromHand(event.getPlayer());
                 // Hacer config para los porcentajes de crecer cactus de manera natural y cuando le das con bonemeal
                 // Hacer que se puedan cambiar los colores de la lana en la mesa de crafteo
-                if (random.nextInt(100) < 50/*Config.CONFIG_CACTUS_GROW_PERCENTEAGE*/)
+                if (random.nextInt(100) < Config.CONFIG_BONEMEAL_ON_CACTUS)
                 {
                     // Caso SAND-(CACTUS)-AIR
-                    if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
-                            && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    if (clickedBlock.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && clickedBlock.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        block.getRelative(BlockFace.UP).setType(Material.CACTUS);
+                        clickedBlock.getRelative(BlockFace.UP).setType(Material.CACTUS);
                     } // Caso SAND-(CACTUS)-CACTUS-AIR
-                    else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
-                            && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    else if (clickedBlock.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && clickedBlock.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).setType(Material.CACTUS);
-                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
-                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
+                        clickedBlock.getRelative(BlockFace.UP).getRelative(BlockFace.UP).setType(Material.CACTUS);
+                        if (random.nextInt(100) < Config.CONFIG_GENERATE_FIBERFLOWER)
+                            makeCactusFlower(clickedBlock.getWorld(), flowerX, flowerY + 2f, flowerZ);
                     } 
                     // Caso SAND-CACTUS-(CACTUS)-AIR
-                    else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
-                            && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    else if (clickedBlock.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && clickedBlock.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        block.getRelative(BlockFace.UP).setType(Material.CACTUS);
-                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
-                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
+                        clickedBlock.getRelative(BlockFace.UP).setType(Material.CACTUS);
+                        if (random.nextInt(100) < Config.CONFIG_GENERATE_FIBERFLOWER)
+                            makeCactusFlower(clickedBlock.getWorld(), flowerX, flowerY + 1f, flowerZ);
                     } 
                     // Caso SAND-(CACTUS)-CACTUS-CACTUS-AIR
-                    else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
-                            && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    else if (clickedBlock.getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && clickedBlock.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
-                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 2f, flowerZ);
+                        if (random.nextInt(100) < Config.CONFIG_GENERATE_FIBERFLOWER)
+                            makeCactusFlower(clickedBlock.getWorld(), flowerX, flowerY + 2f, flowerZ);
                     } 
                     // Caso SAND-CACTUS-(CACTUS)-CACTUS-AIR
-                    else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
-                            && block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    else if (clickedBlock.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && clickedBlock.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.UP).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
-                            makeCactusFlower(block.getWorld(), flowerX, flowerY + 1f, flowerZ);
+                        if (random.nextInt(100) < Config.CONFIG_GENERATE_FIBERFLOWER)
+                            makeCactusFlower(clickedBlock.getWorld(), flowerX, flowerY + 1f, flowerZ);
                     } 
                     // Caso SAND-CACTUS-CACTUS-(CACTUS)-AIR
-                    else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
-                            && block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
-                            && block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
+                    else if (clickedBlock.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.SAND)
+                            && clickedBlock.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.DOWN).getType().equals(Material.CACTUS)
+                            && clickedBlock.getRelative(BlockFace.UP).getType().equals(Material.AIR)) 
                     {
-                        if (random.nextInt(100) < 50/*Config.CONFIG_FiberFlower_Percentage*/)
-                            makeCactusFlower(block.getWorld(), flowerX, flowerY, flowerZ);
+                        if (random.nextInt(100) < Config.CONFIG_GENERATE_FIBERFLOWER)
+                            makeCactusFlower(clickedBlock.getWorld(), flowerX, flowerY, flowerZ);
                     }
                 }
             }
             // Si es fiber plant... o nepeta cataria...
-            if (block.getType().equals(Material.RED_ROSE) && (block.getData() == (byte)3 || block.getData() == (byte)7)) {
-                Bukkit.broadcastMessage("Fiber plant");
-                Util.quitOneItemFromHand(event.getPlayer());
-                int initX = block.getX()-2, initY = block.getY()-2, initZ = block.getZ()-2;
+            if (clickedBlock.getType().equals(Material.RED_ROSE) && (clickedBlock.getData() == (byte)3 || clickedBlock.getData() == (byte)7)) {
+                int initX = clickedBlock.getX()-2, initY = clickedBlock.getY()-2, initZ = clickedBlock.getZ()-2;
                 int relX, relY, relZ;
                 ArrayList<Block> places = new ArrayList();
                 for (int i = 0; i <= 4; i++)
@@ -287,14 +292,20 @@ public class BetterWorld
                         }
                     }
                 }
-                for (int i = 0; i < 1; i++)// CONFIG AQUI
+                if (places.size() > 0)
                 {
-                    Block selectedPlace = places.get(random.nextInt(places.size()));
-                    selectedPlace.setType(Material.RED_ROSE);
-                    selectedPlace.setData(block.getData());
-                    
-                    generateLineOfParticles(block, selectedPlace);
+                    int flowerType = clickedBlock.getData();
+                    int numberNewFlowers = flowerType == 3 ? Config.CONFIG_BONEMEAL_ON_FIBERPLANT : Config.CONFIG_BONEMEAL_ON_CATNIP; // Si agrego nuevas plantas este trozo no funcionará
+                    for (int i = 0; i < numberNewFlowers; i++)
+                    {
+                        Block selectedPlace = places.get(random.nextInt(places.size()));
+                        selectedPlace.setType(Material.RED_ROSE);
+                        selectedPlace.setData((byte)flowerType);
+
+                        generateLineOfParticles(clickedBlock, selectedPlace);
+                    }
                 }
+                Util.quitOneItemFromHand(event.getPlayer());
             }
         }
     }
@@ -317,28 +328,45 @@ public class BetterWorld
             double randomAngleZ = r.nextDouble();
             int color = r.nextInt(16);
 
-            for (int a = 0; a < 360; a = a + 60)
+            if (r.nextInt(200) < 1)// Easter egg, muy raro 0.5%
             {
-                ArmorStand as = (ArmorStand) world.spawnEntity(new Location(world, flowerX, flowerY, flowerZ, a, a), EntityType.ARMOR_STAND);
-                as.setGravity(false);
-                as.setCollidable(false);
-                as.setAI(false);
-                as.setInvulnerable(true);
-                as.setHeadPose(new EulerAngle(randomAngleX, randomAngleY, randomAngleZ));
-                as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
-                as.setVisible(false);
-                as.setCustomName("vegansWay_CactusFlower");
-                as.setCustomNameVisible(false);
+                byte rainbow[] = {14, 1, 4, 5, 3, 10};
+                int counter = 0;
+                for (int a = 0; a < 360; a = a + 60)
+                {
+                    ArmorStand as = (ArmorStand) world.spawnEntity(new Location(world, flowerX, flowerY, flowerZ, a, a), EntityType.ARMOR_STAND);
+                    as = setInvulnerableArmorStand(as);
+                    as.setHeadPose(new EulerAngle(randomAngleX, randomAngleY, randomAngleZ));
+                    as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) rainbow[counter]));
+                    counter++;
+                }
             }
-            world.spawnParticle(Particle.BLOCK_CRACK, new Location(world, flowerX, flowerY, flowerZ).add(0, 2f, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, (byte)color));
-            Bukkit.broadcastMessage("Cactus lana en: " + flowerX + " ... " + flowerZ);
-        }
-        else
-        {
-            Bukkit.broadcastMessage("ERROR. Ya existe cactus lana en: " + flowerX + " ... " + flowerZ);
+            else // Lo que ocurre normalmente
+            {
+                for (int a = 0; a < 360; a = a + 60)
+                {
+                    ArmorStand as = (ArmorStand) world.spawnEntity(new Location(world, flowerX, flowerY, flowerZ, a, a), EntityType.ARMOR_STAND);
+                    as = setInvulnerableArmorStand(as);
+                    as.setHeadPose(new EulerAngle(randomAngleX, randomAngleY, randomAngleZ));
+                    as.setHelmet(new ItemStack(Material.CARPET, 1, (short) 1, (byte) color));
+                }
+                world.spawnParticle(Particle.BLOCK_CRACK, new Location(world, flowerX, flowerY, flowerZ).add(0, 2f, 0), 5, 0.2f, 0.2f, 0.2f, 0.001f, new MaterialData(Material.CARPET, (byte)color));
+            }
         }
     }
 
+    private ArmorStand setInvulnerableArmorStand(ArmorStand as)
+    {
+        as.setGravity(false);
+        as.setCollidable(false);
+        as.setAI(false);
+        as.setInvulnerable(true);
+        as.setVisible(false);
+        as.setCustomName("vegansWay_CactusFlower");
+        as.setCustomNameVisible(false);
+        return as;
+    }
+    
     private void breakCactusFlower(ArmorStand armorStand)
     {
         Byte color = ((ArmorStand) armorStand).getHelmet().getData().getData();
@@ -380,10 +408,10 @@ public class BetterWorld
     private void generateLineOfParticles(Block block, Block selectedPlace)
     {
         final double x1 = block.getX()+0.5d;
-        final double y1 = block.getY()+0.5d;
+        final double y1 = block.getY()+0.1d;
         final double z1 = block.getZ()+0.5d;
         final double x2 = selectedPlace.getX()+0.5d;
-        final double y2 = selectedPlace.getY()+0.5d;
+        final double y2 = selectedPlace.getY()+0.1d;
         final double z2 = selectedPlace.getZ()+0.5d;
         final double modx = ((double)x2 - (double)x1)/10d;
         final double mody = ((double)y2 - (double)y1)/10d;

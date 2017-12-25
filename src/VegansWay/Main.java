@@ -41,15 +41,18 @@ import org.mcstats.Metrics;
 public class Main extends JavaPlugin implements Listener
 {
 
-    int state = 1;
-    CatTaming catTaming;
-    ItemRenaming itemRenaming;
-    CraftingRecipes craftingRecipes;
-    SpidersEnhanced spidersEnhanced;
-    LovingPets lovingPets;
-    FeedingPets feedingPets;
-    MobBleeding mobBleeding;
-    BetterWorld betterWorld;
+    // Esta variable debe de actualizarse junto a la de config.yml
+    private final int LATEST_CONFIG_VERSION = 2;
+    
+    private int state = 1;
+    private CatTaming catTaming;
+    private ItemRenaming itemRenaming;
+    private CraftingRecipes craftingRecipes;
+    private SpidersEnhanced spidersEnhanced;
+    private LovingPets lovingPets;
+    private FeedingPets feedingPets;
+    private MobBleeding mobBleeding;
+    private BetterWorld betterWorld;
 
     @Override
     public void onEnable()
@@ -81,6 +84,7 @@ public class Main extends JavaPlugin implements Listener
         {
             mobBleeding = new MobBleeding();
         }
+        // Lo creo siempre ya que es necesario que este activo aunque este desactivado
         betterWorld = new BetterWorld();
         // REGISTRAR EVENTOS, INICIAR EVENTOS TEMPORIZADOS, INICIAR CRAFTEOS
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
@@ -92,8 +96,11 @@ public class Main extends JavaPlugin implements Listener
         // INICIO METRICS
         try
         {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
+            if (Config.CONFIG_ALLOW_METRICS)
+            {
+                Metrics metrics = new Metrics(this);
+                metrics.start();
+            }
         }
         catch (IOException e)
         {
@@ -109,7 +116,7 @@ public class Main extends JavaPlugin implements Listener
             @Override
             public void run() // Añadir aqui los eventos que se ejecutaran cada segundo
             {
-                state = ++state % 600; // EL CICLO DURA 300 SEGUNDOS (5 min)
+                state = ++state % 7200; // EL CICLO DURA 1 HORA
                 if (state % 2 == 0) // CADA 1 SEGUNDOS
                 {
                     if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
@@ -118,11 +125,11 @@ public class Main extends JavaPlugin implements Listener
                         lovingPets.testLovingPets();
                     }
                 }
-                if (state % 6 == 0) // CADA 3 SEGUNDOS
+                if (state % 10 == 0) // CADA 5 SEGUNDOS
                 {
                     betterWorld.findFloatingFlowers();
                 }
-                if (state % 600 == 0) // CADA 300 SEGUNDOS (5 min)
+                if (state % 7200 == 0 && Config.CONFIG_FIND_UPDATES_PERIODICLY) // CADA 1 HORA
                 {
                     testAndPrintPluginVersion(false);
                 }
@@ -148,26 +155,31 @@ public class Main extends JavaPlugin implements Listener
     @EventHandler
     public void onChunkPopulate(ChunkPopulateEvent event)
     {
-        betterWorld.modifyGeneration(event);
+        if (Config.CONFIG_MODULE_BETTER_WORLD && (Config.CONFIG_GENERATE_CATNIP || Config.CONFIG_GENERATE_FIBERPLANT || Config.CONFIG_GENERATE_FIBERFLOWER > 0))
+        {
+            betterWorld.modifyGeneration(event);
+        }
     }
 
     @EventHandler
     public void onBlockGrow(BlockGrowEvent event)
     {
-        betterWorld.testCactusGrow(event);
+        if (Config.CONFIG_MODULE_BETTER_WORLD && Config.CONFIG_GENERATE_FIBERFLOWER > 0)
+        {
+            betterWorld.testCactusGrow(event);
+        }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
     {
-        betterWorld.testCactusBreak(event);
+        betterWorld.testCactusBreak(event); // Tiene que estar activado siempre
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
     {
-        betterWorld.testCactusFlowerDamaged(event);
-
+        betterWorld.testCactusFlowerDamaged(event); // Tiene que estar activado siempre
         if (Config.CONFIG_MODULE_HEALING_AND_TAMING)
         {
             catTaming.testConvertToCat(event);
@@ -197,7 +209,13 @@ public class Main extends JavaPlugin implements Listener
     @EventHandler
     public void playerInteract(PlayerInteractEvent event)
     {
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)) // El evento se ejecuta 2 veces. Una por cada mano
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && 
+                event.getHand().equals(EquipmentSlot.HAND) &&  // Para evitar que el evento se ejecute 2 veces, una por cada mano
+                event.getItem() != null &&
+                Config.CONFIG_MODULE_BETTER_WORLD && (
+                Config.CONFIG_BONEMEAL_ON_CACTUS > 0 ||
+                Config.CONFIG_BONEMEAL_ON_CATNIP > 0 ||
+                Config.CONFIG_BONEMEAL_ON_FIBERPLANT > 0))
         {
             betterWorld.testFertilize(event);
         }
@@ -247,22 +265,29 @@ public class Main extends JavaPlugin implements Listener
                 String installedVersion = "v" + getDescription().getVersion();
                 String latestVersion = Util.getLatestVersionName(); // Retorna "" si algun error ocurre
                 String logoText = "";
+                String configVersionText = "";
                 if (Config.CONFIG_SHOWLOGO && isServerBooting)
                 {
                     logoText = getLogo(); // Obtengo el logo
                 }
+                if (Config.CONFIG_VERSION != LATEST_CONFIG_VERSION)
+                {
+                    configVersionText = ChatColor.RED + "You aren't using the latest config.yml file version of VegansWay. You should delete config.yml and reload the server.\n";
+                }
+                
                 if (latestVersion.equals("") && isServerBooting) // Si no hay conexion a github
                 {
                     printC(logoText); // Imprime el logo, si este ha sido activado antes
                 }
                 else if (installedVersion.equals(latestVersion) && isServerBooting) // Si esta actualizado
                 {
-                    printC(logoText + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion);
+                    printC(logoText + ChatColor.GREEN + "\nYou use the latest version of VegansWay: " + latestVersion + "\n" + configVersionText);
                 }
                 else
                 {
-                    printC(logoText + ChatColor.RED + "You do not use the latest version of VegansWay. You should updade from " + installedVersion + " to " + latestVersion + "\n");
+                    printC(logoText + ChatColor.RED + "You do not use the latest version of VegansWay. You should updade from " + installedVersion + " to " + latestVersion + "\n" + configVersionText);
                 }
+                
             }
         });
         t.start();

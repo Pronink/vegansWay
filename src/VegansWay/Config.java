@@ -24,12 +24,16 @@ import org.bukkit.configuration.Configuration;
  */
 public class Config
 {
+    public static int CONFIG_VERSION;
+    public static boolean CONFIG_FIND_UPDATES_PERIODICLY;//
+    public static boolean CONFIG_ALLOW_METRICS;//
+    public static boolean CONFIG_SHOWLOGO;//
     public static boolean CONFIG_MODULE_CRAFTING_RECIPES;
     public static boolean CONFIG_MODULE_HEALING_AND_TAMING;
     public static boolean CONFIG_MODULE_SPIDERS_ENHANCED;
     public static boolean CONFIG_MODULE_ITEMS_RENAMING;
     public static boolean CONFIG_MODULE_MOBS_BLEEDING;
-    public static boolean CONFIG_SHOWLOGO;
+    public static boolean CONFIG_MODULE_BETTER_WORLD;
     public static int CONFIG_OCELOT_TO_CAT_PERCENTAGE;
     public static int CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE;
     public static int CONFIG_SPIDERS_EXTRA_STRING_DROP;
@@ -41,16 +45,27 @@ public class Config
     public static String CONFIG_WOOL_BOOTS_NAME;
     public static String CONFIG_PUMPKIN_SEED_DRINK_NAME;
     
+    public static boolean CONFIG_GENERATE_FIBERPLANT;
+    public static int CONFIG_BONEMEAL_ON_FIBERPLANT;
+    public static boolean CONFIG_GENERATE_CATNIP;
+    public static int CONFIG_BONEMEAL_ON_CATNIP;
+    public static int CONFIG_GENERATE_FIBERFLOWER;
+    public static int CONFIG_BONEMEAL_ON_CACTUS;
+    
     public static void load(Configuration c)
     {
+        CONFIG_VERSION = c.getInt("Config_V");
+        CONFIG_FIND_UPDATES_PERIODICLY = c.getBoolean("Find_Updates_Periodicly");
+	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
+        CONFIG_ALLOW_METRICS = c.getBoolean("Allow_Metrics");
 	CONFIG_MODULE_CRAFTING_RECIPES = c.getBoolean("Crafting_Recipes");
 	CONFIG_MODULE_HEALING_AND_TAMING = c.getBoolean("Healing_And_Taming");
 	CONFIG_MODULE_SPIDERS_ENHANCED = c.getBoolean("Spiders_Enhanced");
 	CONFIG_MODULE_ITEMS_RENAMING = c.getBoolean("Items_Renaming");
         CONFIG_MODULE_MOBS_BLEEDING = c.getBoolean("Mobs_Bleeding");
+        CONFIG_MODULE_BETTER_WORLD = c.getBoolean("Better_World");
 	CONFIG_CATNIP_NAME = c.getString("Catnip_Name");
 	CONFIG_FIBERPLANT_NAME = c.getString("FiberPlant_Name");
-	CONFIG_SHOWLOGO = c.getBoolean("Show_Logo");
 	CONFIG_OCELOT_TO_CAT_PERCENTAGE = c.getInt("Ocelote_To_Cat_Percentage");
 	CONFIG_SPIDERS_GENERATE_WEB_PERCENTAGE = c.getInt("Spiders_Generate_Web_Percentage");
 	CONFIG_SPIDERS_EXTRA_STRING_DROP = c.getInt("Spiders_Extra_String_Drop");
@@ -59,5 +74,11 @@ public class Config
 	CONFIG_WOOL_PANTS_NAME = c.getString("Wool_Pants_Name");
 	CONFIG_WOOL_BOOTS_NAME = c.getString("Wool_Boots_Name");
         CONFIG_PUMPKIN_SEED_DRINK_NAME = c.getString("Pumpkin_Seed_Drink_Name");
+        CONFIG_GENERATE_FIBERPLANT = c.getBoolean("Generate_FiberPlant");
+        CONFIG_BONEMEAL_ON_FIBERPLANT = c.getInt("BoneMeal_On_FiberPlant");
+        CONFIG_GENERATE_CATNIP = c.getBoolean("Generate_Catnip");
+        CONFIG_BONEMEAL_ON_CATNIP = c.getInt("BoneMeal_On_Catnip");
+        CONFIG_GENERATE_FIBERFLOWER = c.getInt("Generate_FiberFlower");
+        CONFIG_BONEMEAL_ON_CACTUS = c.getInt("BoneMeal_On_Cactus");
     }
 }

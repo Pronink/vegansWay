@@ -81,12 +81,6 @@ Generate_FiberFlower: 50
 # Porcentaje de que un cactus crece si se les aplica bonemeal 0 - 100 %. 0 desactiva el crecimiento de los cactus con bonemeal.
 BoneMeal_On_Cactus: 50
 
-
-# Si el mundo ya se generó sin el plugin, habrá escasez de Fiber Plants. Una alternativa es hacer que cuando un esqueleto spawnee, 
-# genere Fiber Plants a su alrededor aleatoriamente.
-# Por defecto esta propiedad está desactivada. Make sure que esta propiedad se activa de forma temporal para no saturar el mapa.
-Skeletons_Generate_FiberPlants: false
-
 # -----------------------------------------------------------------------------------------------------
 
 # Buscar actualizaciones periodicamente y alertar de ellas en la consola
