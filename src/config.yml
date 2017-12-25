@@ -1,8 +1,8 @@
+Config_V: 2
 
 # -- MODULES --
 # Disabling a module disables the rest of that section.
 # The sections are divided by the horizontal bars ( -------------- ).
-Config_V: 2
 
 # -----------------------------------------------------------------------------------------------------
 
@@ -62,28 +62,28 @@ Mobs_Bleeding: true
 
 # -----------------------------------------------------------------------------------------------------
 
-# Better_World modifica la generación del terreno para generar aleatoriamente:
-# Fiber Plants en la hierba, Fiber Flowers en los cactus y Catnip en la jungla
+# Better_World modifies the generation of the terrain to generate randomly:
+# Fiber Plants in the grass, Fiber Flowers in the cactus and Catnip in the jungle
 Better_World: true
 
-# Si se quiere que se generen plantas de fibra extra en el mundo
+# If you want to generate extra fiber plants in the world
 Generate_FiberPlant: true
-# Numero de plantas de fibra que van a crecer si se les aplica bonemeal. 0 desactiva la caracteristica
+# Number of fiber plants that will grow if bonemeal is applied. 0 disable the feature
 BoneMeal_On_FiberPlant: 1
 
-# Si se quiere que se generen catnip extra en el mundo
+# If you want to generate extra catnip in the world
 Generate_Catnip: true
-# Numero de catnip que van a crecer si se les aplica bonemeal. 0 desactiva la caracteristica
+# Number of catnip that will grow if bonemeal is applied. 0 disable the feature
 BoneMeal_On_Catnip: 1
 
-# Porcentaje de que un cactus genere una flor de fibra cuando termina de crecer. 0 desactiva las flores de fibra.
+# Percentage of generating a fiber flower when a cactus finishes growing. 0 disables fiber flowers.
 Generate_FiberFlower: 50
-# Porcentaje de que un cactus crece si se les aplica bonemeal 0 - 100 %. 0 desactiva el crecimiento de los cactus con bonemeal.
+# Percentage that a cactus grows if bonemeal is applied 0 - 100%. 0 deactivates the growth of the cactus with bonemeal.
 BoneMeal_On_Cactus: 50
 
 # -----------------------------------------------------------------------------------------------------
 
-# Buscar actualizaciones periodicamente y alertar de ellas en la consola
+# Check for updates periodically and alert them to the console
 Find_Updates_Periodicly: true
 
 # -----------------------------------------------------------------------------------------------------
