@@ -35,6 +35,22 @@ Cats are addicted to Cat nip. If you have Cat nip (pink tulip) in the main hand,
 
 ![](http://i.imgur.com/IVeAG2e.png)
 
+### ❱❱❱ Modified the world generation
+
+More Fiber Plants (Azure Bluet) in the world, useful for get Wool.
+
+![](https://i.imgur.com/WL0Zv2S.jpg)
+
+Cat Nepet (Pink Tulips) in the jungle, useful for tame Ocelotes.
+
+![](https://i.imgur.com/Z9qKpAt.png)
+
+Fiber Flowers in the top of cactus witch drops wool, useful for get colored Wool. The flowers grow when the cactus finishes growing.
+
+![](https://i.imgur.com/ZqUxFIa.png)
+
+You can fertilize Fiber Plants, Cat Nepet and Cactus with Bone Meal.
+
 ### ❱❱❱ Spiders now drops more strings and they have one new attack
 
 Spiders now drops 0 - 4 extra strings when they die.
@@ -62,15 +78,30 @@ Necessary for the implementation of cat taming and crafting recipes. Names can b
 
 Note: The item name changes when items are in ground or when the item is crafted.
 
+### ❱❱❱ Non-aggressive creatures bleed when attacked
+
+To make visible the real animal suffering.
+
+![](https://i.imgur.com/rqs8FPI.jpg)
+
 ## Download links:
 
 Compatibility List:
-- For MINECRAFT 1.12: VegansWay v1.02
-- For MINECRAFT 1.11: VegansWay v1.0, v1.01
+- For MINECRAFT 1.12.x: VegansWay v1.02, VegansWay v1.1
+- For MINECRAFT 1.11.x: VegansWay v1.0, v1.01
 
 [DOWNLOAD](https://github.com/Pronink/vegansWay/releases)
 
 ## Changelog
+
+**1.1** (25/December/2017)
+- World Update (configurable)
+  - More Fiber Plants (Azure Bluet) in the world
+  - Cat Nepet (Pink Tulips) in the jungle
+  - Fiber Flowers in the top of cactus witch drops wool
+  - Fertilizing for Fiber Plants, Cat Nepet and Fiber Flowers (with Bone Meal)
+- Added Metrics support
+- Added mobs bleeding
 
 **1.02** (17/June/2017)
 - Updated to 1.12 Minecraft Version
