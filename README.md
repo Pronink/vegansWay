@@ -4,7 +4,9 @@ VegansWay<img align="right" width="300px" src="http://i.imgur.com/7s2hLzi.jpg">
 VegansWay is a modular and configurable Bukkit plugin that adds vegan alternatives to Minecraft.
 
 Tested for Minecraft 1.12 and 1.11
-
+```diff
+- It doesn't work correctly in 1.13
+```
 ## Main features:
 
 ### ❱❱❱ New crafting recipes
